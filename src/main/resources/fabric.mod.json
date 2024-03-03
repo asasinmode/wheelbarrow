@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "wheelbarrow",
+  "version": "${version}",
+  "name": "Wheelbarrow",
+  "description": "A wheelbarrow!",
+  "authors": ["asasinmode"],
+  "contact": {
+    "homepage": "https://modrinth.com",
+    "issues": "https://github.com/asasinmode/wheelbarrow/issues",
+    "sources": "https://github.com/asasinmode/wheelbarrow"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/wheelbarrow/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.asasinmode.wheelbarrow.Wheelbarrow"],
+    "client": ["com.asasinmode.wheelbarrow.WheelbarrowClient"]
+  },
+  "mixins": [
+    "wheelbarrow.mixins.json",
+    {
+      "config": "wheelbarrow.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.7",
+    "minecraft": "~1.20.4",
+    "java": ">=17",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
+
