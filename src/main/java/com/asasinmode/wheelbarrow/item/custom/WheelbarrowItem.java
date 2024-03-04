@@ -35,6 +35,7 @@ public class WheelbarrowItem extends Item {
 		BlockPos blockPos = context.getBlockPos();
 		ItemStack itemStack = context.getStack();
 		Direction side = context.getSide();
+		float userYaw = context.getPlayerYaw();
 
 		if (side != Direction.UP) {
 			return ActionResult.PASS;
@@ -53,6 +54,7 @@ public class WheelbarrowItem extends Item {
 				return ActionResult.FAIL;
 			}
 
+			abstractMinecartEntity.setYaw(userYaw);
 			serverWorld.spawnEntity(abstractMinecartEntity);
 			serverWorld.emitGameEvent(GameEvent.ENTITY_PLACE, blockPos,
 					Emitter.of(context.getPlayer(), serverWorld.getBlockState(blockPos.down())));
