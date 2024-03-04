@@ -1,6 +1,6 @@
 package com.asasinmode.wheelbarrow;
 
-import com.asasinmode.wheelbarrow.item.WheelbarrowItem;
+import com.asasinmode.wheelbarrow.item.ModItems;
 
 import net.fabricmc.api.ModInitializer;
 
@@ -9,6 +9,6 @@ public class Wheelbarrow implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		WheelbarrowItem.register();
+		ModItems.registerModItems();
 	}
 }

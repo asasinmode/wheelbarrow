@@ -1,6 +1,7 @@
 package com.asasinmode.wheelbarrow.item;
 
 import com.asasinmode.wheelbarrow.Wheelbarrow;
+import com.asasinmode.wheelbarrow.item.custom.*;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -11,18 +12,17 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public class WheelbarrowItem extends Item {
-	public WheelbarrowItem(Settings settings) {
-		super(settings);
+public class ModItems {
+	public static final Item COPPER_WHEELBARROW = registerItem("copper_wheelbarrow",
+			new CopperWheelbarrowItem(new FabricItemSettings().maxCount(1)));
+
+	private static Item registerItem(String name, Item item) {
+		return Registry.register(Registries.ITEM, new Identifier(Wheelbarrow.MOD_ID, name), item);
 	}
 
-	public static void register() {
-		Item WHEELBARROW = Registry.register(
-				Registries.ITEM, new Identifier(Wheelbarrow.MOD_ID, "wheelbarrow"),
-				new WheelbarrowItem(new FabricItemSettings().maxCount(1)));
-
+	public static void registerModItems() {
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(content -> {
-			content.addAfter(Items.TNT_MINECART, WHEELBARROW);
+			content.addAfter(Items.TNT_MINECART, COPPER_WHEELBARROW);
 		});
 	}
 }
