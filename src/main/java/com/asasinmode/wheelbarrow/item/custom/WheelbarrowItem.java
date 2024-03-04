@@ -14,6 +14,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
@@ -33,12 +34,16 @@ public class WheelbarrowItem extends Item {
 		World world = context.getWorld();
 		BlockPos blockPos = context.getBlockPos();
 		ItemStack itemStack = context.getStack();
+		Direction side = context.getSide();
 
 		// dont place in center
-		// dont place on block side
 		// dont place underwater
 		if (world instanceof ServerWorld) {
 			ServerWorld serverWorld = (ServerWorld) world;
+
+			if (side != Direction.UP) {
+				return ActionResult.PASS;
+			}
 
 			AbstractMinecartEntity abstractMinecartEntity = AbstractMinecartEntity.create(serverWorld,
 					(double) blockPos.getX() + 0.5, (double) blockPos.up().getY(), (double) blockPos.getZ() + 0.5,
