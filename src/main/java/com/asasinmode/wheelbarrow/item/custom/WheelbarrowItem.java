@@ -33,6 +33,7 @@ public class WheelbarrowItem extends Item {
 	public ActionResult useOnBlock(ItemUsageContext context) {
 		World world = context.getWorld();
 		BlockPos blockPos = context.getBlockPos();
+		Vec3d hitPos = context.getHitPos();
 		ItemStack itemStack = context.getStack();
 		Direction side = context.getSide();
 		float userYaw = context.getPlayerYaw();
@@ -41,13 +42,12 @@ public class WheelbarrowItem extends Item {
 			return ActionResult.PASS;
 		}
 
-		// dont place in center
 		// dont place underwater
 		if (world instanceof ServerWorld) {
 			ServerWorld serverWorld = (ServerWorld) world;
 
 			AbstractMinecartEntity abstractMinecartEntity = AbstractMinecartEntity.create(serverWorld,
-					(double) blockPos.getX() + 0.5, (double) blockPos.up().getY(), (double) blockPos.getZ() + 0.5,
+					(double) hitPos.getX(), (double) blockPos.up().getY(), (double) hitPos.getZ(),
 					this.type, itemStack, context.getPlayer());
 
 			if (!world.isSpaceEmpty(abstractMinecartEntity, abstractMinecartEntity.getBoundingBox())) {
