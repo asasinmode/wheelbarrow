@@ -1,10 +1,9 @@
 package com.asasinmode.wheelbarrow.item.custom;
 
+import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
@@ -13,8 +12,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.event.GameEvent.Emitter;
-import net.minecraft.item.BoatItem;
-import net.minecraft.item.MinecartItem;
 
 public class WheelbarrowItem extends Item {
 	// should be an oxidation wheelbarrow type
@@ -37,7 +34,6 @@ public class WheelbarrowItem extends Item {
 			return ActionResult.PASS;
 		}
 
-		// dont place underwater
 		if (world instanceof ServerWorld) {
 			ServerWorld serverWorld = (ServerWorld) world;
 
@@ -45,7 +41,8 @@ public class WheelbarrowItem extends Item {
 					(double) hitPos.getX(), (double) hitPos.getY(), (double) hitPos.getZ(),
 					this.type, itemStack, context.getPlayer());
 
-			if (!world.isSpaceEmpty(abstractMinecartEntity, abstractMinecartEntity.getBoundingBox())) {
+			if (!world.isSpaceEmpty(abstractMinecartEntity, abstractMinecartEntity.getBoundingBox())
+					|| !world.getBlockState(blockPos.up()).isAir()) {
 				return ActionResult.FAIL;
 			}
 
