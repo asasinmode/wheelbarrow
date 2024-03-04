@@ -15,6 +15,12 @@ import net.minecraft.util.Identifier;
 public class ModItems {
 	public static final Item COPPER_WHEELBARROW = registerItem("copper_wheelbarrow",
 			new CopperWheelbarrowItem(new FabricItemSettings().maxCount(1)));
+	public static final Item EXPOSED_COPPER_WHEELBARROW = registerItem("exposed_copper_wheelbarrow",
+			new ExposedCopperWheelbarrowItem(new FabricItemSettings().maxCount(1)));
+	public static final Item WEATHERED_COPPER_WHEELBARROW = registerItem("weathered_copper_wheelbarrow",
+			new WeatheredCopperWheelbarrowItem(new FabricItemSettings().maxCount(1)));
+	public static final Item OXIDIZED_COPPER_WHEELBARROW = registerItem("oxidized_copper_wheelbarrow",
+			new OxidizedCopperWheelbarrowItem(new FabricItemSettings().maxCount(1)));
 
 	private static Item registerItem(String name, Item item) {
 		return Registry.register(Registries.ITEM, new Identifier(Wheelbarrow.MOD_ID, name), item);
@@ -23,6 +29,9 @@ public class ModItems {
 	public static void registerModItems() {
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(content -> {
 			content.addAfter(Items.TNT_MINECART, COPPER_WHEELBARROW);
+			content.addAfter(Items.TNT_MINECART, EXPOSED_COPPER_WHEELBARROW);
+			content.addAfter(Items.TNT_MINECART, WEATHERED_COPPER_WHEELBARROW);
+			content.addAfter(Items.TNT_MINECART, OXIDIZED_COPPER_WHEELBARROW);
 		});
 	}
 }
