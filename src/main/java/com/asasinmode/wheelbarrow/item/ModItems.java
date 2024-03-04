@@ -29,9 +29,9 @@ public class ModItems {
 	public static void registerModItems() {
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(content -> {
 			content.addAfter(Items.TNT_MINECART, COPPER_WHEELBARROW);
-			content.addAfter(Items.TNT_MINECART, EXPOSED_COPPER_WHEELBARROW);
-			content.addAfter(Items.TNT_MINECART, WEATHERED_COPPER_WHEELBARROW);
-			content.addAfter(Items.TNT_MINECART, OXIDIZED_COPPER_WHEELBARROW);
+			content.addAfter(COPPER_WHEELBARROW, EXPOSED_COPPER_WHEELBARROW);
+			content.addAfter(EXPOSED_COPPER_WHEELBARROW, WEATHERED_COPPER_WHEELBARROW);
+			content.addAfter(WEATHERED_COPPER_WHEELBARROW, OXIDIZED_COPPER_WHEELBARROW);
 		});
 	}
 }
