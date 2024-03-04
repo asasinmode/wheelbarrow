@@ -36,14 +36,14 @@ public class WheelbarrowItem extends Item {
 		ItemStack itemStack = context.getStack();
 		Direction side = context.getSide();
 
+		if (side != Direction.UP) {
+			return ActionResult.PASS;
+		}
+
 		// dont place in center
 		// dont place underwater
 		if (world instanceof ServerWorld) {
 			ServerWorld serverWorld = (ServerWorld) world;
-
-			if (side != Direction.UP) {
-				return ActionResult.PASS;
-			}
 
 			AbstractMinecartEntity abstractMinecartEntity = AbstractMinecartEntity.create(serverWorld,
 					(double) blockPos.getX() + 0.5, (double) blockPos.up().getY(), (double) blockPos.getZ() + 0.5,
