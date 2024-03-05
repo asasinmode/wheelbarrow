@@ -53,20 +53,20 @@ public class WheelbarrowEntity extends Entity {
 	}
 
 	protected void writeCustomDataToNbt(NbtCompound nbt) {
-		nbt.putString("OxidationLevel", this.getVariant().asString());
+		nbt.putString("OxidationLevel", this.getOxidationLevel().asString());
 	}
 
 	protected void readCustomDataFromNbt(NbtCompound nbt) {
 		if (nbt.contains("OxidationLevel", 8)) {
-			this.setVariant(Type.getType(nbt.getString("Type")));
+			this.setOxidationLevel(Type.getType(nbt.getString("Type")));
 		}
 	}
 
-	public void setVariant(Type type) {
+	public void setOxidationLevel(Type type) {
 		this.dataTracker.set(OXIDATION_LEVEL, type.ordinal());
 	}
 
-	public Type getVariant() {
+	public Type getOxidationLevel() {
 		return Type.getType((Integer) this.dataTracker.get(OXIDATION_LEVEL));
 	}
 
