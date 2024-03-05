@@ -2,7 +2,6 @@ package com.asasinmode.wheelbarrow.render;
 
 import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
-import com.asasinmode.wheelbarrow.layer.ModModelLayers;
 import com.asasinmode.wheelbarrow.model.WheelbarrowEntityModel;
 
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -16,7 +15,7 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 	public WheelbarrowEntityRenderer(EntityRendererFactory.Context context) {
 		super(context);
 		this.shadowRadius = 0.5f;
-		this.model = new WheelbarrowEntityModel(context)
+		this.model = new WheelbarrowEntityModel()
 	}
 
 	@Override
