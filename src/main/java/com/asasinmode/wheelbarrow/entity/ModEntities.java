@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 
 public class ModEntities {
 	public static final EntityType<WheelbarrowEntity> WHEELBARROW = Registry.register(Registries.ENTITY_TYPE,
-			new Identifier(Wheelbarrow.MOD_ID, "wheelbarrow_entity"),
+			new Identifier(Wheelbarrow.MOD_ID, "wheelbarrow"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MISC, WheelbarrowEntity::new)
 					.dimensions(EntityDimensions.fixed(0.75F, 0.75F)).build());
 
