@@ -16,10 +16,10 @@ import net.minecraft.client.util.math.MatrixStack;
 public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 	private final ModelPart front;
 	private final ModelPart back;
+	// private final ModelPart handles;
 	private final ModelPart left;
 	private final ModelPart right;
 	private final ModelPart bottom;
-	private final ModelPart bottom_no_water;
 
 	public WheelbarrowEntityModel(ModelPart root) {
 		this.front = root.getChild("front");
@@ -27,42 +27,44 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 		this.left = root.getChild("left");
 		this.right = root.getChild("right");
 		this.bottom = root.getChild("bottom");
-		this.bottom_no_water = root.getChild("bottom_no_water");
 	}
 
 	public static TexturedModelData getTexturedModelData() {
 		ModelData modelData = new ModelData();
 		ModelPartData modelPartData = modelData.getRoot();
 		ModelPartData front = modelPartData.addChild("front",
-				ModelPartBuilder.create().uv(0, 27).cuboid(-8.0F, -7.0F, -1.0F, 16.0F, 6.0F, 2.0F, new Dilation(0.0F)),
-				ModelTransform.of(0.0F, 22.0F, -15.0F, 0.0F, -3.1416F, 0.0F));
+				ModelPartBuilder.create().uv(0, 0).cuboid(-6.0F, -8.0F, -14.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(0, 0).cuboid(-6.0F, -10.0F, -16.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(0, 0).cuboid(-6.0F, -6.0F, -12.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(0, 0).cuboid(-6.0F, -4.0F, -10.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F)),
+				ModelTransform.pivot(0.0F, 24.0F, 0.0F));
 
 		ModelPartData back = modelPartData.addChild("back",
-				ModelPartBuilder.create().uv(0, 19).cuboid(-13.0F, -7.0F, -1.0F, 18.0F, 6.0F, 2.0F, new Dilation(0.0F)),
-				ModelTransform.pivot(4.0F, 22.0F, 15.0F));
+				ModelPartBuilder.create().uv(0, 19).cuboid(-12.0F, -8.0F, -3.0F, 16.0F, 8.0F, 2.0F, new Dilation(0.0F)),
+				ModelTransform.pivot(4.0F, 22.0F, 9.0F));
+
+		ModelPartData handles = back.addChild("handles",
+				ModelPartBuilder.create().uv(-3, -1).cuboid(6.0F, -10.0F, 10.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F))
+						.uv(-3, -3).cuboid(-8.0F, -10.0F, 10.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F)),
+				ModelTransform.pivot(-4.0F, 2.0F, -11.0F));
 
 		ModelPartData left = modelPartData.addChild("left",
-				ModelPartBuilder.create().uv(0, 43).cuboid(-14.0F, -7.0F, -1.0F, 28.0F, 6.0F, 2.0F, new Dilation(0.0F)),
-				ModelTransform.of(9.0F, 22.0F, 0.0F, 0.0F, 1.5708F, 0.0F));
+				ModelPartBuilder.create().uv(-12, -12).cuboid(-8.0F, -10.0F, -8.0F, 2.0F, 8.0F, 14.0F, new Dilation(0.0F)),
+				ModelTransform.pivot(14.0F, 24.0F, 0.0F));
 
 		ModelPartData right = modelPartData.addChild("right",
-				ModelPartBuilder.create().uv(0, 35).cuboid(-14.0F, -7.0F, -1.0F, 28.0F, 6.0F, 2.0F, new Dilation(0.0F)),
-				ModelTransform.of(-9.0F, 22.0F, 0.0F, 0.0F, -1.5708F, 0.0F));
+				ModelPartBuilder.create().uv(-12, -12).cuboid(-8.0F, -10.0F, -8.0F, 2.0F, 8.0F, 14.0F, new Dilation(0.0F)),
+				ModelTransform.pivot(0.0F, 24.0F, 0.0F));
 
 		ModelPartData bottom = modelPartData.addChild("bottom",
-				ModelPartBuilder.create().uv(0, 0).cuboid(-14.0F, -9.0F, -3.0F, 28.0F, 16.0F, 3.0F, new Dilation(0.0F)),
-				ModelTransform.of(1.0F, 21.0F, 0.0F, 0.0F, 1.5708F, -1.5708F));
-
-		ModelPartData bottom_no_water = modelPartData.addChild("bottom_no_water",
-				ModelPartBuilder.create().uv(60, 42).cuboid(-14.0F, -9.0F, -6.0F, 28.0F, 16.0F, 6.0F, new Dilation(0.0F)),
-				ModelTransform.of(1.0F, 15.0F, 0.0F, 0.0F, 1.5708F, -1.5708F));
+				ModelPartBuilder.create().uv(-14, -14).cuboid(-8.0F, -2.0F, -8.0F, 16.0F, 2.0F, 16.0F, new Dilation(0.0F)),
+				ModelTransform.pivot(0.0F, 24.0F, 0.0F));
 		return TexturedModelData.of(modelData, 128, 64);
 	}
 
 	@Override
 	public void setAngles(WheelbarrowEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks,
-			float netHeadYaw,
-			float headPitch) {
+			float netHeadYaw, float headPitch) {
 	}
 
 	@Override
@@ -73,6 +75,5 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 		left.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
 		right.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
 		bottom.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
-		bottom_no_water.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
 	}
 }
