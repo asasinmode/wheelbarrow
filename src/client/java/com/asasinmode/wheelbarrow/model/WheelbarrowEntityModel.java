@@ -33,33 +33,33 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 		ModelData modelData = new ModelData();
 		ModelPartData modelPartData = modelData.getRoot();
 		ModelPartData front = modelPartData.addChild("front",
-				ModelPartBuilder.create().uv(0, 0).cuboid(-6.0F, -8.0F, -14.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(0, 0).cuboid(-6.0F, -10.0F, -16.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(0, 0).cuboid(-6.0F, -6.0F, -12.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(0, 0).cuboid(-6.0F, -4.0F, -10.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F)),
+				ModelPartBuilder.create().uv(36, 36).cuboid(-6.0F, -8.0F, -14.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(36, 28).cuboid(-6.0F, -10.0F, -16.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(36, 32).cuboid(-6.0F, -6.0F, -12.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(0, 48).cuboid(-6.0F, -4.0F, -10.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(0.0F, 24.0F, 0.0F));
 
 		ModelPartData back = modelPartData.addChild("back",
-				ModelPartBuilder.create().uv(0, 19).cuboid(-12.0F, -8.0F, -3.0F, 16.0F, 8.0F, 2.0F, new Dilation(0.0F)),
+				ModelPartBuilder.create().uv(36, 18).cuboid(-12.0F, -8.0F, -3.0F, 16.0F, 8.0F, 2.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(4.0F, 22.0F, 9.0F));
 
 		ModelPartData handles = back.addChild("handles",
-				ModelPartBuilder.create().uv(-3, -1).cuboid(6.0F, -10.0F, 10.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F))
-						.uv(-3, -3).cuboid(-8.0F, -10.0F, 10.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F)),
+				ModelPartBuilder.create().uv(48, 0).cuboid(6.0F, -10.0F, 10.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F))
+						.uv(42, 40).cuboid(-8.0F, -10.0F, 10.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(-4.0F, 2.0F, -11.0F));
 
 		ModelPartData left = modelPartData.addChild("left",
-				ModelPartBuilder.create().uv(-12, -12).cuboid(-8.0F, -10.0F, -8.0F, 2.0F, 8.0F, 14.0F, new Dilation(0.0F)),
+				ModelPartBuilder.create().uv(0, 18).cuboid(-8.0F, -10.0F, -8.0F, 2.0F, 8.0F, 14.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(14.0F, 24.0F, 0.0F));
 
 		ModelPartData right = modelPartData.addChild("right",
-				ModelPartBuilder.create().uv(-12, -12).cuboid(-8.0F, -10.0F, -8.0F, 2.0F, 8.0F, 14.0F, new Dilation(0.0F)),
+				ModelPartBuilder.create().uv(18, 26).cuboid(-8.0F, -10.0F, -8.0F, 2.0F, 8.0F, 14.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(0.0F, 24.0F, 0.0F));
 
 		ModelPartData bottom = modelPartData.addChild("bottom",
-				ModelPartBuilder.create().uv(-14, -14).cuboid(-8.0F, -2.0F, -8.0F, 16.0F, 2.0F, 16.0F, new Dilation(0.0F)),
+				ModelPartBuilder.create().uv(0, 0).cuboid(-8.0F, -2.0F, -8.0F, 16.0F, 2.0F, 16.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(0.0F, 24.0F, 0.0F));
-		return TexturedModelData.of(modelData, 128, 64);
+		return TexturedModelData.of(modelData, 128, 128);
 	}
 
 	@Override
