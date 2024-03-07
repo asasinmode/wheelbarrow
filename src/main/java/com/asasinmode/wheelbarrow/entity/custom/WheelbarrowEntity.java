@@ -233,7 +233,7 @@ public class WheelbarrowEntity extends Entity {
 				if (canYoink && this.getPassengerList().size() < this.getMaxPassengers() && !entity.hasVehicle()
 						&& this.canBeYoinked(entity) && entity instanceof LivingEntity
 						&& !(entity instanceof PlayerEntity)) {
-					// entity.startRiding(this);
+					entity.startRiding(this);
 				} else {
 					this.pushAwayFrom(entity);
 				}
