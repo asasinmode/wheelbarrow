@@ -1,6 +1,7 @@
 package com.asasinmode.wheelbarrow.entity.custom;
 
 import com.asasinmode.wheelbarrow.entity.ModEntities;
+import com.asasinmode.wheelbarrow.item.ModItems;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -8,6 +9,7 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
@@ -109,6 +111,36 @@ public class WheelbarrowEntity extends Entity {
 
 	public boolean isPushable() {
 		return true;
+	}
+
+	// not sure what it does yet
+	public void pushAwayFrom(Entity entity) {
+		if (entity.getBoundingBox().minY <= this.getBoundingBox().minY) {
+			super.pushAwayFrom(entity);
+		}
+	}
+
+	public Item asItem() {
+		Item item;
+
+		switch (this.getOxidationLevel()) {
+			case COPPER:
+				item = ModItems.COPPER_WHEELBARROW;
+				break;
+			case EXPOSED:
+				item = ModItems.EXPOSED_COPPER_WHEELBARROW;
+				break;
+			case WEATHERED:
+				item = ModItems.WEATHERED_COPPER_WHEELBARROW;
+				break;
+			case OXIDIZED:
+				item = ModItems.OXIDIZED_COPPER_WHEELBARROW;
+				break;
+			default:
+				item = ModItems.COPPER_WHEELBARROW;
+		}
+
+		return item;
 	}
 
 	static {
