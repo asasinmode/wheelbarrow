@@ -1,11 +1,17 @@
 package com.asasinmode.wheelbarrow.entity.custom;
 
+import com.asasinmode.wheelbarrow.Wheelbarrow;
+import com.asasinmode.wheelbarrow.entity.ModEntities;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
 public class WheelbarrowEntity extends Entity {
@@ -13,6 +19,14 @@ public class WheelbarrowEntity extends Entity {
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
+	}
+
+	protected WheelbarrowEntity(World world, double x, double y, double z) {
+		this(ModEntities.WHEELBARROW, world);
+		this.setPosition(x, y, z);
+		this.prevX = x;
+		this.prevY = y;
+		this.prevZ = z;
 	}
 
 	protected void initDataTracker() {
@@ -58,7 +72,7 @@ public class WheelbarrowEntity extends Entity {
 
 	protected void readCustomDataFromNbt(NbtCompound nbt) {
 		if (nbt.contains("OxidationLevel", 8)) {
-			this.setOxidationLevel(Type.getType(nbt.getString("Type")));
+			this.setOxidationLevel(Type.getType(nbt.getString("OxidationLevel")));
 		}
 	}
 
@@ -68,6 +82,16 @@ public class WheelbarrowEntity extends Entity {
 
 	public Type getOxidationLevel() {
 		return Type.getType((Integer) this.dataTracker.get(OXIDATION_LEVEL));
+	}
+
+	public static WheelbarrowEntity create(ServerWorld world, double x, double y, double z, ItemStack stack,
+			PlayerEntity player) {
+
+		WheelbarrowEntity wheelbarrowEntity = new WheelbarrowEntity(world, x, y, z);
+
+		EntityType.copier(world, stack, player).accept(wheelbarrowEntity);
+
+		return (WheelbarrowEntity) wheelbarrowEntity;
 	}
 
 	static {

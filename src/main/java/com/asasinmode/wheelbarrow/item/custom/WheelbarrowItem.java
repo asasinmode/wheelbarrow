@@ -1,5 +1,7 @@
 package com.asasinmode.wheelbarrow.item.custom;
 
+import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
+
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,12 +16,10 @@ import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.event.GameEvent.Emitter;
 
 public class WheelbarrowItem extends Item {
-	// should be an oxidation wheelbarrow type
-	final AbstractMinecartEntity.Type type;
+	// todo have oxidation level somewhere
 
 	public WheelbarrowItem(Settings settings) {
 		super(settings);
-		this.type = AbstractMinecartEntity.Type.RIDEABLE;
 	}
 
 	public ActionResult useOnBlock(ItemUsageContext context) {
@@ -37,17 +37,17 @@ public class WheelbarrowItem extends Item {
 		if (world instanceof ServerWorld) {
 			ServerWorld serverWorld = (ServerWorld) world;
 
-			AbstractMinecartEntity abstractMinecartEntity = AbstractMinecartEntity.create(serverWorld,
+			WheelbarrowEntity wheelbarrowEntity = WheelbarrowEntity.create(serverWorld,
 					(double) hitPos.getX(), (double) hitPos.getY(), (double) hitPos.getZ(),
-					this.type, itemStack, context.getPlayer());
+					itemStack, context.getPlayer());
 
-			if (!world.isSpaceEmpty(abstractMinecartEntity, abstractMinecartEntity.getBoundingBox())
+			if (!world.isSpaceEmpty(wheelbarrowEntity, wheelbarrowEntity.getBoundingBox())
 					|| !world.getBlockState(blockPos.up()).isAir()) {
 				return ActionResult.FAIL;
 			}
 
-			abstractMinecartEntity.setYaw(userYaw);
-			serverWorld.spawnEntity(abstractMinecartEntity);
+			wheelbarrowEntity.setYaw(userYaw);
+			serverWorld.spawnEntity(wheelbarrowEntity);
 			serverWorld.emitGameEvent(GameEvent.ENTITY_PLACE, blockPos,
 					Emitter.of(context.getPlayer(), serverWorld.getBlockState(blockPos)));
 		}
