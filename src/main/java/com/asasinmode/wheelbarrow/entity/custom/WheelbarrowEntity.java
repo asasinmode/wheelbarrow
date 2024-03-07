@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import net.minecraft.entity.vehicle.BoatEntity;
@@ -141,6 +142,15 @@ public class WheelbarrowEntity extends Entity {
 		}
 
 		return item;
+	}
+
+	public boolean canHit() {
+		return !this.isRemoved();
+	}
+
+	// figure out when its used
+	public Direction getMovementDirection() {
+		return this.getHorizontalFacing().rotateYClockwise();
 	}
 
 	static {
