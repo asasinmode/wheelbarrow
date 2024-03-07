@@ -13,6 +13,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
+import net.minecraft.entity.vehicle.BoatEntity;
+
 public class WheelbarrowEntity extends Entity {
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
 
@@ -91,6 +93,22 @@ public class WheelbarrowEntity extends Entity {
 		EntityType.copier(world, stack, player).accept(wheelbarrowEntity);
 
 		return (WheelbarrowEntity) wheelbarrowEntity;
+	}
+
+	public boolean collidesWith(Entity other) {
+		return canCollide(this, other);
+	}
+
+	public static boolean canCollide(Entity entity, Entity other) {
+		return (other.isCollidable() || other.isPushable()) && !entity.isConnectedThroughVehicle(other);
+	}
+
+	public boolean isCollidable() {
+		return true;
+	}
+
+	public boolean isPushable() {
+		return true;
 	}
 
 	static {
