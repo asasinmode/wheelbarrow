@@ -1,6 +1,5 @@
 package com.asasinmode.wheelbarrow.entity.custom;
 
-import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 
 import net.minecraft.entity.Entity;
