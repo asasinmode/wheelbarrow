@@ -219,24 +219,21 @@ public class WheelbarrowEntity extends Entity {
 			boolean canYoink = !this.getWorld().isClient && !(this.getControllingPassenger() instanceof PlayerEntity);
 
 			Iterator<Entity> entitiesIterator = list.iterator();
-			// check what happens without the loop
-			while (true) {
-				Entity entity;
-				do {
-					if (!entitiesIterator.hasNext()) {
-						return;
-					}
-
-					entity = (Entity) entitiesIterator.next();
-				} while (entity.hasPassenger(this));
-
-				if (canYoink && this.getPassengerList().size() < this.getMaxPassengers() && !entity.hasVehicle()
-						&& this.canBeYoinked(entity) && entity instanceof LivingEntity
-						&& !(entity instanceof PlayerEntity)) {
-					entity.startRiding(this);
-				} else {
-					this.pushAwayFrom(entity);
+			Entity entity;
+			do {
+				if (!entitiesIterator.hasNext()) {
+					return;
 				}
+
+				entity = (Entity) entitiesIterator.next();
+			} while (entity.hasPassenger(this));
+
+			if (canYoink && this.getPassengerList().size() < this.getMaxPassengers() && !entity.hasVehicle()
+					&& this.canBeYoinked(entity) && entity instanceof LivingEntity
+					&& !(entity instanceof PlayerEntity)) {
+				entity.startRiding(this);
+			} else {
+				this.pushAwayFrom(entity);
 			}
 		}
 	}
