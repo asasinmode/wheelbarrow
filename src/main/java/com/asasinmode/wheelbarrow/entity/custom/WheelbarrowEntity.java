@@ -25,8 +25,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import net.minecraft.entity.vehicle.MinecartEntity;
-
 public class WheelbarrowEntity extends Entity {
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
 	private int lerpTicks;
@@ -216,8 +214,6 @@ public class WheelbarrowEntity extends Entity {
 				EntityPredicates.canBePushedBy(this));
 
 		if (!list.isEmpty()) {
-			boolean canYoink = !this.getWorld().isClient && !(this.getControllingPassenger() instanceof PlayerEntity);
-
 			Iterator<Entity> entitiesIterator = list.iterator();
 			Entity entity;
 			do {
@@ -227,6 +223,8 @@ public class WheelbarrowEntity extends Entity {
 
 				entity = (Entity) entitiesIterator.next();
 			} while (entity.hasPassenger(this));
+
+			boolean canYoink = !this.getWorld().isClient && !(this.getControllingPassenger() instanceof PlayerEntity);
 
 			if (canYoink && this.getPassengerList().size() < this.getMaxPassengers() && !entity.hasVehicle()
 					&& this.canBeYoinked(entity) && entity instanceof LivingEntity
