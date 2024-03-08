@@ -3,6 +3,7 @@ package com.asasinmode.wheelbarrow.entity.custom;
 import java.util.Iterator;
 import java.util.List;
 
+import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.item.ModItems;
 
@@ -34,8 +35,8 @@ public class WheelbarrowEntity extends Entity {
 	private int lerpTicks;
 	private float yawVelocity;
 	private float velocityDecay;
-	private double boatYaw;
-	private double boatPitch;
+	private double wheelbarrowYaw;
+	private double wheelbarrowPitch;
 	private double x;
 	private double y;
 	private double z;
@@ -52,6 +53,7 @@ public class WheelbarrowEntity extends Entity {
 		this.prevZ = z;
 	}
 
+	@Override
 	protected void initDataTracker() {
 		this.dataTracker.startTracking(OXIDATION_LEVEL, Type.COPPER.ordinal());
 	}
@@ -89,10 +91,12 @@ public class WheelbarrowEntity extends Entity {
 		}
 	}
 
+	@Override
 	protected void writeCustomDataToNbt(NbtCompound nbt) {
 		nbt.putString("OxidationLevel", this.getOxidationLevel().asString());
 	}
 
+	@Override
 	protected void readCustomDataFromNbt(NbtCompound nbt) {
 		if (nbt.contains("OxidationLevel", 8)) {
 			this.setOxidationLevel(Type.getType(nbt.getString("OxidationLevel")));
@@ -117,6 +121,7 @@ public class WheelbarrowEntity extends Entity {
 		return (WheelbarrowEntity) wheelbarrowEntity;
 	}
 
+	@Override
 	public boolean damage(DamageSource source, float amount) {
 		if (this.getWorld().isClient || this.isRemoved()) {
 			return true;
@@ -182,6 +187,7 @@ public class WheelbarrowEntity extends Entity {
 		return item;
 	}
 
+	@Override
 	public ActionResult interact(PlayerEntity player, Hand hand) {
 		if (player.shouldCancelInteraction()) {
 			return ActionResult.PASS;
@@ -192,6 +198,7 @@ public class WheelbarrowEntity extends Entity {
 		}
 	}
 
+	@Override
 	public boolean collidesWith(Entity other) {
 		return canCollide(this, other);
 	}
@@ -200,21 +207,24 @@ public class WheelbarrowEntity extends Entity {
 		return (other.isCollidable() || other.isPushable()) && !entity.isConnectedThroughVehicle(other);
 	}
 
+	@Override
 	public boolean isCollidable() {
 		return true;
 	}
 
+	@Override
 	public boolean isPushable() {
 		return true;
 	}
 
-	// not sure what it does yet
+	@Override
 	public void pushAwayFrom(Entity entity) {
 		if (entity.getBoundingBox().minY <= this.getBoundingBox().minY) {
 			super.pushAwayFrom(entity);
 		}
 	}
 
+	@Override
 	public boolean canHit() {
 		return !this.isRemoved();
 	}
@@ -224,10 +234,12 @@ public class WheelbarrowEntity extends Entity {
 	// return this.getHorizontalFacing().rotateYClockwise();
 	// }
 
+	@Override
 	protected Text getDefaultName() {
 		return Text.translatable(this.asItem().getTranslationKey());
 	}
 
+	@Override
 	public ItemStack getPickBlockStack() {
 		return new ItemStack(this.asItem());
 	}
@@ -240,6 +252,7 @@ public class WheelbarrowEntity extends Entity {
 		return entity.getWidth() < this.getWidth();
 	}
 
+	@Override
 	public void tick() {
 		super.tick();
 
@@ -289,9 +302,44 @@ public class WheelbarrowEntity extends Entity {
 		}
 
 		if (this.lerpTicks > 0) {
-			this.lerpPosAndRotation(this.lerpTicks, this.x, this.y, this.z, this.boatYaw, this.boatPitch);
+			this.lerpPosAndRotation(this.lerpTicks, this.x, this.y, this.z, this.wheelbarrowYaw, this.wheelbarrowPitch);
 			--this.lerpTicks;
 		}
+	}
+
+	public void updateTrackedPositionAndAngles(double x, double y, double z, float yaw, float pitch,
+			int interpolationSteps) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.wheelbarrowYaw = (double) yaw;
+		this.wheelbarrowPitch = (double) pitch;
+		this.lerpTicks = 10;
+	}
+
+	@Override
+	public double getLerpTargetX() {
+		return this.lerpTicks > 0 ? this.x : this.getX();
+	}
+
+	@Override
+	public double getLerpTargetY() {
+		return this.lerpTicks > 0 ? this.y : this.getY();
+	}
+
+	@Override
+	public double getLerpTargetZ() {
+		return this.lerpTicks > 0 ? this.z : this.getZ();
+	}
+
+	@Override
+	public float getLerpTargetPitch() {
+		return this.lerpTicks > 0 ? (float) this.wheelbarrowPitch : this.getPitch();
+	}
+
+	@Override
+	public float getLerpTargetYaw() {
+		return this.lerpTicks > 0 ? (float) this.wheelbarrowYaw : this.getYaw();
 	}
 
 	private void updateVelocity() {
