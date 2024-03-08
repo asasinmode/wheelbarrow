@@ -11,6 +11,7 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.RotationAxis;
 
 public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity> {
 	private static final Identifier TEXTURE = new Identifier(Wheelbarrow.MOD_ID,
@@ -32,9 +33,13 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 	@Override
 	public void render(WheelbarrowEntity entity, float yaw, float tickDelta, MatrixStack matrices,
 			VertexConsumerProvider vertexConsumers, int light) {
+		matrices.push();
+		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - yaw));
+
 		model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture(entity))), light,
 				OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
 
+		matrices.pop();
 		super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
 	}
 }
