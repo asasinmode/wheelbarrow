@@ -21,7 +21,7 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 	public WheelbarrowEntityRenderer(EntityRendererFactory.Context context) {
 		super(context);
 
-		this.shadowRadius = 0.5f;
+		this.shadowRadius = 0.7f;
 		this.model = new WheelbarrowEntityModel(WheelbarrowEntityModel.getTexturedModelData().createModel());
 	}
 
