@@ -267,9 +267,8 @@ public class WheelbarrowEntity extends Entity {
 
 		this.checkBlockCollision();
 
-		// todo adjust expand
 		List<Entity> list = this.getWorld().getOtherEntities(this,
-				this.getBoundingBox().expand(0.5, -0.01, 0.5),
+				this.getBoundingBox().expand(0.2, 0, 0.2),
 				EntityPredicates.canBePushedBy(this));
 
 		if (!list.isEmpty()) {
