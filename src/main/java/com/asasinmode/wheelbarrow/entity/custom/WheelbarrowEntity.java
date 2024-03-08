@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -23,7 +24,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.entity.vehicle.BoatEntity;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 
 public class WheelbarrowEntity extends Entity {
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
@@ -111,6 +115,48 @@ public class WheelbarrowEntity extends Entity {
 		EntityType.copier(world, stack, player).accept(wheelbarrowEntity);
 
 		return (WheelbarrowEntity) wheelbarrowEntity;
+	}
+
+	public boolean damage(DamageSource source, float amount) {
+		if (this.getWorld().isClient || this.isRemoved()) {
+			return true;
+		}
+
+		if (this.isInvulnerableTo(source)) {
+			return false;
+		}
+
+		this.scheduleVelocityUpdate();
+		this.emitGameEvent(GameEvent.ENTITY_DAMAGE, source.getAttacker());
+
+		boolean isInCreative = source.getAttacker() instanceof PlayerEntity
+				&& ((PlayerEntity) source.getAttacker()).getAbilities().creativeMode;
+
+		if (isInCreative && !this.shouldAlwaysKill(source)) {
+			if (isInCreative) {
+				this.discard();
+			}
+		} else {
+			this.killAndDropSelf();
+		}
+
+		return true;
+	}
+
+	boolean shouldAlwaysKill(DamageSource source) {
+		return false;
+	}
+
+	public void killAndDropSelf() {
+		this.kill();
+		if (this.getWorld().getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
+			ItemStack itemStack = new ItemStack(this.asItem());
+			if (this.hasCustomName()) {
+				itemStack.setCustomName(this.getCustomName());
+			}
+
+			this.dropStack(itemStack);
+		}
 	}
 
 	public Item asItem() {
