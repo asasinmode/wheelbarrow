@@ -32,38 +32,38 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 		ModelData modelData = new ModelData();
 		ModelPartData modelPartData = modelData.getRoot();
 		ModelPartData front = modelPartData.addChild("front",
-				ModelPartBuilder.create().uv(4, 43).cuboid(6.0F, 2.0F, -2.0F, 2.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(2, 37).cuboid(6.0F, 4.0F, -4.0F, 2.0F, 2.0F, 4.0F, new Dilation(0.0F))
-						.uv(0, 29).cuboid(6.0F, 6.0F, -6.0F, 2.0F, 2.0F, 6.0F, new Dilation(0.0F))
-						.uv(2, 37).cuboid(-8.0F, 4.0F, -4.0F, 2.0F, 2.0F, 4.0F, new Dilation(0.0F))
-						.uv(4, 43).cuboid(-8.0F, 2.0F, -2.0F, 2.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(0, 29).cuboid(-8.0F, 6.0F, -6.0F, 2.0F, 2.0F, 6.0F, new Dilation(0.0F))
-						.uv(0, 60).cuboid(-8.0F, 0.0F, -2.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(0, 56).cuboid(-8.0F, 2.0F, -4.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(0, 52).cuboid(-8.0F, 4.0F, -6.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(0, 48).cuboid(-8.0F, 6.0F, -8.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F)),
-				ModelTransform.pivot(0.0F, 6.0F, -8.0F));
+				ModelPartBuilder.create().uv(4, 43).cuboid(6.0F, -4.0F, -2.0F, 2.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(2, 37).cuboid(6.0F, -6.0F, -4.0F, 2.0F, 2.0F, 4.0F, new Dilation(0.0F))
+						.uv(0, 29).cuboid(6.0F, -8.0F, -6.0F, 2.0F, 2.0F, 6.0F, new Dilation(0.0F))
+						.uv(2, 37).cuboid(-8.0F, -6.0F, -4.0F, 2.0F, 2.0F, 4.0F, new Dilation(0.0F))
+						.uv(4, 43).cuboid(-8.0F, -4.0F, -2.0F, 2.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(0, 29).cuboid(-8.0F, -8.0F, -6.0F, 2.0F, 2.0F, 6.0F, new Dilation(0.0F))
+						.uv(0, 60).cuboid(-8.0F, -2.0F, -2.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(0, 56).cuboid(-8.0F, -4.0F, -4.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(0, 52).cuboid(-8.0F, -6.0F, -6.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(0, 48).cuboid(-8.0F, -8.0F, -8.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F)),
+				ModelTransform.pivot(0.0F, 18.0F, -8.0F));
 
 		ModelPartData back = modelPartData.addChild("back",
-				ModelPartBuilder.create().uv(0, 19).cuboid(-8.0F, 0.0F, -1.0F, 16.0F, 8.0F, 2.0F, new Dilation(0.0F))
-						.uv(44, 46).cuboid(-8.0F, 6.0F, 1.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F))
-						.uv(44, 46).cuboid(6.0F, 6.0F, 1.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F)),
-				ModelTransform.pivot(0.0F, 6.0F, 7.0F));
+				ModelPartBuilder.create().uv(0, 19).cuboid(-8.0F, -8.0F, -1.0F, 16.0F, 8.0F, 2.0F, new Dilation(0.0F))
+						.uv(44, 46).cuboid(-8.0F, -8.0F, 1.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F))
+						.uv(44, 46).cuboid(6.0F, -8.0F, 1.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F)),
+				ModelTransform.pivot(0.0F, 18.0F, 7.0F));
 
 		ModelPartData left = modelPartData.addChild("left",
-				ModelPartBuilder.create().uv(32, 18).cuboid(-1.0F, 0.0F, -7.0F, 2.0F, 8.0F, 14.0F, new Dilation(0.0F)),
-				ModelTransform.pivot(7.0F, 6.0F, -1.0F));
+				ModelPartBuilder.create().uv(32, 18).cuboid(-1.0F, -8.0F, -7.0F, 2.0F, 8.0F, 14.0F, new Dilation(0.0F)),
+				ModelTransform.pivot(7.0F, 18.0F, -1.0F));
 
 		ModelPartData right = modelPartData.addChild("right",
-				ModelPartBuilder.create().uv(32, 18).cuboid(-1.0F, 0.0F, -7.0F, 2.0F, 8.0F, 14.0F, new Dilation(0.0F)),
-				ModelTransform.pivot(-7.0F, 6.0F, -1.0F));
+				ModelPartBuilder.create().uv(32, 18).cuboid(-1.0F, -8.0F, -7.0F, 2.0F, 8.0F, 14.0F, new Dilation(0.0F)),
+				ModelTransform.pivot(-7.0F, 18.0F, -1.0F));
 
 		ModelPartData bottom = modelPartData.addChild("bottom",
-				ModelPartBuilder.create().uv(0, 0).cuboid(-8.0F, 0.0F, -8.0F, 16.0F, 2.0F, 16.0F, new Dilation(0.0F))
-						.uv(0, 0).cuboid(-2.0F, -4.0F, -6.0F, 4.0F, 4.0F, 4.0F, new Dilation(0.0F))
-						.uv(0, 8).cuboid(5.0F, -4.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F))
-						.uv(0, 8).cuboid(-6.0F, -4.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F)),
-				ModelTransform.pivot(0.0F, 4.0F, 0.0F));
+				ModelPartBuilder.create().uv(0, 0).cuboid(-8.0F, -2.0F, -8.0F, 16.0F, 2.0F, 16.0F, new Dilation(0.0F))
+						.uv(0, 0).cuboid(-2.0F, 0.0F, -6.0F, 4.0F, 4.0F, 4.0F, new Dilation(0.0F))
+						.uv(0, 8).cuboid(5.0F, 0.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F))
+						.uv(0, 8).cuboid(-6.0F, 0.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F)),
+				ModelTransform.pivot(0.0F, 20.0F, 0.0F));
 		return TexturedModelData.of(modelData, 64, 64);
 	}
 
