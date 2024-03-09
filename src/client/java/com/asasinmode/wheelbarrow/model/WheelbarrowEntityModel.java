@@ -61,7 +61,7 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 		ModelPartData bottom = modelPartData.addChild("bottom",
 				ModelPartBuilder.create().uv(0, 0).cuboid(-8.0F, 0.0F, -8.0F, 16.0F, 2.0F, 16.0F, new Dilation(0.0F))
 						.uv(0, 0).cuboid(-2.0F, -4.0F, -6.0F, 4.0F, 4.0F, 4.0F, new Dilation(0.0F))
-						.uv(10, 8).cuboid(5.0F, -4.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F))
+						.uv(0, 8).cuboid(5.0F, -4.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F))
 						.uv(0, 8).cuboid(-6.0F, -4.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(0.0F, 4.0F, 0.0F));
 		return TexturedModelData.of(modelData, 64, 64);
