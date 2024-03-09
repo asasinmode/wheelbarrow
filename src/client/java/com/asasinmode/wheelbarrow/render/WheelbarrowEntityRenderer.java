@@ -1,5 +1,7 @@
 package com.asasinmode.wheelbarrow.render;
 
+import org.joml.Quaternionf;
+
 import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
 import com.asasinmode.wheelbarrow.model.WheelbarrowEntityModel;
@@ -11,6 +13,7 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
 public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity> {
@@ -31,18 +34,36 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 	}
 
 	@Override
-	public void render(WheelbarrowEntity entity, float yaw, float tickDelta, MatrixStack matrices,
+	public void render(WheelbarrowEntity entity, float yaw, float tickDelta, MatrixStack matrixStack,
 			VertexConsumerProvider vertexConsumers, int light) {
-		matrices.push();
+		matrixStack.push();
 
-		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0f - yaw));
-		matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
-		matrices.translate(0, -1.5, 0);
+		matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0f - yaw));
+		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
+		matrixStack.translate(0, -1.5, 0);
 
-		model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture(entity))), light,
+		float damageWobbleTicks = (float) entity.getDamageWobbleTicks() - tickDelta;
+		float damageWobbleStrength = entity.getDamageWobbleStrength() - tickDelta;
+		if (damageWobbleStrength < 0.0F) {
+			damageWobbleStrength = 0.0F;
+		}
+
+		if (damageWobbleTicks > 0.0F) {
+			matrixStack.multiply(RotationAxis.POSITIVE_X
+					.rotationDegrees(MathHelper.sin(damageWobbleTicks) * damageWobbleTicks
+							* damageWobbleStrength / 10.0F * (float) entity.getDamageWobbleSide()));
+		}
+
+		float bubbleWobble = entity.interpolateBubbleWobble(tickDelta);
+		if (!MathHelper.approximatelyEquals(bubbleWobble, 0.0F)) {
+			matrixStack.multiply(
+					(new Quaternionf()).setAngleAxis(entity.interpolateBubbleWobble(tickDelta) * 0.017453292F, 1.0F, 0.0F, 1.0F));
+		}
+
+		model.render(matrixStack, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture(entity))), light,
 				OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
 
-		matrices.pop();
-		super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
+		matrixStack.pop();
+		super.render(entity, yaw, tickDelta, matrixStack, vertexConsumers, light);
 	}
 }

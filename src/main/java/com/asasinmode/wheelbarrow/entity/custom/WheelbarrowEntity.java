@@ -41,7 +41,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
 public class WheelbarrowEntity extends Entity {
+	private static final TrackedData<Integer> BUBBLE_WOBBLE_TICKS;
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
+	private static final TrackedData<Integer> DAMAGE_WOBBLE_TICKS;
+	private static final TrackedData<Integer> DAMAGE_WOBBLE_SIDE;
+	private static final TrackedData<Float> DAMAGE_WOBBLE_STRENGTH;
 	private int lerpTicks;
 	private float yawVelocity;
 	private double fallVelocity;
@@ -53,7 +57,9 @@ public class WheelbarrowEntity extends Entity {
 	private double z;
 	private float nearbySlipperiness;
 	private Location location;
-	private Location lastLocation;
+	private float bubbleWobbleStrength;
+	private float bubbleWobble;
+	private float lastBubbleWobble;
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
@@ -70,6 +76,10 @@ public class WheelbarrowEntity extends Entity {
 	@Override
 	protected void initDataTracker() {
 		this.dataTracker.startTracking(OXIDATION_LEVEL, Type.COPPER.ordinal());
+		this.dataTracker.startTracking(DAMAGE_WOBBLE_TICKS, 0);
+		this.dataTracker.startTracking(DAMAGE_WOBBLE_SIDE, 1);
+		this.dataTracker.startTracking(DAMAGE_WOBBLE_STRENGTH, 0.0F);
+		this.dataTracker.startTracking(BUBBLE_WOBBLE_TICKS, 0);
 	}
 
 	static enum Type {
@@ -155,10 +165,16 @@ public class WheelbarrowEntity extends Entity {
 		this.scheduleVelocityUpdate();
 		this.emitGameEvent(GameEvent.ENTITY_DAMAGE, source.getAttacker());
 
+		this.setDamageWobbleSide(-this.getDamageWobbleSide());
+		this.setDamageWobbleTicks(10);
+		this.scheduleVelocityUpdate();
+		this.setDamageWobbleStrength(this.getDamageWobbleStrength() + amount * 10.0F);
+		this.emitGameEvent(GameEvent.ENTITY_DAMAGE, source.getAttacker());
+
 		boolean isInCreative = source.getAttacker() instanceof PlayerEntity
 				&& ((PlayerEntity) source.getAttacker()).getAbilities().creativeMode;
 
-		if (isInCreative && !this.shouldAlwaysKill(source)) {
+		if ((isInCreative || !(this.getDamageWobbleStrength() > 40.0F)) && !this.shouldAlwaysKill(source)) {
 			if (isInCreative) {
 				this.discard();
 			}
@@ -187,7 +203,6 @@ public class WheelbarrowEntity extends Entity {
 
 	public Item asItem() {
 		Item item;
-
 		switch (this.getOxidationLevel()) {
 			case COPPER:
 				item = ModItems.COPPER_WHEELBARROW;
@@ -217,6 +232,13 @@ public class WheelbarrowEntity extends Entity {
 		} else {
 			return ActionResult.SUCCESS;
 		}
+	}
+
+	@Override
+	public void animateDamage(float yaw) {
+		this.setDamageWobbleSide(-this.getDamageWobbleSide());
+		this.setDamageWobbleTicks(10);
+		this.setDamageWobbleStrength(this.getDamageWobbleStrength() * 11.0F);
 	}
 
 	@Override
@@ -275,8 +297,15 @@ public class WheelbarrowEntity extends Entity {
 
 	@Override
 	public void tick() {
-		this.lastLocation = this.location;
 		this.location = this.checkLocation();
+
+		if (this.getDamageWobbleTicks() > 0) {
+			this.setDamageWobbleTicks(this.getDamageWobbleTicks() - 1);
+		}
+
+		if (this.getDamageWobbleStrength() > 0.0F) {
+			this.setDamageWobbleStrength(this.getDamageWobbleStrength() - 1.0F);
+		}
 
 		super.tick();
 
@@ -407,41 +436,6 @@ public class WheelbarrowEntity extends Entity {
 		}
 	}
 
-	public float getWaterHeightBelow() {
-		Box box = this.getBoundingBox();
-		int i = MathHelper.floor(box.minX);
-		int j = MathHelper.ceil(box.maxX);
-		int k = MathHelper.floor(box.maxY);
-		int l = MathHelper.ceil(box.maxY - this.fallVelocity);
-		int m = MathHelper.floor(box.minZ);
-		int n = MathHelper.ceil(box.maxZ);
-		BlockPos.Mutable mutable = new BlockPos.Mutable();
-
-		outer: for (int o = k; o < l; ++o) {
-			float f = 0.0F;
-
-			for (int p = i; p < j; ++p) {
-				for (int q = m; q < n; ++q) {
-					mutable.set(p, o, q);
-					FluidState fluidState = this.getWorld().getFluidState(mutable);
-					if (fluidState.isIn(FluidTags.WATER)) {
-						f = Math.max(f, fluidState.getHeight(this.getWorld(), mutable));
-					}
-
-					if (f >= 1.0F) {
-						continue outer;
-					}
-				}
-			}
-
-			if (f < 1.0F) {
-				return (float) mutable.getY() + f;
-			}
-		}
-
-		return (float) (l + 1);
-	}
-
 	public float getNearbySlipperiness() {
 		Box box = this.getBoundingBox();
 		Box box2 = new Box(box.minX, box.minY - 0.001, box.minZ, box.maxX, box.minY, box.maxZ);
@@ -528,7 +522,47 @@ public class WheelbarrowEntity extends Entity {
 		}
 	}
 
+	// private void setBubbleWobbleTicks(int wobbleTicks) {
+	// this.dataTracker.set(BUBBLE_WOBBLE_TICKS, wobbleTicks);
+	// }
+
+	// private int getBubbleWobbleTicks() {
+	// return (Integer) this.dataTracker.get(BUBBLE_WOBBLE_TICKS);
+	// }
+
+	public void setDamageWobbleTicks(int damageWobbleTicks) {
+		this.dataTracker.set(DAMAGE_WOBBLE_TICKS, damageWobbleTicks);
+	}
+
+	public void setDamageWobbleSide(int damageWobbleSide) {
+		this.dataTracker.set(DAMAGE_WOBBLE_SIDE, damageWobbleSide);
+	}
+
+	public void setDamageWobbleStrength(float damageWobbleStrength) {
+		this.dataTracker.set(DAMAGE_WOBBLE_STRENGTH, damageWobbleStrength);
+	}
+
+	public float getDamageWobbleStrength() {
+		return (Float) this.dataTracker.get(DAMAGE_WOBBLE_STRENGTH);
+	}
+
+	public int getDamageWobbleTicks() {
+		return (Integer) this.dataTracker.get(DAMAGE_WOBBLE_TICKS);
+	}
+
+	public int getDamageWobbleSide() {
+		return (Integer) this.dataTracker.get(DAMAGE_WOBBLE_SIDE);
+	}
+
+	public float interpolateBubbleWobble(float tickDelta) {
+		return MathHelper.lerp(tickDelta, this.lastBubbleWobble, this.bubbleWobble);
+	}
+
 	static {
 		OXIDATION_LEVEL = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
+		DAMAGE_WOBBLE_TICKS = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
+		DAMAGE_WOBBLE_SIDE = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
+		DAMAGE_WOBBLE_STRENGTH = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.FLOAT);
+		BUBBLE_WOBBLE_TICKS = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	}
 }
