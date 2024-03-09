@@ -15,11 +15,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 	private final ModelPart front;
-	// private final ModelPart front_right;
-	// private final ModelPart front_left;
-	// private final ModelPart front_front;
 	private final ModelPart back;
-	// private final ModelPart handles;
 	private final ModelPart left;
 	private final ModelPart right;
 	private final ModelPart bottom;
@@ -35,38 +31,24 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 	public static TexturedModelData getTexturedModelData() {
 		ModelData modelData = new ModelData();
 		ModelPartData modelPartData = modelData.getRoot();
-		ModelPartData front = modelPartData.addChild("front", ModelPartBuilder.create(),
+		ModelPartData front = modelPartData.addChild("front",
+				ModelPartBuilder.create().uv(2, 26).cuboid(6.0F, 2.0F, -2.0F, 2.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(20, 20).cuboid(6.0F, 4.0F, -4.0F, 2.0F, 2.0F, 4.0F, new Dilation(0.0F))
+						.uv(50, 2).cuboid(6.0F, 6.0F, -6.0F, 2.0F, 2.0F, 6.0F, new Dilation(0.0F))
+						.uv(2, 20).cuboid(-8.0F, 2.0F, -2.0F, 2.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(2, 10).cuboid(-8.0F, 4.0F, -4.0F, 2.0F, 2.0F, 4.0F, new Dilation(0.0F))
+						.uv(44, 42).cuboid(-8.0F, 6.0F, -6.0F, 2.0F, 2.0F, 6.0F, new Dilation(0.0F))
+						.uv(36, 28).cuboid(-8.0F, 0.0F, -2.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(36, 32).cuboid(-8.0F, 2.0F, -4.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(36, 36).cuboid(-8.0F, 4.0F, -6.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(0, 48).cuboid(-8.0F, 6.0F, -8.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(0.0F, 6.0F, -8.0F));
 
-		ModelPartData front_right = front.addChild("front_right",
-				ModelPartBuilder.create().uv(28, 18).cuboid(-1.0F, 0.0F, -2.0F, 2.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(0, 24).cuboid(-1.0F, 2.0F, -4.0F, 2.0F, 2.0F, 4.0F, new Dilation(0.0F))
-						.uv(18, 18).cuboid(-1.0F, 4.0F, -6.0F, 2.0F, 2.0F, 6.0F, new Dilation(0.0F))
-						.uv(48, 0).cuboid(-1.0F, 6.0F, -8.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F)),
-				ModelTransform.pivot(7.0F, 0.0F, 0.0F));
-
-		ModelPartData front_left = front.addChild("front_left",
-				ModelPartBuilder.create().uv(18, 26).cuboid(-1.0F, 0.0F, -2.0F, 2.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(0, 18).cuboid(-1.0F, 2.0F, -4.0F, 2.0F, 2.0F, 4.0F, new Dilation(0.0F))
-						.uv(0, 8).cuboid(-1.0F, 4.0F, -6.0F, 2.0F, 2.0F, 6.0F, new Dilation(0.0F))
-						.uv(42, 40).cuboid(-1.0F, 6.0F, -8.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F)),
-				ModelTransform.pivot(-7.0F, 0.0F, 0.0F));
-
-		ModelPartData front_front = front.addChild("front_front",
-				ModelPartBuilder.create().uv(0, 48).cuboid(-6.0F, 6.0F, -8.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(36, 36).cuboid(-6.0F, 4.0F, -6.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(36, 32).cuboid(-6.0F, 2.0F, -4.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(36, 28).cuboid(-6.0F, 0.0F, -2.0F, 12.0F, 2.0F, 2.0F, new Dilation(0.0F)),
-				ModelTransform.pivot(0.0F, 0.0F, 0.0F));
-
 		ModelPartData back = modelPartData.addChild("back",
-				ModelPartBuilder.create().uv(36, 18).cuboid(-8.0F, 0.0F, -1.0F, 16.0F, 8.0F, 2.0F, new Dilation(0.0F)),
+				ModelPartBuilder.create().uv(36, 18).cuboid(-8.0F, 0.0F, -1.0F, 16.0F, 8.0F, 2.0F, new Dilation(0.0F))
+						.uv(20, 48).cuboid(-8.0F, 6.0F, 1.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F))
+						.uv(32, 50).cuboid(6.0F, 6.0F, 1.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(0.0F, 6.0F, 7.0F));
-
-		ModelPartData handles = back.addChild("handles",
-				ModelPartBuilder.create().uv(32, 50).cuboid(6.0F, -1.0F, 0.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F))
-						.uv(20, 48).cuboid(-8.0F, -1.0F, 0.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F)),
-				ModelTransform.pivot(0.0F, 7.0F, 1.0F));
 
 		ModelPartData left = modelPartData.addChild("left",
 				ModelPartBuilder.create().uv(0, 18).cuboid(-1.0F, 0.0F, -7.0F, 2.0F, 8.0F, 14.0F, new Dilation(0.0F)),
@@ -82,7 +64,7 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 						.uv(10, 8).cuboid(5.0F, -4.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F))
 						.uv(0, 8).cuboid(-6.0F, -4.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(0.0F, 4.0F, 0.0F));
-		return TexturedModelData.of(modelData, 128, 128);
+		return TexturedModelData.of(modelData, 64, 64);
 	}
 
 	@Override
