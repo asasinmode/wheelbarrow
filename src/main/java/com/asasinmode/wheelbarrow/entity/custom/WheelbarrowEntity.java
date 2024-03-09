@@ -51,7 +51,6 @@ public class WheelbarrowEntity extends Entity {
 	private double x;
 	private double y;
 	private double z;
-	private double waterLevel;
 	private float nearbySlipperiness;
 	private Location location;
 	private Location lastLocation;
@@ -396,13 +395,12 @@ public class WheelbarrowEntity extends Entity {
 	private Location checkLocation() {
 		Location location = this.getUnderWaterLocation();
 		if (location != null) {
-			this.waterLevel = this.getBoundingBox().maxY;
 			return location;
 		}
 
-		float f = this.getNearbySlipperiness();
-		if (f > 0.0F) {
-			this.nearbySlipperiness = f;
+		float slipperiness = this.getNearbySlipperiness();
+		if (slipperiness > 0.0F) {
+			this.nearbySlipperiness = slipperiness;
 			return Location.ON_LAND;
 		} else {
 			return Location.IN_AIR;
