@@ -46,8 +46,8 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 
 		ModelPartData back = modelPartData.addChild("back",
 				ModelPartBuilder.create().uv(0, 19).cuboid(-8.0F, -8.0F, -1.0F, 16.0F, 8.0F, 2.0F, new Dilation(0.0F))
-						.uv(44, 46).cuboid(-8.0F, -8.0F, 1.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F))
-						.uv(44, 46).cuboid(6.0F, -8.0F, 1.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F)),
+						.uv(44, 40).cuboid(-8.0F, -8.0F, 1.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F))
+						.uv(44, 40).cuboid(6.0F, -8.0F, 1.0F, 2.0F, 2.0F, 8.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(0.0F, 18.0F, 7.0F));
 
 		ModelPartData left = modelPartData.addChild("left",
