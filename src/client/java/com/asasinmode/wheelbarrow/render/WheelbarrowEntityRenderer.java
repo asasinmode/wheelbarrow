@@ -39,8 +39,6 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 		matrixStack.push();
 
 		matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0f - yaw));
-		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
-		matrixStack.translate(0, -1.5, 0);
 
 		float damageWobbleTicks = (float) entity.getDamageWobbleTicks() - tickDelta;
 		float damageWobbleStrength = entity.getDamageWobbleStrength() - tickDelta;
@@ -49,10 +47,13 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 		}
 
 		if (damageWobbleTicks > 0.0F) {
-			matrixStack.multiply(RotationAxis.POSITIVE_X
+			matrixStack.multiply(RotationAxis.POSITIVE_Z
 					.rotationDegrees(MathHelper.sin(damageWobbleTicks) * damageWobbleTicks
-							* damageWobbleStrength / 10.0F * (float) entity.getDamageWobbleSide()));
+							* damageWobbleStrength / 15.0F * (float) entity.getDamageWobbleSide()));
 		}
+
+		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
+		matrixStack.translate(0, -1.5, 0);
 
 		float bubbleWobble = entity.interpolateBubbleWobble(tickDelta);
 		if (!MathHelper.approximatelyEquals(bubbleWobble, 0.0F)) {
