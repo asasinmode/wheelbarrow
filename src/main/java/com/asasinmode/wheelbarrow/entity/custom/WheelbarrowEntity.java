@@ -372,15 +372,6 @@ public class WheelbarrowEntity extends Entity {
 		double f = 0.0;
 		this.velocityDecay = 0.05F;
 
-		if (this.lastLocation == Location.IN_AIR && this.location != Location.IN_AIR && this.location != Location.ON_LAND) {
-			this.waterLevel = this.getBodyY(1.0);
-			this.setPosition(this.getX(), (double) (this.getWaterHeightBelow() - this.getHeight()) + 0.101, this.getZ());
-			this.setVelocity(this.getVelocity().multiply(1.0, 0.0, 1.0));
-			this.fallVelocity = 0.0;
-			this.location = Location.IN_WATER;
-			return;
-		}
-
 		if (this.location == Location.IN_WATER) {
 			f = (this.waterLevel - this.getY()) / (double) this.getHeight();
 			this.velocityDecay = 0.9F;
