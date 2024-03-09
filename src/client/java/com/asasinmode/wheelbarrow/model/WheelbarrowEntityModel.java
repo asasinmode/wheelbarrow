@@ -64,7 +64,7 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 						.uv(0, 8).cuboid(5.0F, -4.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F))
 						.uv(0, 8).cuboid(-6.0F, -4.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(0.0F, 4.0F, 0.0F));
-		return TexturedModelData.of(modelData, 64, 64);
+		return TexturedModelData.of(modelData, 64, 56);
 	}
 
 	@Override
