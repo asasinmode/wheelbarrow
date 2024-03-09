@@ -32,16 +32,16 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 		ModelData modelData = new ModelData();
 		ModelPartData modelPartData = modelData.getRoot();
 		ModelPartData front = modelPartData.addChild("front",
-				ModelPartBuilder.create().uv(49, 11).cuboid(6.0F, 2.0F, -2.0F, 2.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(52, 0).cuboid(6.0F, 4.0F, -4.0F, 2.0F, 2.0F, 4.0F, new Dilation(0.0F))
+				ModelPartBuilder.create().uv(4, 43).cuboid(6.0F, 2.0F, -2.0F, 2.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(2, 37).cuboid(6.0F, 4.0F, -4.0F, 2.0F, 2.0F, 4.0F, new Dilation(0.0F))
 						.uv(0, 29).cuboid(6.0F, 6.0F, -6.0F, 2.0F, 2.0F, 6.0F, new Dilation(0.0F))
-						.uv(52, 0).cuboid(-8.0F, 4.0F, -4.0F, 2.0F, 2.0F, 4.0F, new Dilation(0.0F))
-						.uv(49, 11).cuboid(-8.0F, 2.0F, -2.0F, 2.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(2, 37).cuboid(-8.0F, 4.0F, -4.0F, 2.0F, 2.0F, 4.0F, new Dilation(0.0F))
+						.uv(4, 43).cuboid(-8.0F, 2.0F, -2.0F, 2.0F, 2.0F, 2.0F, new Dilation(0.0F))
 						.uv(0, 29).cuboid(-8.0F, 6.0F, -6.0F, 2.0F, 2.0F, 6.0F, new Dilation(0.0F))
-						.uv(0, 52).cuboid(-8.0F, 0.0F, -2.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(0, 48).cuboid(-8.0F, 2.0F, -4.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(0, 44).cuboid(-8.0F, 4.0F, -6.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
-						.uv(0, 40).cuboid(-8.0F, 6.0F, -8.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F)),
+						.uv(0, 60).cuboid(-8.0F, 0.0F, -2.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(0, 56).cuboid(-8.0F, 2.0F, -4.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(0, 52).cuboid(-8.0F, 4.0F, -6.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F))
+						.uv(0, 48).cuboid(-8.0F, 6.0F, -8.0F, 16.0F, 2.0F, 2.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(0.0F, 6.0F, -8.0F));
 
 		ModelPartData back = modelPartData.addChild("back",
@@ -64,7 +64,7 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 						.uv(0, 8).cuboid(5.0F, -4.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F))
 						.uv(0, 8).cuboid(-6.0F, -4.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(0.0F, 4.0F, 0.0F));
-		return TexturedModelData.of(modelData, 64, 56);
+		return TexturedModelData.of(modelData, 64, 64);
 	}
 
 	@Override
