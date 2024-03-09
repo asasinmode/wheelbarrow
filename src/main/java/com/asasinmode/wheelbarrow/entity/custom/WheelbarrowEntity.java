@@ -109,7 +109,6 @@ public class WheelbarrowEntity extends Entity {
 	static enum Location {
 		ON_LAND,
 		IN_AIR,
-		IN_WATER,
 		UNDER_WATER,
 		UNDER_FLOWING_WATER;
 	}
@@ -368,19 +367,16 @@ public class WheelbarrowEntity extends Entity {
 	}
 
 	private void updateVelocity() {
-		double yMod = this.hasNoGravity() ? 0.0 : -0.04;
-		double f = 0.0;
+		double yMulitplier = 1.0;
+		double yMod = this.hasNoGravity() ? 0.0 : -0.05;
 		this.velocityDecay = 0.05F;
 
-		if (this.location == Location.IN_WATER) {
-			f = (this.waterLevel - this.getY()) / (double) this.getHeight();
-			this.velocityDecay = 0.9F;
-		} else if (this.location == Location.UNDER_FLOWING_WATER) {
-			yMod = -0.0007;
+		if (this.location == Location.UNDER_FLOWING_WATER) {
+			yMod = -0.03;
 			this.velocityDecay = 0.9F;
 		} else if (this.location == Location.UNDER_WATER) {
-			f = 0.01;
 			this.velocityDecay = 0.45F;
+			yMulitplier = 0.7;
 		} else if (this.location == Location.IN_AIR) {
 			this.velocityDecay = 0.9F;
 		} else if (this.location == Location.ON_LAND) {
@@ -391,13 +387,10 @@ public class WheelbarrowEntity extends Entity {
 		}
 
 		Vec3d vec3d = this.getVelocity();
-		this.setVelocity(vec3d.x * (double) this.velocityDecay, vec3d.y + yMod, vec3d.z * (double) this.velocityDecay);
-		this.yawVelocity *= this.velocityDecay;
+		this.setVelocity(vec3d.x * (double) this.velocityDecay, (vec3d.y + yMod) * yMulitplier,
+				vec3d.z * (double) this.velocityDecay);
 
-		if (f > 0.0) {
-			Vec3d vec3d2 = this.getVelocity();
-			this.setVelocity(vec3d2.x, (vec3d2.y + f * 0.0615) * 0.75, vec3d2.z);
-		}
+		this.yawVelocity *= this.velocityDecay;
 	}
 
 	private Location checkLocation() {
@@ -405,16 +398,14 @@ public class WheelbarrowEntity extends Entity {
 		if (location != null) {
 			this.waterLevel = this.getBoundingBox().maxY;
 			return location;
-		} else if (this.checkWheelbarrowInWater()) {
-			return Location.IN_WATER;
+		}
+
+		float f = this.getNearbySlipperiness();
+		if (f > 0.0F) {
+			this.nearbySlipperiness = f;
+			return Location.ON_LAND;
 		} else {
-			float f = this.getNearbySlipperiness();
-			if (f > 0.0F) {
-				this.nearbySlipperiness = f;
-				return Location.ON_LAND;
-			} else {
-				return Location.IN_AIR;
-			}
+			return Location.IN_AIR;
 		}
 	}
 
@@ -488,35 +479,6 @@ public class WheelbarrowEntity extends Entity {
 		}
 
 		return f / (float) o;
-	}
-
-	private boolean checkWheelbarrowInWater() {
-		Box box = this.getBoundingBox();
-		int i = MathHelper.floor(box.minX);
-		int j = MathHelper.ceil(box.maxX);
-		int k = MathHelper.floor(box.minY);
-		int l = MathHelper.ceil(box.minY + 0.001);
-		int m = MathHelper.floor(box.minZ);
-		int n = MathHelper.ceil(box.maxZ);
-		boolean rv = false;
-		this.waterLevel = Double.MIN_VALUE;
-		BlockPos.Mutable mutable = new BlockPos.Mutable();
-
-		for (int o = i; o < j; ++o) {
-			for (int p = k; p < l; ++p) {
-				for (int q = m; q < n; ++q) {
-					mutable.set(o, p, q);
-					FluidState fluidState = this.getWorld().getFluidState(mutable);
-					if (fluidState.isIn(FluidTags.WATER)) {
-						float f = (float) p + fluidState.getHeight(this.getWorld(), mutable);
-						this.waterLevel = Math.max((double) f, this.waterLevel);
-						rv |= box.minY < (double) f;
-					}
-				}
-			}
-		}
-
-		return rv;
 	}
 
 	@Nullable
