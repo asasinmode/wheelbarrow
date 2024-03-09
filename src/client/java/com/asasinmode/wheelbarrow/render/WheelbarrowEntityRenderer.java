@@ -34,8 +34,9 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 	public void render(WheelbarrowEntity entity, float yaw, float tickDelta, MatrixStack matrices,
 			VertexConsumerProvider vertexConsumers, int light) {
 		matrices.push();
-		matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
-		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - yaw));
+
+		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0f - yaw));
+		matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
 		matrices.translate(0, -1.5, 0);
 
 		model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture(entity))), light,
