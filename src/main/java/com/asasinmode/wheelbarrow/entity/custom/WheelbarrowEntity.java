@@ -34,15 +34,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
-
-import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.entity.vehicle.MinecartEntity;
-// import net.minecraft.client.render.entity.BoatEntityRenderer;
 
 public class WheelbarrowEntity extends Entity {
 	private static final TrackedData<Integer> BUBBLE_WOBBLE_TICKS;
@@ -324,6 +321,7 @@ public class WheelbarrowEntity extends Entity {
 
 		this.checkBlockCollision();
 
+		boolean isServer = !this.getWorld().isClient;
 		List<Entity> list = this.getWorld().getOtherEntities(this,
 				this.getBoundingBox().expand(0.2, 0, 0.2),
 				EntityPredicates.canBePushedBy(this));
@@ -339,7 +337,7 @@ public class WheelbarrowEntity extends Entity {
 				entity = (Entity) entitiesIterator.next();
 			} while (entity.hasPassenger(this));
 
-			boolean canYoink = !this.getWorld().isClient && !(this.getControllingPassenger() instanceof PlayerEntity);
+			boolean canYoink = isServer && !(this.getControllingPassenger() instanceof PlayerEntity);
 
 			if (canYoink && this.getPassengerList().size() < this.getMaxPassengers() && !entity.hasVehicle()
 					&& this.canBeYoinked(entity) && entity instanceof LivingEntity
@@ -347,6 +345,14 @@ public class WheelbarrowEntity extends Entity {
 				entity.startRiding(this);
 			} else {
 				this.pushAwayFrom(entity);
+			}
+		}
+
+		Type oxidationLevel = this.getOxidationLevel();
+		if (isServer && oxidationLevel != Type.OXIDIZED) {
+			Random random = this.getWorld().random;
+			if (random.nextFloat() < 0.2) {
+				this.setOxidationLevel(Type.getType(oxidationLevel.ordinal() + 1));
 			}
 		}
 	}
