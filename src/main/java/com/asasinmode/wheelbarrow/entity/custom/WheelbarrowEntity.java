@@ -22,9 +22,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -229,10 +231,26 @@ public class WheelbarrowEntity extends Entity {
 		if (player.shouldCancelInteraction()) {
 			return ActionResult.PASS;
 		} else if (!this.getWorld().isClient) {
+			Iterable<ItemStack> stacks = player.getHandItems();
+
+			for (ItemStack stack : stacks) {
+				boolean interactionStatus = this.handleItemInteraction(stack);
+
+				if (interactionStatus) {
+					return ActionResult.SUCCESS;
+				}
+			}
+
 			return player.startRiding(this) ? ActionResult.CONSUME : ActionResult.PASS;
-		} else {
-			return ActionResult.SUCCESS;
 		}
+		return ActionResult.SUCCESS;
+	}
+
+	private boolean handleItemInteraction(ItemStack stack) {
+		boolean isAxe = stack.isIn(ItemTags.AXES);
+		boolean isHoneycomb = stack.getItem() == Items.HONEYCOMB;
+
+		return false;
 	}
 
 	@Override
