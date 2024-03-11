@@ -1,10 +1,13 @@
 package com.asasinmode.wheelbarrow.render;
 
+import java.util.Map;
+
 import org.joml.Quaternionf;
 
 import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
 import com.asasinmode.wheelbarrow.model.WheelbarrowEntityModel;
+import com.google.common.collect.Maps;
 
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -13,12 +16,23 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
 public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity> {
-	private static final Identifier TEXTURE = new Identifier(Wheelbarrow.MOD_ID,
-			"textures/entity/copper_wheelbarrow.png");
+	private static final Map<WheelbarrowEntity.Type, Identifier> OXIDATION_LEVEL_TO_TEXTURE = Util
+			.make(Maps.newEnumMap(WheelbarrowEntity.Type.class), (map) -> {
+				map.put(WheelbarrowEntity.Type.COPPER,
+						new Identifier(Wheelbarrow.MOD_ID, "textures/entity/copper_wheelbarrow.png"));
+				map.put(WheelbarrowEntity.Type.EXPOSED,
+						new Identifier(Wheelbarrow.MOD_ID, "textures/entity/exposed_copper_wheelbarrow.png"));
+				map.put(WheelbarrowEntity.Type.WEATHERED,
+						new Identifier(Wheelbarrow.MOD_ID, "textures/entity/weathered_copper_wheelbarrow.png"));
+				map.put(WheelbarrowEntity.Type.OXIDIZED,
+						new Identifier(Wheelbarrow.MOD_ID, "textures/entity/oxidized_copper_wheelbarrow.png"));
+			});
+
 	private final WheelbarrowEntityModel model;
 
 	public WheelbarrowEntityRenderer(EntityRendererFactory.Context context) {
@@ -30,7 +44,7 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 
 	@Override
 	public Identifier getTexture(WheelbarrowEntity entity) {
-		return TEXTURE;
+		return OXIDATION_LEVEL_TO_TEXTURE.get(entity.getOxidationLevel());
 	}
 
 	@Override
