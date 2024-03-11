@@ -140,6 +140,10 @@ public class WheelbarrowEntity extends Entity {
 		this.dataTracker.set(OXIDATION_LEVEL, type.ordinal());
 	}
 
+	public void setOxidationLevel(int type) {
+		this.dataTracker.set(OXIDATION_LEVEL, type);
+	}
+
 	public Type getOxidationLevel() {
 		return Type.getType((Integer) this.dataTracker.get(OXIDATION_LEVEL));
 	}
@@ -231,26 +235,27 @@ public class WheelbarrowEntity extends Entity {
 		if (player.shouldCancelInteraction()) {
 			return ActionResult.PASS;
 		} else if (!this.getWorld().isClient) {
+			Type oxidationLevel = this.getOxidationLevel();
+
 			Iterable<ItemStack> stacks = player.getHandItems();
-
 			for (ItemStack stack : stacks) {
-				boolean interactionStatus = this.handleItemInteraction(stack);
+				boolean isAxe = stack.isIn(ItemTags.AXES);
+				boolean isHoneycomb = stack.getItem() == Items.HONEYCOMB;
 
-				if (interactionStatus) {
+				if (isAxe) {
+					if (oxidationLevel == Type.COPPER) {
+						return ActionResult.PASS;
+					}
+					this.setOxidationLevel(oxidationLevel.ordinal() - 1);
 					return ActionResult.SUCCESS;
+				} else if (isHoneycomb) {
+
 				}
 			}
 
 			return player.startRiding(this) ? ActionResult.CONSUME : ActionResult.PASS;
 		}
 		return ActionResult.SUCCESS;
-	}
-
-	private boolean handleItemInteraction(ItemStack stack) {
-		boolean isAxe = stack.isIn(ItemTags.AXES);
-		boolean isHoneycomb = stack.getItem() == Items.HONEYCOMB;
-
-		return false;
 	}
 
 	@Override
@@ -372,7 +377,7 @@ public class WheelbarrowEntity extends Entity {
 			Random random = this.getWorld().getRandom();
 			// (1 / 24000 / randomTickSpeed) * randomTickSpeed
 			if (random.nextFloat() < 0.0000139f * randomTickSpeed) {
-				this.setOxidationLevel(Type.getType(oxidationLevel.ordinal() + 1));
+				this.setOxidationLevel(oxidationLevel.ordinal() + 1);
 			}
 		}
 	}
