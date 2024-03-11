@@ -40,6 +40,10 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
+import net.minecraft.entity.vehicle.BoatEntity;
+import net.minecraft.entity.vehicle.MinecartEntity;
+// import net.minecraft.client.render.entity.BoatEntityRenderer;
+
 public class WheelbarrowEntity extends Entity {
 	private static final TrackedData<Integer> BUBBLE_WOBBLE_TICKS;
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
@@ -48,7 +52,6 @@ public class WheelbarrowEntity extends Entity {
 	private static final TrackedData<Float> DAMAGE_WOBBLE_STRENGTH;
 	private int lerpTicks;
 	private float yawVelocity;
-	private double fallVelocity;
 	private float velocityDecay;
 	private double wheelbarrowYaw;
 	private double wheelbarrowPitch;
@@ -509,8 +512,6 @@ public class WheelbarrowEntity extends Entity {
 
 	@Override
 	protected void fall(double heightDifference, boolean onGround, BlockState state, BlockPos landedPosition) {
-		this.fallVelocity = this.getVelocity().y;
-
 		if (this.hasVehicle()) {
 			return;
 		}
