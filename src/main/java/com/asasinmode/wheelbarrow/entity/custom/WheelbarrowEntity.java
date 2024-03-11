@@ -350,8 +350,10 @@ public class WheelbarrowEntity extends Entity {
 
 		Type oxidationLevel = this.getOxidationLevel();
 		if (isServer && oxidationLevel != Type.OXIDIZED) {
-			Random random = this.getWorld().random;
-			if (random.nextFloat() < 0.2) {
+			int randomTickSpeed = this.getWorld().getGameRules().getInt(GameRules.RANDOM_TICK_SPEED);
+			Random random = this.getWorld().getRandom();
+			// (1 / 24000 / randomTickSpeed) * randomTickSpeed
+			if (random.nextFloat() < 0.0000139f * randomTickSpeed) {
 				this.setOxidationLevel(Type.getType(oxidationLevel.ordinal() + 1));
 			}
 		}
