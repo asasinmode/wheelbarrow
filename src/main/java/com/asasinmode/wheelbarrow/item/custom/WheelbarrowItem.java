@@ -2,7 +2,6 @@ package com.asasinmode.wheelbarrow.item.custom;
 
 import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
 
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -16,10 +15,11 @@ import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.event.GameEvent.Emitter;
 
 public class WheelbarrowItem extends Item {
-	// todo have oxidation level somewhere
+	private final WheelbarrowEntity.Type type;
 
-	public WheelbarrowItem(Settings settings) {
+	public WheelbarrowItem(WheelbarrowEntity.Type type, Settings settings) {
 		super(settings);
+		this.type = type;
 	}
 
 	public ActionResult useOnBlock(ItemUsageContext context) {
@@ -37,7 +37,7 @@ public class WheelbarrowItem extends Item {
 		if (world instanceof ServerWorld) {
 			ServerWorld serverWorld = (ServerWorld) world;
 
-			WheelbarrowEntity wheelbarrowEntity = WheelbarrowEntity.create(serverWorld,
+			WheelbarrowEntity wheelbarrowEntity = WheelbarrowEntity.create(this.type, serverWorld,
 					(double) hitPos.getX(), (double) hitPos.getY(), (double) hitPos.getZ(),
 					itemStack, context.getPlayer());
 

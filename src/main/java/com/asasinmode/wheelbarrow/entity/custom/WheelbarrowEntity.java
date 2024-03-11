@@ -82,7 +82,7 @@ public class WheelbarrowEntity extends Entity {
 		this.dataTracker.startTracking(BUBBLE_WOBBLE_TICKS, 0);
 	}
 
-	static enum Type {
+	public static enum Type {
 		COPPER("copper"),
 		EXPOSED("exposed"),
 		WEATHERED("weathered"),
@@ -142,10 +142,11 @@ public class WheelbarrowEntity extends Entity {
 		return Type.getType((Integer) this.dataTracker.get(OXIDATION_LEVEL));
 	}
 
-	public static WheelbarrowEntity create(ServerWorld world, double x, double y, double z, ItemStack stack,
+	public static WheelbarrowEntity create(Type type, ServerWorld world, double x, double y, double z, ItemStack stack,
 			PlayerEntity player) {
 
 		WheelbarrowEntity wheelbarrowEntity = new WheelbarrowEntity(world, x, y, z);
+		wheelbarrowEntity.setOxidationLevel(type);
 
 		EntityType.copier(world, stack, player).accept(wheelbarrowEntity);
 

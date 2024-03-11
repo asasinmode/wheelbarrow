@@ -2,6 +2,7 @@ package com.asasinmode.wheelbarrow.item;
 
 import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.item.custom.*;
+import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -14,13 +15,13 @@ import net.minecraft.util.Identifier;
 
 public class ModItems {
 	public static final Item COPPER_WHEELBARROW = registerItem("copper_wheelbarrow",
-			new WheelbarrowItem(new FabricItemSettings().maxCount(1)));
+			new WheelbarrowItem(WheelbarrowEntity.Type.COPPER, new FabricItemSettings().maxCount(1)));
 	public static final Item EXPOSED_COPPER_WHEELBARROW = registerItem("exposed_copper_wheelbarrow",
-			new WheelbarrowItem(new FabricItemSettings().maxCount(1)));
+			new WheelbarrowItem(WheelbarrowEntity.Type.EXPOSED, new FabricItemSettings().maxCount(1)));
 	public static final Item WEATHERED_COPPER_WHEELBARROW = registerItem("weathered_copper_wheelbarrow",
-			new WheelbarrowItem(new FabricItemSettings().maxCount(1)));
+			new WheelbarrowItem(WheelbarrowEntity.Type.WEATHERED, new FabricItemSettings().maxCount(1)));
 	public static final Item OXIDIZED_COPPER_WHEELBARROW = registerItem("oxidized_copper_wheelbarrow",
-			new WheelbarrowItem(new FabricItemSettings().maxCount(1)));
+			new WheelbarrowItem(WheelbarrowEntity.Type.OXIDIZED, new FabricItemSettings().maxCount(1)));
 
 	private static Item registerItem(String name, Item item) {
 		return Registry.register(Registries.ITEM, new Identifier(Wheelbarrow.MOD_ID, name), item);
