@@ -18,7 +18,7 @@ import net.minecraft.util.math.RotationAxis;
 
 public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity> {
 	private static final Identifier TEXTURE = new Identifier(Wheelbarrow.MOD_ID,
-			"textures/entity/wheelbarrow.png");
+			"textures/entity/copper_wheelbarrow.png");
 	private final WheelbarrowEntityModel model;
 
 	public WheelbarrowEntityRenderer(EntityRendererFactory.Context context) {
