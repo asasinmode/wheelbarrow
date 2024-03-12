@@ -12,6 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.damage.DamageSource;
@@ -236,6 +237,7 @@ public class WheelbarrowEntity extends Entity {
 			return ActionResult.PASS;
 		} else if (!this.getWorld().isClient) {
 			Type oxidationLevel = this.getOxidationLevel();
+			boolean isMainHand = true;
 
 			Iterable<ItemStack> stacks = player.getHandItems();
 			for (ItemStack stack : stacks) {
@@ -243,14 +245,24 @@ public class WheelbarrowEntity extends Entity {
 				boolean isHoneycomb = stack.getItem() == Items.HONEYCOMB;
 
 				if (isAxe) {
+					// add particles & sound
+					// lightning
 					if (oxidationLevel == Type.COPPER) {
-						return ActionResult.PASS;
+						// figure out why still swings
+						return ActionResult.CONSUME;
 					}
 					this.setOxidationLevel(oxidationLevel.ordinal() - 1);
+
+					final EquipmentSlot handToDamage = isMainHand ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+					stack.damage(1, player,
+							(e) -> e.sendEquipmentBreakStatus(handToDamage));
+
 					return ActionResult.SUCCESS;
 				} else if (isHoneycomb) {
 
 				}
+
+				isMainHand = false;
 			}
 
 			return player.startRiding(this) ? ActionResult.CONSUME : ActionResult.PASS;
