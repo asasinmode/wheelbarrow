@@ -395,7 +395,7 @@ public class WheelbarrowEntity extends Entity {
 		}
 
 		Type oxidationLevel = this.getOxidationLevel();
-		if (isServer && oxidationLevel != Type.OXIDIZED) {
+		if (isServer && oxidationLevel != Type.OXIDIZED && !this.getIsWaxed()) {
 			int randomTickSpeed = this.getWorld().getGameRules().getInt(GameRules.RANDOM_TICK_SPEED);
 			Random random = this.getWorld().getRandom();
 			// (1 / 24000 / randomTickSpeed) * randomTickSpeed
