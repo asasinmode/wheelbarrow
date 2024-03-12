@@ -24,6 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.registry.tag.ItemTags;
@@ -129,12 +130,16 @@ public class WheelbarrowEntity extends Entity {
 	@Override
 	protected void writeCustomDataToNbt(NbtCompound nbt) {
 		nbt.putString("OxidationLevel", this.getOxidationLevel().asString());
+		nbt.putBoolean("IsWaxed", this.getIsWaxed());
 	}
 
 	@Override
 	protected void readCustomDataFromNbt(NbtCompound nbt) {
-		if (nbt.contains("OxidationLevel", 8)) {
+		if (nbt.contains("OxidationLevel", NbtElement.STRING_TYPE)) {
 			this.setOxidationLevel(Type.getType(nbt.getString("OxidationLevel")));
+		}
+		if (nbt.contains("IsWaxed")) {
+			this.setIsWaxed(nbt.getBoolean("IsWaxed"));
 		}
 	}
 
