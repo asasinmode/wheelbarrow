@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.registry.tag.ItemTags;
@@ -256,6 +257,23 @@ public class WheelbarrowEntity extends Entity {
 			Type oxidationLevel = this.getOxidationLevel();
 			boolean isWaxed = this.getIsWaxed();
 
+			Vec3d pos = this.getPos();
+			// pos.getX() + random.nextDouble() / 1.5 * (double) (random.nextBoolean() ? 1 :
+			// -1),
+			// pos.getY() + random.nextDouble() / 1.5 * (double) (random.nextBoolean() ? 1 :
+			// -1),
+			// pos.getZ() + random.nextDouble() / 1.5 * (double) (random.nextBoolean() ? 1 :
+			// -1),
+			((ServerWorld) this.getWorld()).spawnParticles(ParticleTypes.SCRAPE,
+					pos.getX(),
+					pos.getY() + 0.5f,
+					pos.getZ(),
+					32,
+					random.nextDouble() / 2.0 * (double) (random.nextBoolean() ? 1 : -1),
+					random.nextDouble() / 2.0 * (double) (random.nextBoolean() ? 1 : -1),
+					random.nextDouble() / 2.0 * (double) (random.nextBoolean() ? 1 : -1),
+					1);
+
 			// Wheelbarrow.LOGGER.info("using " + itemStack + " with hand " + hand + " is
 			// sneaking " + player.isSneaking());
 
@@ -268,7 +286,6 @@ public class WheelbarrowEntity extends Entity {
 
 					return ActionResult.SUCCESS;
 				}
-				// add particles & sound
 				// lightning
 				if (oxidationLevel == Type.COPPER) {
 					// figure out why still swings
