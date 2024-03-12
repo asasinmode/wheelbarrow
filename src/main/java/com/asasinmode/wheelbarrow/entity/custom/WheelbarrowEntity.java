@@ -289,6 +289,7 @@ public class WheelbarrowEntity extends Entity {
 				this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS,
 						1.0f,
 						1.0f);
+				itemStack.decrement(1);
 				return ActionResult.SUCCESS;
 			}
 
