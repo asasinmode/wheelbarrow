@@ -29,6 +29,8 @@ import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -260,6 +262,10 @@ public class WheelbarrowEntity extends Entity {
 			if (itemStack.isIn(ItemTags.AXES)) {
 				if (isWaxed) {
 					setIsWaxed(false);
+					this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS,
+							1.0f,
+							1.0f);
+
 					return ActionResult.SUCCESS;
 				}
 				// add particles & sound
@@ -270,6 +276,8 @@ public class WheelbarrowEntity extends Entity {
 				}
 
 				this.setOxidationLevel(oxidationLevel.ordinal() - 1);
+				this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ITEM_AXE_SCRAPE, SoundCategory.BLOCKS, 1.0f,
+						1.0f);
 				itemStack.damage(1, player, playerx -> playerx.sendToolBreakStatus(hand));
 
 				return ActionResult.CONSUME;
@@ -278,6 +286,9 @@ public class WheelbarrowEntity extends Entity {
 					return ActionResult.CONSUME;
 				}
 				this.setIsWaxed(true);
+				this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS,
+						1.0f,
+						1.0f);
 				return ActionResult.SUCCESS;
 			}
 
