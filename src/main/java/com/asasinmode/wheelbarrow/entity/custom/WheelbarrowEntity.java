@@ -12,7 +12,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.damage.DamageSource;
@@ -47,6 +46,7 @@ import net.minecraft.world.event.GameEvent;
 public class WheelbarrowEntity extends Entity {
 	private static final TrackedData<Integer> BUBBLE_WOBBLE_TICKS;
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
+	private static final TrackedData<Boolean> IS_WAXED;
 	private static final TrackedData<Integer> DAMAGE_WOBBLE_TICKS;
 	private static final TrackedData<Integer> DAMAGE_WOBBLE_SIDE;
 	private static final TrackedData<Float> DAMAGE_WOBBLE_STRENGTH;
@@ -79,6 +79,7 @@ public class WheelbarrowEntity extends Entity {
 	@Override
 	protected void initDataTracker() {
 		this.dataTracker.startTracking(OXIDATION_LEVEL, Type.COPPER.ordinal());
+		this.dataTracker.startTracking(IS_WAXED, false);
 		this.dataTracker.startTracking(DAMAGE_WOBBLE_TICKS, 0);
 		this.dataTracker.startTracking(DAMAGE_WOBBLE_SIDE, 1);
 		this.dataTracker.startTracking(DAMAGE_WOBBLE_STRENGTH, 0.0F);
@@ -147,6 +148,14 @@ public class WheelbarrowEntity extends Entity {
 
 	public Type getOxidationLevel() {
 		return Type.getType((Integer) this.dataTracker.get(OXIDATION_LEVEL));
+	}
+
+	public void setIsWaxed(boolean value) {
+		this.dataTracker.set(IS_WAXED, value);
+	}
+
+	public boolean getIsWaxed() {
+		return this.dataTracker.get(IS_WAXED);
 	}
 
 	public static WheelbarrowEntity create(Type type, ServerWorld world, double x, double y, double z, ItemStack stack,
@@ -236,33 +245,35 @@ public class WheelbarrowEntity extends Entity {
 		if (player.shouldCancelInteraction()) {
 			return ActionResult.PASS;
 		} else if (!this.getWorld().isClient) {
+			ItemStack itemStack = player.getStackInHand(hand);
 			Type oxidationLevel = this.getOxidationLevel();
-			boolean isMainHand = true;
+			boolean isWaxed = this.getIsWaxed();
 
-			Iterable<ItemStack> stacks = player.getHandItems();
-			for (ItemStack stack : stacks) {
-				boolean isAxe = stack.isIn(ItemTags.AXES);
-				boolean isHoneycomb = stack.getItem() == Items.HONEYCOMB;
+			// Wheelbarrow.LOGGER.info("using " + itemStack + " with hand " + hand + " is
+			// sneaking " + player.isSneaking());
 
-				if (isAxe) {
-					// add particles & sound
-					// lightning
-					if (oxidationLevel == Type.COPPER) {
-						// figure out why still swings
-						return ActionResult.CONSUME;
-					}
-					this.setOxidationLevel(oxidationLevel.ordinal() - 1);
-
-					final EquipmentSlot handToDamage = isMainHand ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
-					stack.damage(1, player,
-							(e) -> e.sendEquipmentBreakStatus(handToDamage));
-
+			if (itemStack.isIn(ItemTags.AXES)) {
+				if (isWaxed) {
+					setIsWaxed(false);
 					return ActionResult.SUCCESS;
-				} else if (isHoneycomb) {
-
+				}
+				// add particles & sound
+				// lightning
+				if (oxidationLevel == Type.COPPER) {
+					// figure out why still swings
+					return ActionResult.CONSUME;
 				}
 
-				isMainHand = false;
+				this.setOxidationLevel(oxidationLevel.ordinal() - 1);
+				itemStack.damage(1, player, playerx -> playerx.sendToolBreakStatus(hand));
+
+				return ActionResult.CONSUME;
+			} else if (itemStack.isOf(Items.HONEYCOMB)) {
+				if (isWaxed) {
+					return ActionResult.CONSUME;
+				}
+				this.setIsWaxed(true);
+				return ActionResult.SUCCESS;
 			}
 
 			return player.startRiding(this) ? ActionResult.CONSUME : ActionResult.PASS;
@@ -605,6 +616,7 @@ public class WheelbarrowEntity extends Entity {
 
 	static {
 		OXIDATION_LEVEL = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
+		IS_WAXED = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 		DAMAGE_WOBBLE_TICKS = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
 		DAMAGE_WOBBLE_SIDE = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
 		DAMAGE_WOBBLE_STRENGTH = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.FLOAT);
