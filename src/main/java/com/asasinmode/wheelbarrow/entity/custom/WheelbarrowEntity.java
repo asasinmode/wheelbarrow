@@ -257,22 +257,26 @@ public class WheelbarrowEntity extends Entity {
 			Type oxidationLevel = this.getOxidationLevel();
 			boolean isWaxed = this.getIsWaxed();
 
-			Vec3d pos = this.getPos();
-			// pos.getX() + random.nextDouble() / 1.5 * (double) (random.nextBoolean() ? 1 :
-			// -1),
-			// pos.getY() + random.nextDouble() / 1.5 * (double) (random.nextBoolean() ? 1 :
-			// -1),
-			// pos.getZ() + random.nextDouble() / 1.5 * (double) (random.nextBoolean() ? 1 :
-			// -1),
-			((ServerWorld) this.getWorld()).spawnParticles(ParticleTypes.SCRAPE,
-					pos.getX(),
-					pos.getY() + 0.5f,
-					pos.getZ(),
-					32,
-					random.nextDouble() / 2.0 * (double) (random.nextBoolean() ? 1 : -1),
-					random.nextDouble() / 2.0 * (double) (random.nextBoolean() ? 1 : -1),
-					random.nextDouble() / 2.0 * (double) (random.nextBoolean() ? 1 : -1),
-					1);
+			ServerWorld world = (ServerWorld) this.getWorld();
+			double yaw = Math.toRadians(this.getYaw());
+			double cosYaw = Math.cos(yaw);
+			double sinYaw = Math.sin(yaw);
+
+			for (int i = 0; i < 32; i++) {
+				double particleX = random.nextDouble() * 0.5 * (double) (random.nextBoolean() ? 1 : -1);
+				double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
+				double particleZ = random.nextDouble() * 0.625 * (double) (random.nextBoolean() ? 1 : -1);
+
+				world.spawnParticles(ParticleTypes.SCRAPE,
+						this.getX() + 0.2 + particleX * cosYaw - particleZ * sinYaw,
+						this.getY() + 0.5 + particleY,
+						this.getZ() + particleZ * cosYaw + particleX * sinYaw,
+						1,
+						random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
+						random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
+						random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
+						random.nextDouble() * 0.3);
+			}
 
 			// Wheelbarrow.LOGGER.info("using " + itemStack + " with hand " + hand + " is
 			// sneaking " + player.isSneaking());
@@ -310,7 +314,8 @@ public class WheelbarrowEntity extends Entity {
 				return ActionResult.SUCCESS;
 			}
 
-			return player.startRiding(this) ? ActionResult.CONSUME : ActionResult.PASS;
+			return ActionResult.CONSUME;
+			// return player.startRiding(this) ? ActionResult.CONSUME : ActionResult.PASS;
 		}
 		return ActionResult.SUCCESS;
 	}
@@ -432,7 +437,7 @@ public class WheelbarrowEntity extends Entity {
 		if (isServer && oxidationLevel != Type.OXIDIZED && !this.getIsWaxed()) {
 			int randomTickSpeed = this.getWorld().getGameRules().getInt(GameRules.RANDOM_TICK_SPEED);
 			Random random = this.getWorld().getRandom();
-			// (1 / 24000 / randomTickSpeed) * randomTickSpeed
+			// (1 / 24000 / defaultRandomTickSpeed) * randomTickSpeed
 			if (random.nextFloat() < 0.0000139f * randomTickSpeed) {
 				this.setOxidationLevel(oxidationLevel.ordinal() + 1);
 			}
