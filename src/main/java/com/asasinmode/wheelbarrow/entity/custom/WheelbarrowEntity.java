@@ -335,6 +335,11 @@ public class WheelbarrowEntity extends Entity {
 		return !this.isRemoved();
 	}
 
+	@Override
+	public boolean isFireImmune() {
+		return true;
+	}
+
 	// maybe useful
 	// public Direction getMovementDirection() {
 	// return this.getHorizontalFacing().rotateYClockwise();
