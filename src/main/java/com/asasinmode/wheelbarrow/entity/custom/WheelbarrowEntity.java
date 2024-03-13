@@ -16,6 +16,7 @@ import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -184,7 +185,9 @@ public class WheelbarrowEntity extends Entity {
 			return true;
 		}
 
-		if (this.isInvulnerableTo(source)) {
+		if (this.isInvulnerableTo(source)
+				|| source.isOf(DamageTypes.IN_FIRE)
+				|| source.isOf(DamageTypes.ON_FIRE)) {
 			return false;
 		}
 
@@ -341,11 +344,6 @@ public class WheelbarrowEntity extends Entity {
 	@Override
 	public boolean canHit() {
 		return !this.isRemoved();
-	}
-
-	@Override
-	public boolean isFireImmune() {
-		return true;
 	}
 
 	// maybe useful
