@@ -257,17 +257,12 @@ public class WheelbarrowEntity extends Entity {
 			Type oxidationLevel = this.getOxidationLevel();
 			boolean isWaxed = this.getIsWaxed();
 
-			this.spawnParticles(ParticleTypes.SCRAPE, 32, (ServerWorld) this.getWorld());
-
-			// Wheelbarrow.LOGGER.info("using " + itemStack + " with hand " + hand + " is
-			// sneaking " + player.isSneaking());
-
 			if (itemStack.isIn(ItemTags.AXES)) {
 				if (isWaxed) {
 					setIsWaxed(false);
-					this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS,
-							1.0f,
+					this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f,
 							1.0f);
+					this.spawnParticles(ParticleTypes.WAX_OFF, 32, (ServerWorld) this.getWorld());
 
 					return ActionResult.SUCCESS;
 				}
@@ -278,9 +273,10 @@ public class WheelbarrowEntity extends Entity {
 				}
 
 				this.setOxidationLevel(oxidationLevel.ordinal() - 1);
+				itemStack.damage(1, player, playerx -> playerx.sendToolBreakStatus(hand));
 				this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ITEM_AXE_SCRAPE, SoundCategory.BLOCKS, 1.0f,
 						1.0f);
-				itemStack.damage(1, player, playerx -> playerx.sendToolBreakStatus(hand));
+				this.spawnParticles(ParticleTypes.SCRAPE, 32, (ServerWorld) this.getWorld());
 
 				return ActionResult.CONSUME;
 			} else if (itemStack.isOf(Items.HONEYCOMB)) {
@@ -288,15 +284,15 @@ public class WheelbarrowEntity extends Entity {
 					return ActionResult.CONSUME;
 				}
 				this.setIsWaxed(true);
+				itemStack.decrement(1);
 				this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS,
 						1.0f,
 						1.0f);
-				itemStack.decrement(1);
+				this.spawnParticles(ParticleTypes.WAX_ON, 32, (ServerWorld) this.getWorld());
 				return ActionResult.SUCCESS;
 			}
 
-			return ActionResult.CONSUME;
-			// return player.startRiding(this) ? ActionResult.CONSUME : ActionResult.PASS;
+			return player.startRiding(this) ? ActionResult.CONSUME : ActionResult.PASS;
 		}
 		return ActionResult.SUCCESS;
 	}
@@ -601,6 +597,7 @@ public class WheelbarrowEntity extends Entity {
 		double cosYaw = Math.cos(yaw);
 		double sinYaw = Math.sin(yaw);
 
+		// todo make look better
 		for (int i = 0; i < count; i++) {
 			double xDouble = 1 - (random.nextGaussian() / 3);
 			double yDouble = 1 - (random.nextGaussian() / 3);
