@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.tag.FluidTags;
@@ -55,7 +56,6 @@ public class WheelbarrowEntity extends Entity {
 	private static final TrackedData<Integer> DAMAGE_WOBBLE_SIDE;
 	private static final TrackedData<Float> DAMAGE_WOBBLE_STRENGTH;
 	private int lerpTicks;
-	private float yawVelocity;
 	private float velocityDecay;
 	private double wheelbarrowYaw;
 	private double wheelbarrowPitch;
@@ -257,26 +257,7 @@ public class WheelbarrowEntity extends Entity {
 			Type oxidationLevel = this.getOxidationLevel();
 			boolean isWaxed = this.getIsWaxed();
 
-			ServerWorld world = (ServerWorld) this.getWorld();
-			double yaw = Math.toRadians(this.getYaw());
-			double cosYaw = Math.cos(yaw);
-			double sinYaw = Math.sin(yaw);
-
-			for (int i = 0; i < 32; i++) {
-				double particleX = random.nextDouble() * 0.5 * (double) (random.nextBoolean() ? 1 : -1);
-				double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
-				double particleZ = random.nextDouble() * 0.625 * (double) (random.nextBoolean() ? 1 : -1);
-
-				world.spawnParticles(ParticleTypes.SCRAPE,
-						this.getX() + 0.2 + particleX * cosYaw - particleZ * sinYaw,
-						this.getY() + 0.5 + particleY,
-						this.getZ() + particleZ * cosYaw + particleX * sinYaw,
-						1,
-						random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
-						random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
-						random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
-						random.nextDouble() * 0.3);
-			}
+			this.spawnParticles(ParticleTypes.SCRAPE, 32, (ServerWorld) this.getWorld());
 
 			// Wheelbarrow.LOGGER.info("using " + itemStack + " with hand " + hand + " is
 			// sneaking " + player.isSneaking());
@@ -514,8 +495,6 @@ public class WheelbarrowEntity extends Entity {
 		Vec3d vec3d = this.getVelocity();
 		this.setVelocity(vec3d.x * (double) this.velocityDecay, (vec3d.y + yMod) * yMulitplier,
 				vec3d.z * (double) this.velocityDecay);
-
-		this.yawVelocity *= this.velocityDecay;
 	}
 
 	private Location checkLocation() {
@@ -614,6 +593,28 @@ public class WheelbarrowEntity extends Entity {
 		} else if (!this.getWorld().getFluidState(this.getBlockPos().down()).isIn(FluidTags.WATER)
 				&& heightDifference < 0.0) {
 			this.fallDistance -= (float) heightDifference;
+		}
+	}
+
+	private void spawnParticles(DefaultParticleType particleType, int count, ServerWorld world) {
+		double yaw = Math.toRadians(this.getYaw());
+		double cosYaw = Math.cos(yaw);
+		double sinYaw = Math.sin(yaw);
+
+		for (int i = 0; i < count; i++) {
+			double particleX = random.nextDouble() * 0.5 * (double) (random.nextBoolean() ? 1 : -1);
+			double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
+			double particleZ = 0.2 + random.nextDouble() * 0.625 * (double) (random.nextBoolean() ? 1 : -1);
+
+			world.spawnParticles(particleType,
+					this.getX() + particleX * cosYaw - particleZ * sinYaw,
+					this.getY() + 0.5 + particleY,
+					this.getZ() + particleZ * cosYaw + particleX * sinYaw,
+					1,
+					random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
+					random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
+					random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
+					random.nextDouble() * 0.3);
 		}
 	}
 
