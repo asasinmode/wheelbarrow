@@ -602,9 +602,16 @@ public class WheelbarrowEntity extends Entity {
 		double sinYaw = Math.sin(yaw);
 
 		for (int i = 0; i < count; i++) {
-			double particleX = random.nextDouble() * 0.5 * (double) (random.nextBoolean() ? 1 : -1);
-			double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
-			double particleZ = 0.2 + random.nextDouble() * 0.625 * (double) (random.nextBoolean() ? 1 : -1);
+			double xDouble = 1 - (random.nextGaussian() / 3);
+			double yDouble = 1 - (random.nextGaussian() / 3);
+			double zDouble = 1 - (random.nextGaussian() / 3);
+			xDouble = xDouble < 0.5 ? 1 - xDouble : xDouble;
+			yDouble = yDouble < 0.5 ? 1 - yDouble : yDouble;
+			zDouble = zDouble < 0.5 ? 1 - zDouble : zDouble;
+
+			double particleX = xDouble * 0.5 * (double) (random.nextBoolean() ? 1 : -1);
+			double particleY = yDouble * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
+			double particleZ = 0.2 + zDouble * 0.625 * (double) (random.nextBoolean() ? 1 : -1);
 
 			world.spawnParticles(particleType,
 					this.getX() + particleX * cosYaw - particleZ * sinYaw,
