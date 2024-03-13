@@ -12,6 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.damage.DamageSource;
@@ -266,7 +267,6 @@ public class WheelbarrowEntity extends Entity {
 
 					return ActionResult.SUCCESS;
 				}
-				// lightning
 				if (oxidationLevel == Type.COPPER) {
 					// figure out why still swings
 					return ActionResult.CONSUME;
@@ -295,6 +295,14 @@ public class WheelbarrowEntity extends Entity {
 			return player.startRiding(this) ? ActionResult.CONSUME : ActionResult.PASS;
 		}
 		return ActionResult.SUCCESS;
+	}
+
+	@Override
+	public void onStruckByLightning(ServerWorld world, LightningEntity lightning) {
+		Type oxidationLevel = this.getOxidationLevel();
+		if (!this.getIsWaxed() && oxidationLevel != Type.COPPER) {
+			this.setOxidationLevel(oxidationLevel.ordinal() - 1);
+		}
 	}
 
 	@Override
