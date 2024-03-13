@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.item.ModItems;
 
@@ -51,7 +52,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
 public class WheelbarrowEntity extends Entity {
-	private static final TrackedData<Integer> BUBBLE_WOBBLE_TICKS;
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
 	private static final TrackedData<Boolean> IS_WAXED;
 	private static final TrackedData<Integer> DAMAGE_WOBBLE_TICKS;
@@ -66,9 +66,6 @@ public class WheelbarrowEntity extends Entity {
 	private double z;
 	private float nearbySlipperiness;
 	private Location location;
-	private float bubbleWobbleStrength;
-	private float bubbleWobble;
-	private float lastBubbleWobble;
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
@@ -89,7 +86,6 @@ public class WheelbarrowEntity extends Entity {
 		this.dataTracker.startTracking(DAMAGE_WOBBLE_TICKS, 0);
 		this.dataTracker.startTracking(DAMAGE_WOBBLE_SIDE, 1);
 		this.dataTracker.startTracking(DAMAGE_WOBBLE_STRENGTH, 0.0F);
-		this.dataTracker.startTracking(BUBBLE_WOBBLE_TICKS, 0);
 	}
 
 	public static enum Type {
@@ -271,7 +267,6 @@ public class WheelbarrowEntity extends Entity {
 					return ActionResult.SUCCESS;
 				}
 				if (oxidationLevel == Type.COPPER) {
-					// figure out why still swings
 					return ActionResult.CONSUME;
 				}
 
@@ -479,6 +474,7 @@ public class WheelbarrowEntity extends Entity {
 		return this.lerpTicks > 0 ? (float) this.wheelbarrowYaw : this.getYaw();
 	}
 
+	// todo check minecart's fall speed/decay under water
 	private void updateVelocity() {
 		double yMulitplier = 1.0;
 		double yMod = this.hasNoGravity() ? 0.0 : -0.05;
@@ -603,6 +599,23 @@ public class WheelbarrowEntity extends Entity {
 		}
 	}
 
+	@Override
+	public void onBubbleColumnSurfaceCollision(boolean drag) {
+		Wheelbarrow.LOGGER.info("SUFACE collision " + drag + " " + this.getBlockPos() + " " + this.getBoundingBox());
+		// Vec3d vec3d = this.getVelocity();
+		// double d = drag ? Math.max(-0.9, vec3d.y - 0.03) : Math.min(1.8, vec3d.y +
+		// 0.1);
+		// this.setVelocity(vec3d.x, d, vec3d.z);
+	}
+
+	@Override
+	public void onBubbleColumnCollision(boolean drag) {
+		Vec3d vec3d = this.getVelocity();
+		double d = drag ? Math.max(-0.4, vec3d.y - 0.04) : Math.min(0.7, vec3d.y + 0.06);
+		this.setVelocity(vec3d.x, d, vec3d.z);
+		this.onLanding();
+	}
+
 	private void spawnParticles(DefaultParticleType particleType, int count, ServerWorld world) {
 		double yaw = Math.toRadians(this.getYaw());
 		double cosYaw = Math.cos(yaw);
@@ -633,14 +646,6 @@ public class WheelbarrowEntity extends Entity {
 		}
 	}
 
-	// private void setBubbleWobbleTicks(int wobbleTicks) {
-	// this.dataTracker.set(BUBBLE_WOBBLE_TICKS, wobbleTicks);
-	// }
-
-	// private int getBubbleWobbleTicks() {
-	// return (Integer) this.dataTracker.get(BUBBLE_WOBBLE_TICKS);
-	// }
-
 	public void setDamageWobbleTicks(int damageWobbleTicks) {
 		this.dataTracker.set(DAMAGE_WOBBLE_TICKS, damageWobbleTicks);
 	}
@@ -665,16 +670,11 @@ public class WheelbarrowEntity extends Entity {
 		return (Integer) this.dataTracker.get(DAMAGE_WOBBLE_SIDE);
 	}
 
-	public float interpolateBubbleWobble(float tickDelta) {
-		return MathHelper.lerp(tickDelta, this.lastBubbleWobble, this.bubbleWobble);
-	}
-
 	static {
 		OXIDATION_LEVEL = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
 		IS_WAXED = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 		DAMAGE_WOBBLE_TICKS = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
 		DAMAGE_WOBBLE_SIDE = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
 		DAMAGE_WOBBLE_STRENGTH = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.FLOAT);
-		BUBBLE_WOBBLE_TICKS = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	}
 }

@@ -69,12 +69,6 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
 		matrixStack.translate(0, -1.5, 0);
 
-		float bubbleWobble = entity.interpolateBubbleWobble(tickDelta);
-		if (!MathHelper.approximatelyEquals(bubbleWobble, 0.0F)) {
-			matrixStack.multiply(
-					(new Quaternionf()).setAngleAxis(entity.interpolateBubbleWobble(tickDelta) * 0.017453292F, 1.0F, 0.0F, 1.0F));
-		}
-
 		model.render(matrixStack, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture(entity))), light,
 				OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
 
