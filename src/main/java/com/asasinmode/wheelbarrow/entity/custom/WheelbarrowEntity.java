@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.item.ModItems;
 
@@ -474,18 +473,17 @@ public class WheelbarrowEntity extends Entity {
 		return this.lerpTicks > 0 ? (float) this.wheelbarrowYaw : this.getYaw();
 	}
 
-	// todo check minecart's fall speed/decay under water
 	private void updateVelocity() {
 		double yMulitplier = 1.0;
-		double yMod = this.hasNoGravity() ? 0.0 : -0.05;
+		double yMod = this.hasNoGravity() ? 0.0 : -0.04;
 		this.velocityDecay = 0.05F;
 
 		if (this.location == Location.UNDER_FLOWING_WATER) {
 			yMod = -0.03;
 			this.velocityDecay = 0.9F;
 		} else if (this.location == Location.UNDER_WATER) {
-			this.velocityDecay = 0.45F;
-			yMulitplier = 0.7;
+			this.velocityDecay = 0.6F;
+			yMulitplier = 0.8;
 		} else if (this.location == Location.IN_AIR) {
 			this.velocityDecay = 0.9F;
 		} else if (this.location == Location.ON_LAND) {
@@ -496,7 +494,13 @@ public class WheelbarrowEntity extends Entity {
 		}
 
 		Vec3d vec3d = this.getVelocity();
-		this.setVelocity(vec3d.x * (double) this.velocityDecay, (vec3d.y + yMod) * yMulitplier,
+		double y = (vec3d.y + yMod) * yMulitplier;
+
+		if (y < -1.0) {
+			y = -1.0;
+		}
+
+		this.setVelocity(vec3d.x * (double) this.velocityDecay, y,
 				vec3d.z * (double) this.velocityDecay);
 	}
 
@@ -601,11 +605,6 @@ public class WheelbarrowEntity extends Entity {
 
 	@Override
 	public void onBubbleColumnSurfaceCollision(boolean drag) {
-		if (drag) {
-			Vec3d vec3d = this.getVelocity();
-
-			this.setVelocity(vec3d.x, Math.max(-0.9, vec3d.y - 0.03), vec3d.z);
-		}
 	}
 
 	private void spawnParticles(DefaultParticleType particleType, int count, ServerWorld world) {
