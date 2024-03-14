@@ -601,19 +601,11 @@ public class WheelbarrowEntity extends Entity {
 
 	@Override
 	public void onBubbleColumnSurfaceCollision(boolean drag) {
-		Wheelbarrow.LOGGER.info("SUFACE collision " + drag + " " + this.getBlockPos() + " " + this.getBoundingBox());
-		// Vec3d vec3d = this.getVelocity();
-		// double d = drag ? Math.max(-0.9, vec3d.y - 0.03) : Math.min(1.8, vec3d.y +
-		// 0.1);
-		// this.setVelocity(vec3d.x, d, vec3d.z);
-	}
+		if (drag) {
+			Vec3d vec3d = this.getVelocity();
 
-	@Override
-	public void onBubbleColumnCollision(boolean drag) {
-		Vec3d vec3d = this.getVelocity();
-		double d = drag ? Math.max(-0.4, vec3d.y - 0.04) : Math.min(0.7, vec3d.y + 0.06);
-		this.setVelocity(vec3d.x, d, vec3d.z);
-		this.onLanding();
+			this.setVelocity(vec3d.x, Math.max(-0.9, vec3d.y - 0.03), vec3d.z);
+		}
 	}
 
 	private void spawnParticles(DefaultParticleType particleType, int count, ServerWorld world) {
