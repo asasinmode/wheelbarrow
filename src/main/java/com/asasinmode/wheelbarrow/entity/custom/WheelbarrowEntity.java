@@ -355,8 +355,20 @@ public class WheelbarrowEntity extends Entity {
 		return new ItemStack(this.asItem());
 	}
 
+	@Override
+	protected boolean canAddPassenger(Entity passenger) {
+		return this.getPassengerList().size() < this.getMaxPassengers();
+	}
+
 	protected int getMaxPassengers() {
 		return 2;
+	}
+
+	@Override
+	@Nullable
+	public LivingEntity getControllingPassenger() {
+		Entity entity = this.getFirstPassenger();
+		return entity instanceof LivingEntity ? (LivingEntity) entity : super.getControllingPassenger();
 	}
 
 	public boolean canBeYoinked(Entity entity) {
