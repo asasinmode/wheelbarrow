@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.item.ModItems;
@@ -11,6 +12,8 @@ import com.asasinmode.wheelbarrow.item.ModItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.LivingEntity;
@@ -20,6 +23,7 @@ import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
@@ -612,6 +616,31 @@ public class WheelbarrowEntity extends Entity {
 		} else if (!this.getWorld().getFluidState(this.getBlockPos().down()).isIn(FluidTags.WATER)
 				&& heightDifference < 0.0) {
 			this.fallDistance -= (float) heightDifference;
+		}
+	}
+
+	@Override
+	protected Vector3f getPassengerAttachmentPos(Entity passenger, EntityDimensions dimensions, float scaleFactor) {
+		float horizontalOffset = -0.7f;
+
+		if ((this.getPassengerList().size() > 1 || passenger instanceof AnimalEntity)
+				&& this.getPassengerList().indexOf(passenger) == 0) {
+			horizontalOffset = 0.2f;
+		}
+
+		if (passenger == this.getControllingPassenger()) {
+			passenger.setPose(EntityPose.STANDING);
+		}
+
+		return new Vector3f(0.0f, dimensions.height / 3.0f, horizontalOffset);
+	}
+
+	@Override
+	protected void updatePassengerPosition(Entity passenger, Entity.PositionUpdater positionUpdater) {
+		super.updatePassengerPosition(passenger, positionUpdater);
+
+		if (passenger == this.getControllingPassenger()) {
+			passenger.setPose(EntityPose.STANDING);
 		}
 	}
 
