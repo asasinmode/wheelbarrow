@@ -644,38 +644,69 @@ public class WheelbarrowEntity extends Entity {
 		}
 	}
 
+	// overriden because the default implementation makes it hover few blocks above
+	// water surface
 	@Override
 	public void onBubbleColumnSurfaceCollision(boolean drag) {
 	}
 
-	private void spawnParticles(DefaultParticleType particleType, int count, ServerWorld world) {
+	private void spawnParticles(DefaultParticleType particleType, ServerWorld world) {
+		// inside
+		for (int i = 0; i < 6; i++) {
+			double particleX = random.nextDouble() * 0.4 * (double) (random.nextBoolean()
+					? 1
+					: -1);
+			double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
+			double particleZ = 0.2 + random.nextDouble() * 0.5 * (double) (random.nextBoolean() ? 1 : -1);
+			this.spawnParticle(world, particleType, particleX, particleY, particleZ);
+		}
+
+		// left
+		for (int i = 0; i < 8; i++) {
+			double particleX = 0.5;
+			double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
+			double particleZ = 0.2 + random.nextDouble() * 0.625 * (double) (random.nextBoolean() ? 1 : -1);
+			this.spawnParticle(world, particleType, particleX, particleY, particleZ);
+		}
+
+		// right
+		for (int i = 0; i < 8; i++) {
+			double particleX = -0.5;
+			double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
+			double particleZ = 0.2 + random.nextDouble() * 0.625 * (double) (random.nextBoolean() ? 1 : -1);
+			this.spawnParticle(world, particleType, particleX, particleY, particleZ);
+		}
+
+		// back
+		for (int i = 0; i < 4; i++) {
+			double particleX = random.nextDouble() * 0.5 * (double) (random.nextBoolean() ? 1 : -1);
+			double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
+			double particleZ = -0.55;
+			this.spawnParticle(world, particleType, particleX, particleY, particleZ);
+		}
+
+		// front
+		for (int i = 0; i < 4; i++) {
+			double particleX = random.nextDouble() * 0.5 * (double) (random.nextBoolean() ? 1 : -1);
+			double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
+			double particleZ = 0.8;
+			this.spawnParticle(world, particleType, particleX, particleY, particleZ);
+		}
+	}
+
+	private void spawnParticle(ServerWorld world, DefaultParticleType particleType, double x, double y, double z) {
 		double yaw = Math.toRadians(this.getYaw());
 		double cosYaw = Math.cos(yaw);
 		double sinYaw = Math.sin(yaw);
-
-		// todo make look better
-		for (int i = 0; i < count; i++) {
-			double xDouble = 1 - (random.nextGaussian() / 3);
-			double yDouble = 1 - (random.nextGaussian() / 3);
-			double zDouble = 1 - (random.nextGaussian() / 3);
-			xDouble = xDouble < 0.5 ? 1 - xDouble : xDouble;
-			yDouble = yDouble < 0.5 ? 1 - yDouble : yDouble;
-			zDouble = zDouble < 0.5 ? 1 - zDouble : zDouble;
-
-			double particleX = xDouble * 0.5 * (double) (random.nextBoolean() ? 1 : -1);
-			double particleY = yDouble * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
-			double particleZ = 0.2 + zDouble * 0.625 * (double) (random.nextBoolean() ? 1 : -1);
-
-			world.spawnParticles(particleType,
-					this.getX() + particleX * cosYaw - particleZ * sinYaw,
-					this.getY() + 0.5 + particleY,
-					this.getZ() + particleZ * cosYaw + particleX * sinYaw,
-					1,
-					random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
-					random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
-					random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
-					random.nextDouble() * 0.3);
-		}
+		world.spawnParticles(particleType,
+				this.getX() + x * cosYaw - z * sinYaw,
+				this.getY() + 0.55 + y,
+				this.getZ() + z * cosYaw + x * sinYaw,
+				1,
+				random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
+				random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
+				random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
+				random.nextDouble() * 0.3);
 	}
 
 	public void setDamageWobbleTicks(int damageWobbleTicks) {
