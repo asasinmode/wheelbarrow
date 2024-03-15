@@ -69,6 +69,12 @@ public class WheelbarrowEntity extends Entity {
 	private double z;
 	private float nearbySlipperiness;
 	private Location location;
+	private boolean pressingLeft;
+	private boolean pressingRight;
+	private boolean pressingForward;
+	private boolean pressingBack;
+	private boolean sprinting;
+	private boolean jumping;
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
@@ -377,6 +383,20 @@ public class WheelbarrowEntity extends Entity {
 		return entity instanceof LivingEntity ? (LivingEntity) entity : super.getControllingPassenger();
 	}
 
+	public void setInputs(boolean pressingLeft, boolean pressingRight, boolean pressingForward, boolean pressingBack,
+			boolean sprinting, boolean jumping) {
+		this.pressingLeft = pressingLeft;
+		this.pressingRight = pressingRight;
+		this.pressingForward = pressingForward;
+		this.pressingBack = pressingBack;
+		this.sprinting = sprinting;
+		this.jumping = jumping;
+	}
+
+	private void handlePlayerInput() {
+		System.out.println("maybe inputs " + this.pressingForward);
+	}
+
 	public boolean canBeYoinked(Entity entity) {
 		return entity.getWidth() < this.getWidth();
 	}
@@ -399,6 +419,7 @@ public class WheelbarrowEntity extends Entity {
 
 		if (this.isLogicalSideForUpdatingMovement()) {
 			this.updateVelocity();
+			this.handlePlayerInput();
 			this.move(MovementType.SELF, this.getVelocity());
 		} else {
 			this.setVelocity(Vec3d.ZERO);
