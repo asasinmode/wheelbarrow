@@ -265,7 +265,7 @@ public class WheelbarrowEntity extends Entity {
 					setIsWaxed(false);
 					this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ITEM_AXE_WAX_OFF, SoundCategory.BLOCKS, 1.0f,
 							1.0f);
-					this.spawnParticles(ParticleTypes.WAX_OFF, 32, (ServerWorld) this.getWorld());
+					this.spawnParticles(ParticleTypes.WAX_OFF, (ServerWorld) this.getWorld());
 
 					return ActionResult.SUCCESS;
 				}
@@ -275,9 +275,10 @@ public class WheelbarrowEntity extends Entity {
 
 				this.setOxidationLevel(oxidationLevel.ordinal() - 1);
 				itemStack.damage(1, player, playerx -> playerx.sendToolBreakStatus(hand));
-				this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ITEM_AXE_SCRAPE, SoundCategory.BLOCKS, 1.0f,
+				this.getWorld().playSound(null, this.getBlockPos(),
+						SoundEvents.ITEM_AXE_SCRAPE, SoundCategory.BLOCKS, 1.0f,
 						1.0f);
-				this.spawnParticles(ParticleTypes.SCRAPE, 32, (ServerWorld) this.getWorld());
+				this.spawnParticles(ParticleTypes.SCRAPE, (ServerWorld) this.getWorld());
 
 				return ActionResult.CONSUME;
 			} else if (itemStack.isOf(Items.HONEYCOMB)) {
@@ -286,10 +287,11 @@ public class WheelbarrowEntity extends Entity {
 				}
 				this.setIsWaxed(true);
 				itemStack.decrement(1);
-				this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS,
+				this.getWorld().playSound(null, this.getBlockPos(),
+						SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.BLOCKS,
 						1.0f,
 						1.0f);
-				this.spawnParticles(ParticleTypes.WAX_ON, 32, (ServerWorld) this.getWorld());
+				this.spawnParticles(ParticleTypes.WAX_ON, (ServerWorld) this.getWorld());
 				return ActionResult.SUCCESS;
 			}
 
@@ -706,7 +708,7 @@ public class WheelbarrowEntity extends Entity {
 				random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
 				random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
 				random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
-				random.nextDouble() * 0.3);
+				random.nextDouble() * 0.5);
 	}
 
 	public void setDamageWobbleTicks(int damageWobbleTicks) {
