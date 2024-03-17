@@ -3,7 +3,7 @@
 	"package": "com.asasinmode.wheelbarrow.mixin.client",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		"ExampleClientMixin"
+		"BipedEntityModelMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
