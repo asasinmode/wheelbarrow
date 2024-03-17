@@ -1,13 +1,15 @@
 # wheelbarrow
 
-bubble column logic
 passengers (yoinking only when driven)
-adjust velocity
-wobble on damage
+adjust moving velocity
 wheel animation
 
 maybe fill with water and yoink water creatures
 keybind/other thing for yeeting stuff out in front
+
+figure out inputs
+figure out render inject
+how to extend vehicle entity
 
 github action on release publish to
 

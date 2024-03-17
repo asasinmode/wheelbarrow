@@ -12,7 +12,8 @@
     "issues": "https://github.com/asasinmode/wheelbarrow/issues",
     "sources": "https://github.com/asasinmode/wheelbarrow"
   },
-  "license": "CC0-1.0",
+  "accessWidener": "wheelbarrow.accesswidener",
+  "license": "MIT",
   "icon": "assets/wheelbarrow/icon.png",
   "environment": "*",
   "entrypoints": {
