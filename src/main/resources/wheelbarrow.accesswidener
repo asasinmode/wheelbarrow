@@ -1,2 +1,3 @@
 accessWidener v2 named
 accessible method net/minecraft/entity/vehicle/VehicleEntity asItem ()Lnet/minecraft/item/Item;
+accessible method net/minecraft/entity/vehicle/VehicleEntity shouldAlwaysKill (Lnet/minecraft/entity/damage/DamageSource;)Z

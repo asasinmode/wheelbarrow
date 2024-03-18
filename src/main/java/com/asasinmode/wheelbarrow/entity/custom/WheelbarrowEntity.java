@@ -25,6 +25,7 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.vehicle.VehicleEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -54,12 +55,9 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
-public class WheelbarrowEntity extends Entity {
+public class WheelbarrowEntity extends VehicleEntity {
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
 	private static final TrackedData<Boolean> IS_WAXED;
-	private static final TrackedData<Integer> DAMAGE_WOBBLE_TICKS;
-	private static final TrackedData<Integer> DAMAGE_WOBBLE_SIDE;
-	private static final TrackedData<Float> DAMAGE_WOBBLE_STRENGTH;
 	private int lerpTicks;
 	private float velocityDecay;
 	private double wheelbarrowYaw;
@@ -90,11 +88,9 @@ public class WheelbarrowEntity extends Entity {
 
 	@Override
 	protected void initDataTracker() {
+		super.initDataTracker();
 		this.dataTracker.startTracking(OXIDATION_LEVEL, Type.COPPER.ordinal());
 		this.dataTracker.startTracking(IS_WAXED, false);
-		this.dataTracker.startTracking(DAMAGE_WOBBLE_TICKS, 0);
-		this.dataTracker.startTracking(DAMAGE_WOBBLE_SIDE, 1);
-		this.dataTracker.startTracking(DAMAGE_WOBBLE_STRENGTH, 0.0F);
 	}
 
 	public static enum Type {
@@ -184,6 +180,7 @@ public class WheelbarrowEntity extends Entity {
 		return (WheelbarrowEntity) wheelbarrowEntity;
 	}
 
+	// todo maybe keep default vehicle entity implementation if no more custom logic
 	@Override
 	public boolean damage(DamageSource source, float amount) {
 		if (this.getWorld().isClient || this.isRemoved()) {
@@ -213,26 +210,10 @@ public class WheelbarrowEntity extends Entity {
 				this.discard();
 			}
 		} else {
-			this.killAndDropSelf();
+			this.killAndDropSelf(source);
 		}
 
 		return true;
-	}
-
-	boolean shouldAlwaysKill(DamageSource source) {
-		return false;
-	}
-
-	public void killAndDropSelf() {
-		this.kill();
-		if (this.getWorld().getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-			ItemStack itemStack = new ItemStack(this.asItem());
-			if (this.hasCustomName()) {
-				itemStack.setCustomName(this.getCustomName());
-			}
-
-			this.dropStack(itemStack);
-		}
 	}
 
 	public Item asItem() {
@@ -394,7 +375,7 @@ public class WheelbarrowEntity extends Entity {
 	}
 
 	private void handlePlayerInput() {
-		System.out.println("maybe inputs " + this.pressingForward);
+		// System.out.println("maybe inputs " + this.pressingForward);
 	}
 
 	public boolean canBeYoinked(Entity entity) {
@@ -732,35 +713,8 @@ public class WheelbarrowEntity extends Entity {
 				random.nextDouble() * 0.5);
 	}
 
-	public void setDamageWobbleTicks(int damageWobbleTicks) {
-		this.dataTracker.set(DAMAGE_WOBBLE_TICKS, damageWobbleTicks);
-	}
-
-	public void setDamageWobbleSide(int damageWobbleSide) {
-		this.dataTracker.set(DAMAGE_WOBBLE_SIDE, damageWobbleSide);
-	}
-
-	public void setDamageWobbleStrength(float damageWobbleStrength) {
-		this.dataTracker.set(DAMAGE_WOBBLE_STRENGTH, damageWobbleStrength);
-	}
-
-	public float getDamageWobbleStrength() {
-		return (Float) this.dataTracker.get(DAMAGE_WOBBLE_STRENGTH);
-	}
-
-	public int getDamageWobbleTicks() {
-		return (Integer) this.dataTracker.get(DAMAGE_WOBBLE_TICKS);
-	}
-
-	public int getDamageWobbleSide() {
-		return (Integer) this.dataTracker.get(DAMAGE_WOBBLE_SIDE);
-	}
-
 	static {
 		OXIDATION_LEVEL = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
 		IS_WAXED = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-		DAMAGE_WOBBLE_TICKS = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
-		DAMAGE_WOBBLE_SIDE = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
-		DAMAGE_WOBBLE_STRENGTH = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.FLOAT);
 	}
 }
