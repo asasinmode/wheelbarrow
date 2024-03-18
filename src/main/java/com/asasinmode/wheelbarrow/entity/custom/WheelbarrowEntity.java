@@ -625,26 +625,27 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 	@Override
 	protected Vector3f getPassengerAttachmentPos(Entity passenger, EntityDimensions dimensions, float scaleFactor) {
-		float horizontalOffset = -0.7f;
-
-		if ((this.getPassengerList().size() > 1 || passenger instanceof AnimalEntity)
-				&& this.getPassengerList().indexOf(passenger) == 0) {
-			horizontalOffset = 0.2f;
-		}
+		float zOffset = -0.8f;
+		float yOffset = 0.6f;
 
 		if (passenger == this.getControllingPassenger()) {
 			passenger.setPose(EntityPose.STANDING);
+		} else {
+			passenger.setPose(EntityPose.SITTING);
+			zOffset = 0.2f;
+			yOffset = 0.4f;
 		}
 
-		return new Vector3f(0.0f, dimensions.height / 3.0f, horizontalOffset);
+		return new Vector3f(0.0f, yOffset, zOffset);
 	}
 
 	@Override
 	protected void updatePassengerPosition(Entity passenger, Entity.PositionUpdater positionUpdater) {
 		super.updatePassengerPosition(passenger, positionUpdater);
-
 		if (passenger == this.getControllingPassenger()) {
 			passenger.setPose(EntityPose.STANDING);
+		} else {
+			passenger.setPose(EntityPose.SITTING);
 		}
 	}
 

@@ -1,5 +1,6 @@
 # wheelbarrow
 
+dismount position
 passengers (yoinking only when driven)
 adjust moving velocity
 wheel animation
