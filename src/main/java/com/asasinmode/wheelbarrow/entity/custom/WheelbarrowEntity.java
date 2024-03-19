@@ -35,6 +35,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.world.ServerWorld;
@@ -647,6 +648,34 @@ public class WheelbarrowEntity extends VehicleEntity {
 		} else {
 			passenger.setPose(EntityPose.SITTING);
 		}
+
+		if (passenger.getType().isIn(EntityTypeTags.CAN_TURN_IN_BOATS)) {
+			return;
+		}
+
+		// todo add back this.yawvelocity from boat so passengers turn too?
+		passenger.setYaw(passenger.getYaw());
+		passenger.setHeadYaw(passenger.getHeadYaw());
+		this.clampPassengerYaw(passenger);
+		if (passenger instanceof AnimalEntity && this.getPassengerList().size() == this.getMaxPassengers()) {
+			int degrees = passenger.getId() % 2 == 0 ? 90 : 270;
+			passenger.setBodyYaw(((AnimalEntity) passenger).bodyYaw + (float) degrees);
+			passenger.setHeadYaw(passenger.getHeadYaw() + (float) degrees);
+		}
+	}
+
+	protected void clampPassengerYaw(Entity passenger) {
+		passenger.setBodyYaw(this.getYaw());
+		float f = MathHelper.wrapDegrees(passenger.getYaw() - this.getYaw());
+		float g = MathHelper.clamp(f, -105.0f, 105.0f);
+		passenger.prevYaw += g - f;
+		passenger.setYaw(passenger.getYaw() + g - f);
+		passenger.setHeadYaw(passenger.getYaw());
+	}
+
+	@Override
+	public void onPassengerLookAround(Entity passenger) {
+		this.clampPassengerYaw(passenger);
 	}
 
 	// overriden because the default implementation makes it hover few blocks above
