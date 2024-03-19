@@ -23,7 +23,6 @@ import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.VehicleEntity;
 import net.minecraft.fluid.FluidState;
@@ -47,6 +46,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
@@ -334,10 +334,10 @@ public class WheelbarrowEntity extends VehicleEntity {
 		return !this.isRemoved();
 	}
 
-	// maybe useful
-	// public Direction getMovementDirection() {
-	// return this.getHorizontalFacing().rotateYClockwise();
-	// }
+	@Override
+	public Direction getMovementDirection() {
+		return this.getHorizontalFacing();
+	}
 
 	@Override
 	protected Text getDefaultName() {
@@ -440,6 +440,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		if (isServer && oxidationLevel != Type.OXIDIZED && !this.getIsWaxed()) {
 			int randomTickSpeed = this.getWorld().getGameRules().getInt(GameRules.RANDOM_TICK_SPEED);
 			Random random = this.getWorld().getRandom();
+			// once a day, same as copper blocks + include random tick speed modifier
 			// (1 / 24000 / defaultRandomTickSpeed) * randomTickSpeed
 			if (random.nextFloat() < 0.0000139f * randomTickSpeed) {
 				this.setOxidationLevel(oxidationLevel.ordinal() + 1);
