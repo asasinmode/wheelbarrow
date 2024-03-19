@@ -633,6 +633,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 			passenger.setPose(EntityPose.STANDING);
 		} else {
 			passenger.setPose(EntityPose.SITTING);
+		}
+
+		if (passenger != this.getControllingPassenger() || !(passenger instanceof PlayerEntity)) {
 			zOffset = 0.2f;
 			yOffset = 0.4f;
 		}
@@ -659,13 +662,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 		passenger.setYaw(passenger.getYaw());
 		passenger.setHeadYaw(passenger.getHeadYaw());
 		this.clampPassengerYaw(passenger);
-
-		// if (passenger instanceof AnimalEntity && this.getPassengerList().size() ==
-		// this.getMaxPassengers()) {
-		// int degrees = passenger.getId() % 2 == 0 ? 90 : 270;
-		// passenger.setBodyYaw(((AnimalEntity) passenger).bodyYaw + (float) degrees);
-		// passenger.setHeadYaw(passenger.getHeadYaw() + (float) degrees);
-		// }
 	}
 
 	protected void clampPassengerYaw(Entity passenger) {
