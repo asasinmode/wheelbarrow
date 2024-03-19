@@ -643,7 +643,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 	@Override
 	protected void updatePassengerPosition(Entity passenger, Entity.PositionUpdater positionUpdater) {
 		super.updatePassengerPosition(passenger, positionUpdater);
-		if (passenger == this.getControllingPassenger()) {
+
+		boolean isControllingPassenger = passenger == this.getControllingPassenger();
+		if (isControllingPassenger) {
 			passenger.setPose(EntityPose.STANDING);
 		} else {
 			passenger.setPose(EntityPose.SITTING);
@@ -657,14 +659,19 @@ public class WheelbarrowEntity extends VehicleEntity {
 		passenger.setYaw(passenger.getYaw());
 		passenger.setHeadYaw(passenger.getHeadYaw());
 		this.clampPassengerYaw(passenger);
-		if (passenger instanceof AnimalEntity && this.getPassengerList().size() == this.getMaxPassengers()) {
-			int degrees = passenger.getId() % 2 == 0 ? 90 : 270;
-			passenger.setBodyYaw(((AnimalEntity) passenger).bodyYaw + (float) degrees);
-			passenger.setHeadYaw(passenger.getHeadYaw() + (float) degrees);
-		}
+
+		// if (passenger instanceof AnimalEntity && this.getPassengerList().size() ==
+		// this.getMaxPassengers()) {
+		// int degrees = passenger.getId() % 2 == 0 ? 90 : 270;
+		// passenger.setBodyYaw(((AnimalEntity) passenger).bodyYaw + (float) degrees);
+		// passenger.setHeadYaw(passenger.getHeadYaw() + (float) degrees);
+		// }
 	}
 
 	protected void clampPassengerYaw(Entity passenger) {
+		if (passenger != this.getControllingPassenger()) {
+			return;
+		}
 		passenger.setBodyYaw(this.getYaw());
 		float f = MathHelper.wrapDegrees(passenger.getYaw() - this.getYaw());
 		float g = MathHelper.clamp(f, -105.0f, 105.0f);
