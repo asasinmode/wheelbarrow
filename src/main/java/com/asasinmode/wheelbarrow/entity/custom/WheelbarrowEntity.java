@@ -68,6 +68,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private double z;
 	private float nearbySlipperiness;
 	private Location location;
+	private LivingEntity prevControllingPassenger;
 	private boolean pressingLeft;
 	private boolean pressingRight;
 	private boolean pressingForward;
@@ -409,6 +410,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 		this.checkBlockCollision();
 
+		LivingEntity controllingPassenger = this.getControllingPassenger();
 		boolean isServer = !this.getWorld().isClient;
 		List<Entity> list = this.getWorld().getOtherEntities(this,
 				this.getBoundingBox().expand(0.2, 0, 0.2),
@@ -425,7 +427,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 				entity = (Entity) entitiesIterator.next();
 			} while (entity.hasPassenger(this));
 
-			boolean canYoink = isServer && !(this.getControllingPassenger() instanceof PlayerEntity);
+			boolean canYoink = isServer && !(controllingPassenger instanceof PlayerEntity);
 
 			if (canYoink && this.getPassengerList().size() < this.getMaxPassengers() && !entity.hasVehicle()
 					&& this.canBeYoinked(entity) && entity instanceof LivingEntity
@@ -434,6 +436,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 			} else {
 				this.pushAwayFrom(entity);
 			}
+
+			this.prevControllingPassenger = controllingPassenger;
 		}
 
 		Type oxidationLevel = this.getOxidationLevel();
@@ -681,6 +685,21 @@ public class WheelbarrowEntity extends VehicleEntity {
 	@Override
 	public void onPassengerLookAround(Entity passenger) {
 		this.clampPassengerYaw(passenger);
+	}
+
+	@Override
+	public Vec3d updatePassengerForDismount(LivingEntity passenger) {
+		boolean wasControlling = passenger == this.prevControllingPassenger;
+		float yaw = wasControlling ? this.getYaw() : passenger.getYaw();
+
+		Vec3d offsetVec = WheelbarrowEntity.getPassengerDismountOffset(this.getWidth() * MathHelper.SQUARE_ROOT_OF_TWO,
+				passenger.getWidth(), yaw);
+
+		double x = this.getX() + offsetVec.x;
+		double z = this.getZ() + offsetVec.z;
+		BlockPos blockPos = BlockPos.ofFloored(x, this.getBoundingBox().maxY, z);
+
+		return new Vec3d(x, blockPos.getY(), z);
 	}
 
 	// overriden because the default implementation makes it hover few blocks above
