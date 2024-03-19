@@ -629,14 +629,15 @@ public class WheelbarrowEntity extends VehicleEntity {
 	protected Vector3f getPassengerAttachmentPos(Entity passenger, EntityDimensions dimensions, float scaleFactor) {
 		float zOffset = -0.8f;
 		float yOffset = 0.6f;
+		boolean isControllingPassenger = passenger == this.getControllingPassenger();
 
-		if (passenger == this.getControllingPassenger()) {
+		if (isControllingPassenger) {
 			passenger.setPose(EntityPose.STANDING);
 		} else {
 			passenger.setPose(EntityPose.SITTING);
 		}
 
-		if (passenger != this.getControllingPassenger() || !(passenger instanceof PlayerEntity)) {
+		if (!isControllingPassenger || !(passenger instanceof PlayerEntity)) {
 			zOffset = 0.2f;
 			yOffset = 0.4f;
 		}
