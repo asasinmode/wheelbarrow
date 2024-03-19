@@ -413,7 +413,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		LivingEntity controllingPassenger = this.getControllingPassenger();
 		boolean isServer = !this.getWorld().isClient;
 		List<Entity> list = this.getWorld().getOtherEntities(this,
-				this.getBoundingBox().expand(0.2, 0, 0.2),
+				this.getBoundingBox().expand(0.15, 0, 0.15),
 				EntityPredicates.canBePushedBy(this));
 
 		if (!list.isEmpty()) {
