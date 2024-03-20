@@ -359,6 +359,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		return 2;
 	}
 
+	// todo check first animal
 	@Override
 	@Nullable
 	public LivingEntity getControllingPassenger() {
@@ -691,6 +692,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	public Vec3d updatePassengerForDismount(LivingEntity passenger) {
 		Vec3d offsetVec = WheelbarrowEntity.getPassengerDismountOffset(this.getWidth() * MathHelper.SQUARE_ROOT_OF_TWO,
 				passenger.getWidth(), passenger.getYaw());
+
 		if (passenger == this.prevControllingPassenger) {
 			double offset = -0.6;
 			// make offset yaw aware, copied from getPassengerDismountOffset
@@ -702,11 +704,12 @@ public class WheelbarrowEntity extends VehicleEntity {
 			return new Vec3d(x, this.getY(), z);
 		}
 
-		// todo check how boat doesn't put you inside of blocks
 		double x = this.getX() + offsetVec.x;
-		BlockPos blockPos = BlockPos.ofFloored(x, this.getBoundingBox().maxY, z);
 		double z = this.getZ() + offsetVec.z;
-		return new Vec3d(x, blockPos.getY(), z);
+		BlockPos blockPos = BlockPos.ofFloored(x, this.getBoundingBox().maxY, z);
+		double dismountYOffset = this.getWorld().getDismountHeight(blockPos);
+
+		return new Vec3d(x, blockPos.getY() + dismountYOffset, z);
 	}
 
 	// overriden because the default implementation makes it hover few blocks above
