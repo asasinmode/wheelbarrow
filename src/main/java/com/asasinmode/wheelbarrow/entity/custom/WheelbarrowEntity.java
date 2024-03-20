@@ -377,24 +377,17 @@ public class WheelbarrowEntity extends VehicleEntity {
 	}
 
 	private void steer() {
+		float yawRadians = (float) Math.PI / 180;
+		float sin = -MathHelper.sin(this.getYaw() * yawRadians);
+		float cos = MathHelper.cos(this.getYaw() * yawRadians);
+		float largerSinCos = Math.max(Math.abs(sin), Math.abs(cos));
+		float velocity = 0.0f;
+
 		if (this.pressingForward) {
-			System.out.println("pressingForward: true");
+			velocity = 0.04f;
 		}
-		if (this.pressingLeft) {
-			System.out.println("pressingLeft: true");
-		}
-		if (this.pressingRight) {
-			System.out.println("pressingRight: true");
-		}
-		if (this.pressingBack) {
-			System.out.println("pressingBack: true");
-		}
-		if (this.jumping) {
-			System.out.println("jumping: true");
-		}
-		if (this.sprinting) {
-			System.out.println("sprinting: true");
-		}
+
+		this.setVelocity(this.getVelocity().add(sin * velocity / largerSinCos, 0, cos * velocity / largerSinCos));
 	}
 
 	public boolean canBeYoinked(Entity entity) {
