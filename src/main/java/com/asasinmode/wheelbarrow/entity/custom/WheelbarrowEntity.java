@@ -723,6 +723,10 @@ public class WheelbarrowEntity extends VehicleEntity {
 	}
 
 	private void spawnParticles(DefaultParticleType particleType, ServerWorld world) {
+		double yaw = Math.toRadians(this.getYaw());
+		double yawCos = Math.cos(yaw);
+		double yawSin = Math.sin(yaw);
+
 		// inside
 		for (int i = 0; i < 6; i++) {
 			double particleX = random.nextDouble() * 0.4 * (double) (random.nextBoolean()
@@ -730,7 +734,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 					: -1);
 			double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
 			double particleZ = 0.2 + random.nextDouble() * 0.5 * (double) (random.nextBoolean() ? 1 : -1);
-			this.spawnParticle(world, particleType, particleX, particleY, particleZ);
+			this.spawnParticle(world, particleType, particleX, particleY, particleZ, yawSin, yawCos);
 		}
 
 		// left
@@ -738,7 +742,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 			double particleX = 0.5;
 			double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
 			double particleZ = 0.2 + random.nextDouble() * 0.625 * (double) (random.nextBoolean() ? 1 : -1);
-			this.spawnParticle(world, particleType, particleX, particleY, particleZ);
+			this.spawnParticle(world, particleType, particleX, particleY, particleZ, yawSin, yawCos);
 		}
 
 		// right
@@ -746,7 +750,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 			double particleX = -0.5;
 			double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
 			double particleZ = 0.2 + random.nextDouble() * 0.625 * (double) (random.nextBoolean() ? 1 : -1);
-			this.spawnParticle(world, particleType, particleX, particleY, particleZ);
+			this.spawnParticle(world, particleType, particleX, particleY, particleZ, yawSin, yawCos);
 		}
 
 		// back
@@ -754,7 +758,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 			double particleX = random.nextDouble() * 0.5 * (double) (random.nextBoolean() ? 1 : -1);
 			double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
 			double particleZ = -0.55;
-			this.spawnParticle(world, particleType, particleX, particleY, particleZ);
+			this.spawnParticle(world, particleType, particleX, particleY, particleZ, yawSin, yawCos);
 		}
 
 		// front
@@ -762,18 +766,16 @@ public class WheelbarrowEntity extends VehicleEntity {
 			double particleX = random.nextDouble() * 0.5 * (double) (random.nextBoolean() ? 1 : -1);
 			double particleY = random.nextDouble() * 0.3125 * (double) (random.nextBoolean() ? 1 : -1);
 			double particleZ = 0.8;
-			this.spawnParticle(world, particleType, particleX, particleY, particleZ);
+			this.spawnParticle(world, particleType, particleX, particleY, particleZ, yawSin, yawCos);
 		}
 	}
 
-	private void spawnParticle(ServerWorld world, DefaultParticleType particleType, double x, double y, double z) {
-		double yaw = Math.toRadians(this.getYaw());
-		double cosYaw = Math.cos(yaw);
-		double sinYaw = Math.sin(yaw);
+	private void spawnParticle(ServerWorld world, DefaultParticleType particleType, double x, double y, double z,
+			double yawSin, double yawCos) {
 		world.spawnParticles(particleType,
-				this.getX() + x * cosYaw - z * sinYaw,
+				this.getX() + x * yawCos - z * yawSin,
 				this.getY() + 0.55 + y,
-				this.getZ() + z * cosYaw + x * sinYaw,
+				this.getZ() + z * yawCos + x * yawSin,
 				1,
 				random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
 				random.nextDouble() / 10.0 * (double) (random.nextBoolean() ? 1 : -1),
