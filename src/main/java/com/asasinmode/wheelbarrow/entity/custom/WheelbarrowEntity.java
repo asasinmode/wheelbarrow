@@ -693,21 +693,25 @@ public class WheelbarrowEntity extends VehicleEntity {
 		Vec3d offsetVec = WheelbarrowEntity.getPassengerDismountOffset(this.getWidth() * MathHelper.SQUARE_ROOT_OF_TWO,
 				passenger.getWidth(), passenger.getYaw());
 
+		double x, dismountYOffset;
+		BlockPos blockPos;
+
 		if (passenger == this.prevControllingPassenger) {
 			double offset = -0.6;
 			// make offset yaw aware, copied from getPassengerDismountOffset
 			float sin = -MathHelper.sin(this.getYaw() * ((float) Math.PI / 180));
 			float cos = MathHelper.cos(this.getYaw() * ((float) Math.PI / 180));
 			float h = Math.max(Math.abs(sin), Math.abs(cos));
-			double x = passenger.getX() + (double) sin * offset / (double) h;
-			double z = passenger.getZ() + (double) cos * offset / (double) h;
-			return new Vec3d(x, this.getY(), z);
+			x = passenger.getX() + (double) sin * offset / (double) h;
+			z = passenger.getZ() + (double) cos * offset / (double) h;
+			blockPos = BlockPos.ofFloored(x, this.getY(), z);
+			dismountYOffset = this.getWorld().getDismountHeight(blockPos);
+		} else {
+			x = this.getX() + offsetVec.x;
+			z = this.getZ() + offsetVec.z;
+			blockPos = BlockPos.ofFloored(x, this.getBoundingBox().maxY, z);
+			dismountYOffset = this.getWorld().getDismountHeight(blockPos);
 		}
-
-		double x = this.getX() + offsetVec.x;
-		double z = this.getZ() + offsetVec.z;
-		BlockPos blockPos = BlockPos.ofFloored(x, this.getBoundingBox().maxY, z);
-		double dismountYOffset = this.getWorld().getDismountHeight(blockPos);
 
 		return new Vec3d(x, blockPos.getY() + dismountYOffset, z);
 	}
