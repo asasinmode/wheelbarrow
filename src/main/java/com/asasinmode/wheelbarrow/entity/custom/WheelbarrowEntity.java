@@ -359,7 +359,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 		return 2;
 	}
 
-	// todo check first animal
 	@Override
 	@Nullable
 	public LivingEntity getControllingPassenger() {
@@ -377,8 +376,25 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.jumping = jumping;
 	}
 
-	private void handlePlayerInput() {
-		// System.out.println("maybe inputs " + this.pressingForward);
+	private void steer() {
+		if (this.pressingForward) {
+			System.out.println("pressingForward: true");
+		}
+		if (this.pressingLeft) {
+			System.out.println("pressingLeft: true");
+		}
+		if (this.pressingRight) {
+			System.out.println("pressingRight: true");
+		}
+		if (this.pressingBack) {
+			System.out.println("pressingBack: true");
+		}
+		if (this.jumping) {
+			System.out.println("jumping: true");
+		}
+		if (this.sprinting) {
+			System.out.println("sprinting: true");
+		}
 	}
 
 	public boolean canBeYoinked(Entity entity) {
@@ -387,6 +403,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 	@Override
 	public void tick() {
+		boolean isServer = !this.getWorld().isClient;
 		this.location = this.checkLocation();
 
 		if (this.getDamageWobbleTicks() > 0) {
@@ -403,7 +420,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 		if (this.isLogicalSideForUpdatingMovement()) {
 			this.updateVelocity();
-			this.handlePlayerInput();
+			if (!isServer) {
+				this.steer();
+			}
 			this.move(MovementType.SELF, this.getVelocity());
 		} else {
 			this.setVelocity(Vec3d.ZERO);
@@ -412,7 +431,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.checkBlockCollision();
 
 		LivingEntity controllingPassenger = this.getControllingPassenger();
-		boolean isServer = !this.getWorld().isClient;
 		List<Entity> list = this.getWorld().getOtherEntities(this,
 				this.getBoundingBox().expand(0.15, 0, 0.15),
 				EntityPredicates.canBePushedBy(this));
