@@ -9,12 +9,12 @@ import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.Input;
-import net.minecraft.entity.Entity;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.recipebook.ClientRecipeBook;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.stat.StatHandler;
 
 @Mixin(ClientPlayerEntity.class)
@@ -31,7 +31,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 			ClientPlayerEntity thisObject = (ClientPlayerEntity) (Object) this;
 			Input input = thisObject.input;
 			wheelbarrow.setInputs(input.pressingLeft, input.pressingRight, input.pressingForward, input.pressingBack,
-					thisObject.isSprinting(), input.jumping);
+					thisObject.client.options.sprintKey.isPressed(), input.jumping);
 		}
 	}
 }
