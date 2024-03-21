@@ -443,6 +443,10 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.checkBlockCollision();
 
 		LivingEntity controllingPassenger = this.getControllingPassenger();
+		boolean isControlledByPlayer = controllingPassenger instanceof PlayerEntity;
+
+		this.setStepHeight(isControlledByPlayer ? 1.0f : 0.5f);
+
 		List<Entity> list = this.getWorld().getOtherEntities(this,
 				this.getBoundingBox().expand(0.15, 0, 0.15),
 				EntityPredicates.canBePushedBy(this));
@@ -454,15 +458,16 @@ public class WheelbarrowEntity extends VehicleEntity {
 				if (!entitiesIterator.hasNext()) {
 					return;
 				}
-
 				entity = (Entity) entitiesIterator.next();
 			} while (entity.hasPassenger(this));
 
-			boolean canYoink = isServer && !(controllingPassenger instanceof PlayerEntity);
-
-			if (canYoink && this.getPassengerList().size() < this.getMaxPassengers() && !entity.hasVehicle()
-					&& this.canBeYoinked(entity) && entity instanceof LivingEntity
-					&& !(entity instanceof PlayerEntity)) {
+			boolean canYoink = isServer && isControlledByPlayer;
+			if (canYoink
+					&& this.getPassengerList().size() < this.getMaxPassengers()
+					&& !entity.hasVehicle()
+					&& entity instanceof LivingEntity
+					&& !(entity instanceof PlayerEntity)
+					&& this.canBeYoinked(entity)) {
 				entity.startRiding(this);
 			} else {
 				this.pushAwayFrom(entity);

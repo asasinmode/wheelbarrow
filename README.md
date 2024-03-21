@@ -1,7 +1,5 @@
 # wheelbarrow
 
-bug u fall off the world if dismounting without ground behind you
-stepheight
 passengers (yoinking only when driven)
 wheel animation
 
