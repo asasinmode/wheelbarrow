@@ -70,14 +70,10 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private Location location;
 	private LivingEntity prevControllingPassenger;
 	private float yawVelocity;
-	// -1 if left, 1 if right, 0 if wasn't previously rotating
-	private int prevRotate;
 	private boolean pressingLeft;
 	private boolean pressingRight;
 	private boolean pressingForward;
 	private boolean pressingBack;
-	private boolean sprinting;
-	private boolean jumping;
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
@@ -204,13 +200,13 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.setDamageWobbleSide(-this.getDamageWobbleSide());
 		this.setDamageWobbleTicks(10);
 		this.scheduleVelocityUpdate();
-		this.setDamageWobbleStrength(this.getDamageWobbleStrength() + amount * 10.0F);
+		this.setDamageWobbleStrength(this.getDamageWobbleStrength() + amount * 10.0f);
 		this.emitGameEvent(GameEvent.ENTITY_DAMAGE, source.getAttacker());
 
 		boolean isInCreative = source.getAttacker() instanceof PlayerEntity
 				&& ((PlayerEntity) source.getAttacker()).getAbilities().creativeMode;
 
-		if ((isInCreative || !(this.getDamageWobbleStrength() > 40.0F)) && !this.shouldAlwaysKill(source)) {
+		if ((isInCreative || !(this.getDamageWobbleStrength() > 40.0f)) && !this.shouldAlwaysKill(source)) {
 			if (isInCreative) {
 				this.discard();
 			}
@@ -304,7 +300,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	public void animateDamage(float yaw) {
 		this.setDamageWobbleSide(-this.getDamageWobbleSide());
 		this.setDamageWobbleTicks(10);
-		this.setDamageWobbleStrength(this.getDamageWobbleStrength() * 11.0F);
+		this.setDamageWobbleStrength(this.getDamageWobbleStrength() * 11.0f);
 	}
 
 	@Override
@@ -375,8 +371,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.pressingRight = pressingRight;
 		this.pressingForward = pressingForward;
 		this.pressingBack = pressingBack;
-		this.sprinting = sprinting;
-		this.jumping = jumping;
 	}
 
 	private void steer() {
@@ -423,14 +417,13 @@ public class WheelbarrowEntity extends VehicleEntity {
 	public void tick() {
 		boolean isServer = !this.getWorld().isClient;
 		this.location = this.checkLocation();
-		this.prevRotate = this.pressingLeft ? -1 : this.pressingRight ? 1 : 0;
 
 		if (this.getDamageWobbleTicks() > 0) {
 			this.setDamageWobbleTicks(this.getDamageWobbleTicks() - 1);
 		}
 
-		if (this.getDamageWobbleStrength() > 0.0F) {
-			this.setDamageWobbleStrength(this.getDamageWobbleStrength() - 1.0F);
+		if (this.getDamageWobbleStrength() > 0.0f) {
+			this.setDamageWobbleStrength(this.getDamageWobbleStrength() - 1.0f);
 		}
 
 		super.tick();
@@ -540,20 +533,20 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private void updateVelocity() {
 		double yMulitplier = 1.0;
 		double yMod = this.hasNoGravity() ? 0.0 : -0.04;
-		this.velocityDecay = 0.05F;
+		this.velocityDecay = 0.05f;
 
 		if (this.location == Location.UNDER_FLOWING_WATER) {
 			yMod = -0.03;
-			this.velocityDecay = 0.9F;
+			this.velocityDecay = 0.3f;
 		} else if (this.location == Location.UNDER_WATER) {
-			this.velocityDecay = 0.6F;
+			this.velocityDecay = 0.3f;
 			yMulitplier = 0.8;
 		} else if (this.location == Location.IN_AIR) {
-			this.velocityDecay = 0.9F;
+			this.velocityDecay = 0.5f;
 		} else if (this.location == Location.ON_LAND) {
 			this.velocityDecay = this.nearbySlipperiness;
 			if (this.getControllingPassenger() instanceof PlayerEntity) {
-				this.nearbySlipperiness /= 2.0F;
+				this.nearbySlipperiness /= 2.0f;
 			}
 		}
 
@@ -565,12 +558,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 			y = -1.0;
 		}
 
-		// float yawDecay = 1.0f;
-		// if (!this.pressingRight && !this.pressingLeft) {
-		// yawDecay = 0.15f;
-		// }
 		this.yawVelocity *= 0.6;
-
 		this.setVelocity(vec3d.x * (double) this.velocityDecay, y, vec3d.z * (double) this.velocityDecay);
 	}
 
@@ -581,7 +569,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		}
 
 		float slipperiness = this.getNearbySlipperiness();
-		if (slipperiness > 0.0F) {
+		if (slipperiness > 0.0f) {
 			this.nearbySlipperiness = slipperiness;
 			return Location.ON_LAND;
 		} else {
@@ -599,7 +587,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		int m = MathHelper.floor(box2.minZ) - 1;
 		int n = MathHelper.ceil(box2.maxZ) + 1;
 		VoxelShape voxelShape = VoxelShapes.cuboid(box2);
-		float f = 0.0F;
+		float f = 0.0f;
 		int o = 0;
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 
