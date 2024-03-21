@@ -55,7 +55,6 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
-import net.minecraft.entity.vehicle.BoatEntity;
 
 public class WheelbarrowEntity extends VehicleEntity {
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
@@ -71,6 +70,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private Location location;
 	private LivingEntity prevControllingPassenger;
 	private float yawVelocity;
+	// -1 if left, 1 if right, 0 if wasn't previously rotating
+	private int prevRotate;
 	private boolean pressingLeft;
 	private boolean pressingRight;
 	private boolean pressingForward;
@@ -383,27 +384,33 @@ public class WheelbarrowEntity extends VehicleEntity {
 			return;
 		}
 
-		float yawRadians = (float) Math.PI / 180;
-		float sin = -MathHelper.sin(this.getYaw() * yawRadians);
-		float cos = MathHelper.cos(this.getYaw() * yawRadians);
-		float largerSinCos = Math.max(Math.abs(sin), Math.abs(cos));
-		float velocity = 0.0f;
-
 		if (this.pressingLeft) {
-			this.yawVelocity -= 2.0f;
+			this.yawVelocity -= 1.5f;
+			if (this.yawVelocity <= -5.0f) {
+				this.yawVelocity = -5.0f;
+			}
 		}
 		if (this.pressingRight) {
-			this.yawVelocity += 2.0f;
+			this.yawVelocity += 1.5f;
+			if (this.yawVelocity >= 5.0f) {
+				this.yawVelocity = 5.0f;
+			}
 		}
 
 		this.setYaw(this.getYaw() + this.yawVelocity);
 
+		float velocity = 0.0f;
 		if (this.pressingForward) {
-			velocity = 0.04f;
+			velocity = 0.06f;
 		}
 		if (this.pressingBack) {
-			velocity -= 0.005f;
+			velocity = -0.06f;
 		}
+
+		float yawRadians = (float) Math.PI / 180;
+		float sin = -MathHelper.sin(this.getYaw() * yawRadians);
+		float cos = MathHelper.cos(this.getYaw() * yawRadians);
+		float largerSinCos = Math.max(Math.abs(sin), Math.abs(cos));
 
 		this.setVelocity(this.getVelocity().add(sin * velocity / largerSinCos, 0, cos * velocity / largerSinCos));
 	}
@@ -416,6 +423,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	public void tick() {
 		boolean isServer = !this.getWorld().isClient;
 		this.location = this.checkLocation();
+		this.prevRotate = this.pressingLeft ? -1 : this.pressingRight ? 1 : 0;
 
 		if (this.getDamageWobbleTicks() > 0) {
 			this.setDamageWobbleTicks(this.getDamageWobbleTicks() - 1);
@@ -557,7 +565,12 @@ public class WheelbarrowEntity extends VehicleEntity {
 			y = -1.0;
 		}
 
-		this.yawVelocity *= this.velocityDecay;
+		// float yawDecay = 1.0f;
+		// if (!this.pressingRight && !this.pressingLeft) {
+		// yawDecay = 0.15f;
+		// }
+		this.yawVelocity *= 0.6;
+
 		this.setVelocity(vec3d.x * (double) this.velocityDecay, y, vec3d.z * (double) this.velocityDecay);
 	}
 
