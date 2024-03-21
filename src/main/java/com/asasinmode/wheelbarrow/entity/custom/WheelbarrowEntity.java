@@ -55,6 +55,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
+import net.minecraft.entity.vehicle.BoatEntity;
 
 public class WheelbarrowEntity extends VehicleEntity {
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
@@ -69,6 +70,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private float nearbySlipperiness;
 	private Location location;
 	private LivingEntity prevControllingPassenger;
+	private float yawVelocity;
 	private boolean pressingLeft;
 	private boolean pressingRight;
 	private boolean pressingForward;
@@ -377,14 +379,30 @@ public class WheelbarrowEntity extends VehicleEntity {
 	}
 
 	private void steer() {
+		if (!this.hasPassengers()) {
+			return;
+		}
+
 		float yawRadians = (float) Math.PI / 180;
 		float sin = -MathHelper.sin(this.getYaw() * yawRadians);
 		float cos = MathHelper.cos(this.getYaw() * yawRadians);
 		float largerSinCos = Math.max(Math.abs(sin), Math.abs(cos));
 		float velocity = 0.0f;
 
+		if (this.pressingLeft) {
+			this.yawVelocity -= 2.0f;
+		}
+		if (this.pressingRight) {
+			this.yawVelocity += 2.0f;
+		}
+
+		this.setYaw(this.getYaw() + this.yawVelocity);
+
 		if (this.pressingForward) {
 			velocity = 0.04f;
+		}
+		if (this.pressingBack) {
+			velocity -= 0.005f;
 		}
 
 		this.setVelocity(this.getVelocity().add(sin * velocity / largerSinCos, 0, cos * velocity / largerSinCos));
@@ -534,12 +552,13 @@ public class WheelbarrowEntity extends VehicleEntity {
 		Vec3d vec3d = this.getVelocity();
 		double y = (vec3d.y + yMod) * yMulitplier;
 
+		// terminal velocity so it doesn't accelerate infinitely
 		if (y < -1.0) {
 			y = -1.0;
 		}
 
-		this.setVelocity(vec3d.x * (double) this.velocityDecay, y,
-				vec3d.z * (double) this.velocityDecay);
+		this.yawVelocity *= this.velocityDecay;
+		this.setVelocity(vec3d.x * (double) this.velocityDecay, y, vec3d.z * (double) this.velocityDecay);
 	}
 
 	private Location checkLocation() {
@@ -675,6 +694,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 		if (passenger.getType().isIn(EntityTypeTags.CAN_TURN_IN_BOATS)) {
 			return;
 		}
+
+		passenger.setYaw(passenger.getYaw() + this.yawVelocity);
+		passenger.setHeadYaw(passenger.getHeadYaw() + this.yawVelocity);
 
 		// todo add back this.yawvelocity from boat so passengers turn too?
 		passenger.setYaw(passenger.getYaw());
