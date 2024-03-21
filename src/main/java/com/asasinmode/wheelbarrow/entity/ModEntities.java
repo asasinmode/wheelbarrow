@@ -15,7 +15,7 @@ public class ModEntities {
 	public static final EntityType<WheelbarrowEntity> WHEELBARROW = Registry.register(Registries.ENTITY_TYPE,
 			new Identifier(Wheelbarrow.MOD_ID, "wheelbarrow"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MISC, WheelbarrowEntity::new)
-					.dimensions(EntityDimensions.fixed(1.25F, 0.875F)).build());
+					.dimensions(EntityDimensions.fixed(0.98f, 0.875f)).build());
 
 	public static void registerModEntities() {
 	}
