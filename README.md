@@ -1,6 +1,6 @@
 # wheelbarrow
 
-passengers (yoinking only when driven)
+player animation
 wheel animation
 
 ## offstream

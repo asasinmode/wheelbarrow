@@ -409,8 +409,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.setVelocity(this.getVelocity().add(sin * velocity / largerSinCos, 0, cos * velocity / largerSinCos));
 	}
 
+	// up to horse/iron golem/spider
 	public boolean canBeYoinked(Entity entity) {
-		return entity.getWidth() < this.getWidth();
+		return entity.getWidth() <= 1.4;
 	}
 
 	@Override
@@ -443,37 +444,31 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.checkBlockCollision();
 
 		LivingEntity controllingPassenger = this.getControllingPassenger();
-		boolean isControlledByPlayer = controllingPassenger instanceof PlayerEntity;
+		this.prevControllingPassenger = controllingPassenger;
 
+		boolean isControlledByPlayer = controllingPassenger instanceof PlayerEntity;
 		this.setStepHeight(isControlledByPlayer ? 1.0f : 0.5f);
 
 		List<Entity> list = this.getWorld().getOtherEntities(this,
-				this.getBoundingBox().expand(0.15, 0, 0.15),
-				EntityPredicates.canBePushedBy(this));
+				this.getBoundingBox().expand(0.2, 0.1, 0.2),
+				(entity) -> !entity.hasPassenger(this) // wheelbarrow not passenger of
+						&& !this.hasPassenger(entity) // entity not passenger of wheelbarrow
+						&& EntityPredicates.canBePushedBy(this).test(entity));
 
-		if (!list.isEmpty()) {
-			Iterator<Entity> entitiesIterator = list.iterator();
-			Entity entity;
-			do {
-				if (!entitiesIterator.hasNext()) {
-					return;
-				}
-				entity = (Entity) entitiesIterator.next();
-			} while (entity.hasPassenger(this));
-
-			boolean canYoink = isServer && isControlledByPlayer;
-			if (canYoink
+		for (Entity entity : list) {
+			boolean canYoink = isServer
+					&& isControlledByPlayer
 					&& this.getPassengerList().size() < this.getMaxPassengers()
 					&& !entity.hasVehicle()
 					&& entity instanceof LivingEntity
 					&& !(entity instanceof PlayerEntity)
-					&& this.canBeYoinked(entity)) {
+					&& this.canBeYoinked(entity);
+
+			if (canYoink) {
 				entity.startRiding(this);
 			} else {
 				this.pushAwayFrom(entity);
 			}
-
-			this.prevControllingPassenger = controllingPassenger;
 		}
 
 		Type oxidationLevel = this.getOxidationLevel();
@@ -666,6 +661,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		}
 	}
 
+	// todo zoffset adjusted by entity width eg. spider
 	@Override
 	protected Vector3f getPassengerAttachmentPos(Entity passenger, EntityDimensions dimensions, float scaleFactor) {
 		float zOffset = -0.8f;
