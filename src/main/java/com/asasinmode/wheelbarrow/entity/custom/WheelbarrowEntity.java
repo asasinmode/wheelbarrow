@@ -73,6 +73,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private boolean pressingRight;
 	private boolean pressingForward;
 	private boolean pressingBack;
+	private boolean sprintingPressed;
 	private boolean sprinting;
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
@@ -371,7 +372,12 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.pressingRight = pressingRight;
 		this.pressingForward = pressingForward;
 		this.pressingBack = pressingBack;
-		this.sprinting = sprinting;
+		this.sprintingPressed = sprinting;
+		if (!pressingForward) {
+			this.sprinting = false;
+		} else if (sprinting) {
+			this.sprinting = true;
+		}
 	}
 
 	private void steer() {
@@ -397,6 +403,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		float velocity = 0.0f;
 		if (this.pressingForward) {
 			velocity = 0.06f;
+			// todo change fov
 			if (this.sprinting) {
 				velocity += 0.03f;
 			}
@@ -564,6 +571,14 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 		this.yawVelocity *= 0.6;
 		this.setVelocity(vec3d.x * (double) this.velocityDecay, y, vec3d.z * (double) this.velocityDecay);
+
+		// bumped into something or stopped not sure if thats how you do it
+		// todo test on ice
+		if (this.getVelocity().length() <= 0.07) {
+			if (this.sprinting && !this.sprintingPressed) {
+				this.sprinting = false;
+			}
+		}
 	}
 
 	private Location checkLocation() {
