@@ -1,6 +1,5 @@
 package com.asasinmode.wheelbarrow.entity.custom;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -74,6 +73,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private boolean pressingRight;
 	private boolean pressingForward;
 	private boolean pressingBack;
+	private boolean sprinting;
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
@@ -371,6 +371,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.pressingRight = pressingRight;
 		this.pressingForward = pressingForward;
 		this.pressingBack = pressingBack;
+		this.sprinting = sprinting;
 	}
 
 	private void steer() {
@@ -396,6 +397,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 		float velocity = 0.0f;
 		if (this.pressingForward) {
 			velocity = 0.06f;
+			if (this.sprinting) {
+				velocity += 0.03f;
+			}
 		}
 		if (this.pressingBack) {
 			velocity = -0.06f;
@@ -700,9 +704,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 		passenger.setYaw(passenger.getYaw() + this.yawVelocity);
 		passenger.setHeadYaw(passenger.getHeadYaw() + this.yawVelocity);
 
-		// todo add back this.yawvelocity from boat so passengers turn too?
-		passenger.setYaw(passenger.getYaw());
-		passenger.setHeadYaw(passenger.getHeadYaw());
 		this.clampPassengerYaw(passenger);
 	}
 
