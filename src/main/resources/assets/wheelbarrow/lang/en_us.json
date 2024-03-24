@@ -2,5 +2,7 @@
 	"item.wheelbarrow.copper_wheelbarrow": "Copper Wheelbarrow",
 	"item.wheelbarrow.exposed_copper_wheelbarrow": "Exposed Copper Wheelbarrow",
 	"item.wheelbarrow.weathered_copper_wheelbarrow": "Weathered Copper Wheelbarrow",
-	"item.wheelbarrow.oxidized_copper_wheelbarrow": "Oxidized Copper Wheelbarrow"
+	"item.wheelbarrow.oxidized_copper_wheelbarrow": "Oxidized Copper Wheelbarrow",
+	"modmenu.nameTranslation.wheelbarrow": "Wheelbarrow",
+	"modmenu.descriptionTranslation.wheelbarrow": "A wheelbarrow!"
 }

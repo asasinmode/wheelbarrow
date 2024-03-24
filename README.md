@@ -2,6 +2,7 @@
 
 player animation
 wheel animation
+keybind for yeeting stuff out in front
 
 ## offstream
 
@@ -11,7 +12,6 @@ github action on release publish to
 ## maybe later
 
 maybe fill with water and yoink water creatures
-keybind/other thing for yeeting stuff out in front
 
 
 ### publishing
