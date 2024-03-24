@@ -12,7 +12,7 @@ github action on release publish to
 ## maybe later
 
 maybe fill with water and yoink water creatures
-
+configurable number of cargo passengers (min 1, offset height, yeet from the top)
 
 ### publishing
 
