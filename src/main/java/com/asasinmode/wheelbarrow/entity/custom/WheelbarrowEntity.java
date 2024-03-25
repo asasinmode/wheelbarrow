@@ -568,8 +568,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 			}
 		}
 
-		Vec3d vec3d = this.getVelocity();
-		double y = (vec3d.y + yMod) * yMulitplier;
+		Vec3d velocity = this.getVelocity();
+		double y = (velocity.y + yMod) * yMulitplier;
 
 		// terminal velocity so it doesn't accelerate infinitely
 		if (y < -1.0) {
@@ -577,9 +577,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 		}
 
 		this.yawVelocity *= 0.6;
-		this.setVelocity(vec3d.x * (double) this.velocityDecay, y, vec3d.z * (double) this.velocityDecay);
+		this.setVelocity(velocity.x * (double) this.velocityDecay, y, velocity.z * (double) this.velocityDecay);
 
-		double velocityLength = this.getVelocity().length();
+		double velocityLength = this.getVelocity().horizontalLength();
 
 		// does it ever overflow? i don't know
 		if (this.getControllingPassenger() instanceof PlayerEntity) {
@@ -587,7 +587,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 		}
 
 		// bumped into something or stopped not sure if thats how you do it
-		// todo test on ice
 		if (velocityLength <= 0.07) {
 			if (this.sprinting && !this.sprintingPressed) {
 				this.sprinting = false;
