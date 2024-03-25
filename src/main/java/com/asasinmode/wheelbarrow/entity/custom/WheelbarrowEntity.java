@@ -75,9 +75,12 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private boolean pressingBack;
 	private boolean sprintingPressed;
 	private boolean sprinting;
+	// todo reset on passenger ride?
+	private float limbSwingValue;
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
+		this.limbSwingValue = 0.0f;
 	}
 
 	protected WheelbarrowEntity(World world, double x, double y, double z) {
@@ -169,6 +172,10 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 	public boolean getIsWaxed() {
 		return this.dataTracker.get(IS_WAXED);
+	}
+
+	public double getLimbSwingValue() {
+		return this.limbSwingValue;
 	}
 
 	public static WheelbarrowEntity create(Type type, ServerWorld world, double x, double y, double z, ItemStack stack,
@@ -572,9 +579,16 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.yawVelocity *= 0.6;
 		this.setVelocity(vec3d.x * (double) this.velocityDecay, y, vec3d.z * (double) this.velocityDecay);
 
+		double velocityLength = this.getVelocity().length();
+
+		// does it ever overflow? i don't know
+		if (this.getControllingPassenger() instanceof PlayerEntity) {
+			this.limbSwingValue += velocityLength;
+		}
+
 		// bumped into something or stopped not sure if thats how you do it
 		// todo test on ice
-		if (this.getVelocity().length() <= 0.07) {
+		if (velocityLength <= 0.07) {
 			if (this.sprinting && !this.sprintingPressed) {
 				this.sprinting = false;
 			}

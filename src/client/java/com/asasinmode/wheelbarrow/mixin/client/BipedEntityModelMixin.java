@@ -5,9 +5,13 @@ import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.AnimalModel;
@@ -50,5 +54,31 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 		}
 
 		return original;
+	}
+
+	// @ModifyVariable(method =
+	// "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V",
+	// at = @At("HEAD"), ordinal = 0)
+	// private float modifyLimbSwing(float limbSwing, T entity) {
+	// return limbSwing;
+	// }
+
+	// I'm not sure what would be the way to do it but that's what I came up with
+	@Inject(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At("HEAD"))
+	private void updateTravelledDistance(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks,
+			float netHeadYaw, float headPitch, CallbackInfo ci, @Local(ordinal = 0) LocalFloatRef limbSwingRef,
+			@Local(ordinal = 1) LocalFloatRef limbSwingAmountRef) {
+		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow) {
+			if (wheelbarrow.getControllingPassenger() == entity) {
+				System.out.println("wheelbarrow velocity" + wheelbarrow.getVelocity().horizontalLength());
+
+				limbSwingRef.set((float) wheelbarrow.getLimbSwingValue());
+				limbSwingAmountRef.set(0.5f);
+			}
+		}
+
+		if (limbSwingRef.get() > 0.0f || limbSwingAmountRef.get() > 0.0f) {
+			System.out.println("limbSwing" + limbSwingRef.get() + " amount " + limbSwingAmountRef.get());
+		}
 	}
 }
