@@ -44,8 +44,8 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 	public abstract void setArmAngle(Arm arm, MatrixStack matrices);
 
 	@ModifyExpressionValue(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;riding:Z", opcode = Opcodes.GETFIELD))
-	private boolean modifyRiding(boolean original, T entity, float limbSwing, float limbSwingAmount, float ageInTicks,
-			float netHeadYaw, float headPitch) {
+	private boolean modifySetAnglesRidingCheck(boolean original, T entity, float limbSwing, float limbSwingAmount,
+			float ageInTicks, float netHeadYaw, float headPitch) {
 		Entity vehicle = entity.getVehicle();
 
 		if (vehicle instanceof WheelbarrowEntity wheelbarrow) {
@@ -63,22 +63,24 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 	// return limbSwing;
 	// }
 
-	// I'm not sure what would be the way to do it but that's what I came up with
+	// todo here disable the arms swinging when controlling wheelbarrow
 	@Inject(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At("HEAD"))
 	private void updateTravelledDistance(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks,
 			float netHeadYaw, float headPitch, CallbackInfo ci, @Local(ordinal = 0) LocalFloatRef limbSwingRef,
 			@Local(ordinal = 1) LocalFloatRef limbSwingAmountRef) {
-		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow) {
-			if (wheelbarrow.getControllingPassenger() == entity) {
-				System.out.println("wheelbarrow velocity" + wheelbarrow.getVelocity().horizontalLength());
+		// if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow) {
+		// if (wheelbarrow.getControllingPassenger() == entity) {
+		// // System.out.println("wheelbarrow velocity" +
+		// // wheelbarrow.getVelocity().horizontalLength());
 
-				limbSwingRef.set((float) wheelbarrow.getLimbSwingValue());
-				limbSwingAmountRef.set(0.5f);
-			}
-		}
+		// limbSwingRef.set((float) wheelbarrow.getLimbSwingValue());
+		// limbSwingAmountRef.set(0.5f);
+		// }
+		// }
 
-		if (limbSwingRef.get() > 0.0f || limbSwingAmountRef.get() > 0.0f) {
-			System.out.println("limbSwing" + limbSwingRef.get() + " amount " + limbSwingAmountRef.get());
-		}
+		// if (limbSwingRef.get() > 0.0f || limbSwingAmountRef.get() > 0.0f) {
+		// System.out.println("limbSwing" + limbSwingRef.get() + " amount " +
+		// limbSwingAmountRef.get());
+		// }
 	}
 }
