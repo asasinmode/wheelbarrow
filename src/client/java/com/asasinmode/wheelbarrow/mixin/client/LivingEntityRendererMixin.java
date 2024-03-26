@@ -26,6 +26,24 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 		super(ctx);
 	}
 
+	// todo if wheelbarrow values don't work then use that to modify check and then
+	// multiply the values
+	// @ModifyExpressionValue(method =
+	// "Lnet/minecraft/client/render/entity/LivingEntityRenderer;render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
+	// at = @At(value = "INVOKE", target =
+	// "net/minecraft/entity/LivingEntity.hasVehicle()Z", ordinal = 2))
+	private boolean modifyRenderLimbAnimationCheck(boolean original, T livingEntity, float yaw, float tickDelta,
+			MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light) {
+		// I want to animate player walking when they are the controlling passenger of
+		// the wheelbarrow. Output is negated, hence false
+		if (livingEntity instanceof PlayerEntity && livingEntity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+				&& wheelbarrow.getControllingPassenger() == livingEntity) {
+			return false;
+		}
+
+		return original;
+	}
+
 	@ModifyArgs(method = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "net/minecraft/client/render/entity/model/EntityModel.setAngles(Lnet/minecraft/entity/Entity;FFFFF)V"))
 	private void modifyRenderSetAnglesArguments(Args args, T livingEntity, float yaw, float tickDelta,
 			MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light) {
