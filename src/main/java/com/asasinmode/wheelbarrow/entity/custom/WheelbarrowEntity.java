@@ -217,16 +217,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 			this.killAndDropSelf(source);
 		}
 
-		// todo check what happens without it
-		this.limbAnimator.setSpeed(1.5f);
-
 		return true;
-	}
-
-	@Override
-	public void onDamaged(DamageSource damageSource) {
-		// todo also check what happens without it
-		this.limbAnimator.setSpeed(1.5f);
 	}
 
 	public Item asItem() {
