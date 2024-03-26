@@ -15,6 +15,7 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
+import net.minecraft.entity.LimbAnimator;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.damage.DamageSource;
@@ -58,6 +59,7 @@ import net.minecraft.world.event.GameEvent;
 public class WheelbarrowEntity extends VehicleEntity {
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
 	private static final TrackedData<Boolean> IS_WAXED;
+	public final LimbAnimator limbAnimator = new LimbAnimator();
 	private int lerpTicks;
 	private float velocityDecay;
 	private double wheelbarrowYaw;
@@ -75,12 +77,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private boolean pressingBack;
 	private boolean sprintingPressed;
 	private boolean sprinting;
-	// todo reset on passenger ride?
-	private float limbSwingValue;
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
-		this.limbSwingValue = 0.0f;
 	}
 
 	protected WheelbarrowEntity(World world, double x, double y, double z) {
@@ -174,10 +173,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 		return this.dataTracker.get(IS_WAXED);
 	}
 
-	public double getLimbSwingValue() {
-		return this.limbSwingValue;
-	}
-
 	public static WheelbarrowEntity create(Type type, ServerWorld world, double x, double y, double z, ItemStack stack,
 			PlayerEntity player) {
 
@@ -222,7 +217,16 @@ public class WheelbarrowEntity extends VehicleEntity {
 			this.killAndDropSelf(source);
 		}
 
+		// todo check what happens without it
+		this.limbAnimator.setSpeed(1.5f);
+
 		return true;
+	}
+
+	@Override
+	public void onDamaged(DamageSource damageSource) {
+		// todo also check what happens without it
+		this.limbAnimator.setSpeed(1.5f);
 	}
 
 	public Item asItem() {
@@ -427,6 +431,11 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.setVelocity(this.getVelocity().add(sin * velocity / largerSinCos, 0, cos * velocity / largerSinCos));
 	}
 
+	protected void updateLimbs(float posDelta) {
+		float speed = posDelta * 4.0f;
+		this.limbAnimator.updateLimbs(speed, 0.4f);
+	}
+
 	// up to horse/iron golem/spider
 	public boolean canBeYoinked(Entity entity) {
 		return entity.getWidth() <= 1.4;
@@ -459,11 +468,22 @@ public class WheelbarrowEntity extends VehicleEntity {
 			this.setVelocity(Vec3d.ZERO);
 		}
 
+		double deltaX = this.getX() - this.prevX;
+		double deltaZ = this.getZ() - this.prevZ;
+		double yawRad = Math.toRadians(this.getYaw());
+		double movementX = deltaX * Math.cos(yawRad) + deltaZ * Math.sin(yawRad);
+		double movementZ = -deltaX * Math.sin(yawRad) + deltaZ * Math.cos(yawRad);
+		int direction = Math.atan2(movementZ, movementX) >= 0.0f ? 1 : -1;
+
+		float posDelta = (float) MathHelper.magnitude(deltaX, this.getY() - this.prevY, deltaZ);
+		this.updateLimbs(posDelta * direction);
+
 		this.checkBlockCollision();
 
 		LivingEntity controllingPassenger = this.getControllingPassenger();
 		this.prevControllingPassenger = controllingPassenger;
 
+		// todo maybe not do every tick
 		boolean isControlledByPlayer = controllingPassenger instanceof PlayerEntity;
 		this.setStepHeight(isControlledByPlayer ? 1.0f : 0.5f);
 
@@ -580,11 +600,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.setVelocity(velocity.x * (double) this.velocityDecay, y, velocity.z * (double) this.velocityDecay);
 
 		double velocityLength = this.getVelocity().horizontalLength();
-
-		// does it ever overflow? i don't know
-		if (this.getControllingPassenger() instanceof PlayerEntity) {
-			this.limbSwingValue += velocityLength;
-		}
 
 		// bumped into something or stopped not sure if thats how you do it
 		if (velocityLength <= 0.07) {

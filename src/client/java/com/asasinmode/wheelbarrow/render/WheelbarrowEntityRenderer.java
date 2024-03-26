@@ -67,10 +67,24 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
 		matrixStack.translate(0, -1.5, 0);
 
+		float ageInTicks = this.getAnimationProgress(entity, tickDelta);
+		float limbSwing = entity.limbAnimator.getPos(tickDelta);
+		float limbSwingAmount = entity.limbAnimator.getSpeed(tickDelta);
+
+		if (limbSwingAmount > 1.0f) {
+			limbSwingAmount = 1.0f;
+		}
+
+		this.model.setAngles(entity, limbSwing, limbSwingAmount, ageInTicks, 0.0f, 0.0f);
+
 		model.render(matrixStack, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture(entity))), light,
 				OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
 
 		matrixStack.pop();
 		super.render(entity, yaw, tickDelta, matrixStack, vertexConsumers, light);
+	}
+
+	protected float getAnimationProgress(WheelbarrowEntity entity, float tickDelta) {
+		return (float) entity.age + tickDelta;
 	}
 }

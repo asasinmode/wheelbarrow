@@ -12,6 +12,7 @@ import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 
 public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 	private final ModelPart front;
@@ -19,6 +20,7 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 	private final ModelPart left;
 	private final ModelPart right;
 	private final ModelPart bottom;
+	private final ModelPart wheel;
 
 	public WheelbarrowEntityModel(ModelPart root) {
 		this.front = root.getChild("front");
@@ -26,6 +28,7 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 		this.left = root.getChild("left");
 		this.right = root.getChild("right");
 		this.bottom = root.getChild("bottom");
+		this.wheel = this.bottom.getChild("wheel");
 	}
 
 	public static TexturedModelData getTexturedModelData() {
@@ -60,16 +63,21 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 
 		ModelPartData bottom = modelPartData.addChild("bottom",
 				ModelPartBuilder.create().uv(0, 0).cuboid(-8.0F, -2.0F, -8.0F, 16.0F, 2.0F, 16.0F, new Dilation(0.0F))
-						.uv(0, 0).cuboid(-2.0F, 0.0F, -6.0F, 4.0F, 4.0F, 4.0F, new Dilation(0.0F))
 						.uv(0, 8).cuboid(5.0F, 0.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F))
 						.uv(0, 8).cuboid(-6.0F, 0.0F, 5.0F, 1.0F, 4.0F, 1.0F, new Dilation(0.0F)),
 				ModelTransform.pivot(0.0F, 20.0F, 0.0F));
+
+		ModelPartData wheel = bottom.addChild("wheel",
+				ModelPartBuilder.create().uv(0, 0).cuboid(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, new Dilation(0.0F)),
+				ModelTransform.pivot(0.0F, 2.0F, -4.0F));
 		return TexturedModelData.of(modelData, 64, 64);
 	}
 
 	@Override
 	public void setAngles(WheelbarrowEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks,
 			float netHeadYaw, float headPitch) {
+		// todo adjust speed
+		this.wheel.pitch = limbSwing * 0.75f;
 	}
 
 	@Override
