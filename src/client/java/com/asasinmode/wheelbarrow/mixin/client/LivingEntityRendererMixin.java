@@ -1,11 +1,11 @@
 package com.asasinmode.wheelbarrow.mixin.client;
 
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -14,7 +14,6 @@ import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -27,23 +26,20 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 		super(ctx);
 	}
 
-	// here get the limbSwing and limbSwingAmount from the wheelbarrow after adding
-	// the limbAnimator. See LivingEntity.updateLimbs, should be in tick/velocity
-	// vicinity
-	// @ModifyExpressionValue(method =
-	// "Lnet/minecraft/client/render/entity/LivingEntityRenderer;render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
-	// at = @At(value = "INVOKE", target =
-	// "net/minecraft/entity/LivingEntity.hasVehicle()Z", ordinal = 2))
-	private boolean modifyRenderLimbAnimationCheck(boolean original, T livingEntity, float yaw, float tickDelta,
+	@ModifyArgs(method = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "net/minecraft/client/render/entity/model/EntityModel.setAngles(Lnet/minecraft/entity/Entity;FFFFF)V"))
+	private void modifyRenderSetAnglesArguments(Args args, T livingEntity, float yaw, float tickDelta,
 			MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light) {
-		// I want to animate player walking when they are the controlling passenger of
-		// the wheelbarrow. Output is negated, hence false
 		if (livingEntity instanceof PlayerEntity && livingEntity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == livingEntity) {
-			System.out.println("returning the thingy");
-			return false;
-		}
+			float limbSwing = wheelbarrow.limbAnimator.getPos(tickDelta);
+			float limbSwingAmount = wheelbarrow.limbAnimator.getSpeed(tickDelta);
 
-		return original;
+			if (limbSwingAmount > 1.0f) {
+				limbSwingAmount = 1.0f;
+			}
+
+			args.set(2, limbSwing);
+			args.set(3, limbSwingAmount);
+		}
 	}
 }
