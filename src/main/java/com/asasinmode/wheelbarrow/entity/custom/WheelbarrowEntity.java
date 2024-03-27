@@ -414,12 +414,12 @@ public class WheelbarrowEntity extends VehicleEntity {
 			velocity = -0.06f;
 		}
 
-		float yawRadians = (float) Math.PI / 180;
-		float sin = -MathHelper.sin(this.getYaw() * yawRadians);
-		float cos = MathHelper.cos(this.getYaw() * yawRadians);
-		float largerSinCos = Math.max(Math.abs(sin), Math.abs(cos));
+		double yawRad = Math.toRadians(this.getYaw());
+		double yawSin = -Math.sin(yawRad);
+		double yawCos = Math.cos(yawRad);
+		double largerSinCos = Math.max(Math.abs(yawSin), Math.abs(yawCos));
 
-		this.setVelocity(this.getVelocity().add(sin * velocity / largerSinCos, 0, cos * velocity / largerSinCos));
+		this.setVelocity(this.getVelocity().add(yawSin * velocity / largerSinCos, 0, yawCos * velocity / largerSinCos));
 	}
 
 	protected void updateLimbs(float posDelta) {
@@ -459,11 +459,13 @@ public class WheelbarrowEntity extends VehicleEntity {
 			this.setVelocity(Vec3d.ZERO);
 		}
 
+		double yawRad = Math.toRadians(this.getYaw());
+		double yawSin = Math.sin(yawRad);
+		double yawCos = Math.cos(yawRad);
 		double deltaX = this.getX() - this.prevX;
 		double deltaZ = this.getZ() - this.prevZ;
-		double yawRad = Math.toRadians(this.getYaw());
-		double movementX = deltaX * Math.cos(yawRad) + deltaZ * Math.sin(yawRad);
-		double movementZ = -deltaX * Math.sin(yawRad) + deltaZ * Math.cos(yawRad);
+		double movementX = deltaX * yawCos + deltaZ * yawSin;
+		double movementZ = -deltaX * yawSin + deltaZ * yawCos;
 		int direction = Math.atan2(movementZ, movementX) >= 0.0f ? 1 : -1;
 
 		float posDelta = (float) MathHelper.magnitude(deltaX, this.getY() - this.prevY, deltaZ);
@@ -763,16 +765,18 @@ public class WheelbarrowEntity extends VehicleEntity {
 		Vec3d offsetVec = WheelbarrowEntity.getPassengerDismountOffset(this.getWidth() * MathHelper.SQUARE_ROOT_OF_TWO,
 				passenger.getWidth(), passenger.getYaw());
 
-		double x, dismountYOffset;
+		double x, z, dismountYOffset;
 		BlockPos blockPos;
 
 		if (passenger == this.prevControllingPassenger) {
-			double offset = -0.6;
-			float sin = -MathHelper.sin(this.getYaw() * ((float) Math.PI / 180));
-			float cos = MathHelper.cos(this.getYaw() * ((float) Math.PI / 180));
-			float h = Math.max(Math.abs(sin), Math.abs(cos));
-			x = passenger.getX() + (double) sin * offset / (double) h;
-			z = passenger.getZ() + (double) cos * offset / (double) h;
+			float offset = -0.6f;
+			double yawRad = Math.toRadians(this.getYaw());
+			double yawSin = -Math.sin(yawRad);
+			double yawCos = Math.cos(yawRad);
+			double largerSinCos = Math.max(Math.abs(yawSin), Math.abs(yawCos));
+			x = passenger.getX() + yawSin * offset / largerSinCos;
+			z = passenger.getZ() + yawCos * offset / largerSinCos;
+
 			blockPos = BlockPos.ofFloored(x, this.getY(), z);
 			dismountYOffset = Math.max(0, this.getWorld().getDismountHeight(blockPos));
 		} else {
@@ -792,9 +796,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 	}
 
 	private void spawnParticles(DefaultParticleType particleType, ServerWorld world) {
-		double yaw = Math.toRadians(this.getYaw());
-		double yawCos = Math.cos(yaw);
-		double yawSin = Math.sin(yaw);
+		double yawRad = Math.toRadians(this.getYaw());
+		double yawSin = Math.sin(yawRad);
+		double yawCos = Math.cos(yawRad);
 
 		// inside
 		for (int i = 0; i < 6; i++) {
