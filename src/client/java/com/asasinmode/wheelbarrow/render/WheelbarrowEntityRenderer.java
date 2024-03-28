@@ -65,7 +65,7 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 		}
 
 		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
-		matrixStack.translate(0, -1.5, 0.25);
+		matrixStack.translate(0, -1.5, 0);
 
 		float ageInTicks = this.getAnimationProgress(entity, tickDelta);
 		float limbSwing = entity.limbAnimator.getPos(tickDelta);
