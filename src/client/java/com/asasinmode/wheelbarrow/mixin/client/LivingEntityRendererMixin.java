@@ -55,7 +55,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 			}
 
 			args.set(1, limbSwing);
-			// todo fix this being set when wheelbarrow is rotating - player is stuck
+			// TODO fix this being set when wheelbarrow is rotating - player is stuck
 			// mid-swing
 			args.set(2, limbSwingAmount);
 		}

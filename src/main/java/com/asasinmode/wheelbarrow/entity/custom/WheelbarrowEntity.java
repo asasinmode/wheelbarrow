@@ -88,6 +88,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.prevX = x;
 		this.prevY = y;
 		this.prevZ = z;
+		this.setStepHeight(0.5f);
 	}
 
 	@Override
@@ -184,7 +185,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		return (WheelbarrowEntity) wheelbarrowEntity;
 	}
 
-	// todo maybe keep default vehicle entity implementation if no more custom logic
+	// TODO maybe keep default vehicle entity implementation if no more custom logic
 	@Override
 	public boolean damage(DamageSource source, float amount) {
 		if (this.getWorld().isClient || this.isRemoved()) {
@@ -405,7 +406,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		float velocity = 0.0f;
 		if (this.pressingForward) {
 			velocity = 0.07f;
-			// todo change fov
+			// TODO change fov
 			if (this.sprinting) {
 				velocity += 0.02f;
 			}
@@ -474,9 +475,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		LivingEntity controllingPassenger = this.getControllingPassenger();
 		this.prevControllingPassenger = controllingPassenger;
 
-		// todo maybe not do every tick
 		boolean isControlledByPlayer = controllingPassenger instanceof PlayerEntity;
-		this.setStepHeight(isControlledByPlayer ? 1.0f : 0.5f);
 
 		List<Entity> list = this.getWorld().getOtherEntities(this,
 				this.getBoundingBox().expand(0.2, 0.1, 0.2),
@@ -697,6 +696,18 @@ public class WheelbarrowEntity extends VehicleEntity {
 				&& heightDifference < 0.0) {
 			this.fallDistance -= (float) heightDifference;
 		}
+	}
+
+	@Override
+	protected void addPassenger(Entity passenger) {
+		super.addPassenger(passenger);
+		this.setStepHeight(this.getControllingPassenger() instanceof PlayerEntity ? 1.0f : 0.5f);
+	}
+
+	@Override
+	protected void removePassenger(Entity passenger) {
+		super.removePassenger(passenger);
+		this.setStepHeight(this.getControllingPassenger() instanceof PlayerEntity ? 1.0f : 0.5f);
 	}
 
 	@Override
