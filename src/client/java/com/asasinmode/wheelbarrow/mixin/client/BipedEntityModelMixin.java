@@ -55,12 +55,11 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 		return original;
 	}
 
-	// todo adjust values
 	@Redirect(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/model/ModelPart;pitch:F", opcode = Opcodes.PUTFIELD, ordinal = 4))
 	private void updateRightArmPitch(ModelPart arm, float value, LivingEntity entity) {
 		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == entity) {
-			value *= 0.5;
+			value = 0.0f;
 		}
 		arm.pitch = value;
 	}
@@ -69,7 +68,7 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 	private void updateLeftArmPitch(ModelPart arm, float value, LivingEntity entity) {
 		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == entity) {
-			value *= 0.5;
+			value = 0.0f;
 		}
 		arm.pitch = value;
 	}
