@@ -13,7 +13,6 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
 
 public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 	private final ModelPart root;
@@ -83,9 +82,9 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 	public void setAngles(WheelbarrowEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks,
 			float netHeadYaw, float headPitch) {
 		// pitch it slightly forward when controlled
+		// don't know why it can't be just 3.0f
 		if (entity.getControllingPassenger() instanceof PlayerEntity) {
-			// todo try 2.5f
-			this.root.pitch = 220.0f;
+			this.root.pitch = 132.0f;
 		} else {
 			this.root.pitch = 0.0f;
 		}
