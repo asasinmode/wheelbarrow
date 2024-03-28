@@ -71,20 +71,38 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 	}
 
 	@Redirect(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/model/ModelPart;pitch:F", opcode = Opcodes.PUTFIELD, ordinal = 4))
-	private void updateRightArmPitch(ModelPart rightArm, float value, LivingEntity entity) {
+	private void updateRightArmPitch(ModelPart arm, float value, LivingEntity entity) {
 		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == entity) {
-			value *= 0.05;
+			value *= 0.5;
 		}
-		rightArm.pitch = value;
+		arm.pitch = value;
 	}
 
 	@Redirect(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/model/ModelPart;pitch:F", opcode = Opcodes.PUTFIELD, ordinal = 5))
-	private void updateLeftArmPitch(ModelPart leftArm, float value, LivingEntity entity) {
+	private void updateLeftArmPitch(ModelPart arm, float value, LivingEntity entity) {
 		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == entity) {
-			value *= 0.05;
+			value *= 0.5;
 		}
-		leftArm.pitch = value;
+		arm.pitch = value;
+	}
+
+	@Redirect(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/model/ModelPart;roll:F", opcode = Opcodes.PUTFIELD, ordinal = 0))
+	private void updateRightArmRoll(ModelPart arm, float value, LivingEntity entity) {
+		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+				&& wheelbarrow.getControllingPassenger() == entity) {
+			value = 0.15f;
+		}
+		arm.roll = value;
+	}
+
+	@Redirect(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/model/ModelPart;roll:F", opcode = Opcodes.PUTFIELD, ordinal = 1))
+	private void updateLeftArmRoll(ModelPart arm, float value, LivingEntity entity) {
+		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+				&& wheelbarrow.getControllingPassenger() == entity) {
+			value = -0.15f;
+		}
+		arm.roll = value;
 	}
 }
