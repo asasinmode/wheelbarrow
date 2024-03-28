@@ -468,7 +468,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		double movementZ = -deltaX * yawSin + deltaZ * yawCos;
 		int direction = Math.atan2(movementZ, movementX) >= 0.0f ? 1 : -1;
 
-		float posDelta = (float) MathHelper.magnitude(deltaX, this.getY() - this.prevY, deltaZ);
+		float posDelta = (float) MathHelper.hypot(deltaX, deltaZ);
 		this.updateLimbs(posDelta * direction);
 
 		this.checkBlockCollision();
