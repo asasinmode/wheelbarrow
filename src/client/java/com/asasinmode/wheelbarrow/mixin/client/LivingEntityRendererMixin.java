@@ -45,9 +45,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 			MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light) {
 		if (livingEntity instanceof PlayerEntity && livingEntity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == livingEntity) {
-			float limbSwing = wheelbarrow.limbAnimator.getPos(tickDelta);
-			// using player amount because wheelbarrow stops abruptly to prevent wheel from
-			// spinning when not moving
+			float limbSwing = args.<Float>get(1) * 8.0f;
 			float limbSwingAmount = args.<Float>get(2) * 8.0f;
 
 			if (limbSwingAmount > 1.0f) {
@@ -55,8 +53,6 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 			}
 
 			args.set(1, limbSwing);
-			// TODO fix this being set when wheelbarrow is rotating - player is stuck
-			// mid-swing
 			args.set(2, limbSwingAmount);
 		}
 	}
