@@ -6,12 +6,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.AnimalModel;
@@ -69,5 +68,23 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 		// limbSwingAmountRef.set(0.5f);
 		// }
 		// }
+	}
+
+	@Redirect(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/model/ModelPart;pitch:F", opcode = Opcodes.PUTFIELD, ordinal = 4))
+	private void updateRightArmPitch(ModelPart rightArm, float value, LivingEntity entity) {
+		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+				&& wheelbarrow.getControllingPassenger() == entity) {
+			value *= 0.05;
+		}
+		rightArm.pitch = value;
+	}
+
+	@Redirect(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/model/ModelPart;pitch:F", opcode = Opcodes.PUTFIELD, ordinal = 5))
+	private void updateLeftArmPitch(ModelPart leftArm, float value, LivingEntity entity) {
+		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+				&& wheelbarrow.getControllingPassenger() == entity) {
+			value *= 0.05;
+		}
+		leftArm.pitch = value;
 	}
 }
