@@ -31,8 +31,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 	private boolean modifyRenderLimbAnimationCheck(boolean original, T livingEntity, float yaw, float tickDelta,
 			MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light) {
 		// make the default implementation calculate the player walking values when they
-		// are the controlling passenger of the wheelbarrow. Output is negated, hence
-		// false
+		// are controlling a wheelbarrow. Output is negated, hence false
 		if (livingEntity instanceof PlayerEntity && livingEntity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == livingEntity) {
 			return false;
@@ -46,15 +45,18 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 			MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light) {
 		if (livingEntity instanceof PlayerEntity && livingEntity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == livingEntity) {
-			// todo adjust values
 			float limbSwing = wheelbarrow.limbAnimator.getPos(tickDelta);
+			// using player amount because wheelbarrow stops abruptly to prevent wheel from
+			// spinning when not moving
+			float limbSwingAmount = args.<Float>get(2) * 8.0f;
 
-			float limbSwingAmount = args.<Float>get(2) * 5.0f;
-			if (limbSwingAmount > 0.5f) {
-				limbSwingAmount = 0.5f;
+			if (limbSwingAmount > 1.0f) {
+				limbSwingAmount = 1.0f;
 			}
 
-			args.set(1, args.<Float>get(1) + limbSwing);
+			args.set(1, limbSwing);
+			// todo fix this being set when wheelbarrow is rotating - player is stuck
+			// mid-swing
 			args.set(2, limbSwingAmount);
 		}
 	}

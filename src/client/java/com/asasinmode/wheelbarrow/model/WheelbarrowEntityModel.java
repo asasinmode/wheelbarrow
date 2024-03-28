@@ -89,7 +89,7 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 			this.top.pitch = 0.0f;
 		}
 
-		this.wheel.pitch = limbSwing;
+		this.wheel.pitch = limbSwing * 0.5f;
 	}
 
 	@Override

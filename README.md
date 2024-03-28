@@ -5,8 +5,6 @@ keybind for yeeting stuff out in front
 
 ## offstream
 
-player animation values
-pitch wheelbarrow forward when controlled
 github action on release publish
 
 ## maybe later
