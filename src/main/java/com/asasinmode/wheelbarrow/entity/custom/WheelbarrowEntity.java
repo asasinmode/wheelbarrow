@@ -422,10 +422,11 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.setVelocity(this.getVelocity().add(yawSin * velocity / largerSinCos, 0, yawCos * velocity / largerSinCos));
 	}
 
-	// limbAnimator speed to the value turning look good without any modifications
+	// limbAnimator speed to the value that makes wheel turning look good without
+	// any modifications
 	protected void updateLimbs(float posDelta) {
-		float speed = posDelta * 3.0f;
-		// set speed first so that there is no "easing" - no spin after stop
+		float speed = posDelta * 2.0f;
+		// set speed first so that there is no spin after stop
 		this.limbAnimator.setSpeed(speed);
 		this.limbAnimator.updateLimbs(speed, 1.0f);
 	}
