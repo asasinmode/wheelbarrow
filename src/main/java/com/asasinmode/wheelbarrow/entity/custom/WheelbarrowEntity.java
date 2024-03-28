@@ -404,28 +404,23 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 		float velocity = 0.0f;
 		if (this.pressingForward) {
-			velocity = 0.06f;
+			velocity = 0.07f;
 			// todo change fov
 			if (this.sprinting) {
-				velocity += 0.03f;
+				velocity += 0.02f;
 			}
 		}
 		if (this.pressingBack) {
-			velocity = -0.06f;
+			velocity = -0.07f;
 		}
 
-		double yawRad = Math.toRadians(this.getYaw());
-		double yawSin = -Math.sin(yawRad);
-		double yawCos = Math.cos(yawRad);
-		double largerSinCos = Math.max(Math.abs(yawSin), Math.abs(yawCos));
-
-		this.setVelocity(this.getVelocity().add(yawSin * velocity / largerSinCos, 0, yawCos * velocity / largerSinCos));
+		this.updateVelocity(1.0f, new Vec3d(0.0f, 0.0f, velocity));
 	}
 
 	// limbAnimator speed to the value that makes wheel turning look good without
 	// any modifications
 	protected void updateLimbs(float posDelta) {
-		float speed = posDelta * 2.0f;
+		float speed = Math.min(posDelta * 2.0f, 1.0f);
 		// set speed first so that there is no spin after stop
 		this.limbAnimator.setSpeed(speed);
 		this.limbAnimator.updateLimbs(speed, 1.0f);
@@ -471,8 +466,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 		double movementX = deltaX * yawCos + deltaZ * yawSin;
 		double movementZ = -deltaX * yawSin + deltaZ * yawCos;
 		int direction = Math.atan2(movementZ, movementX) >= 0.0f ? 1 : -1;
-
 		float posDelta = (float) MathHelper.hypot(deltaX, deltaZ);
+
 		this.updateLimbs(posDelta * direction);
 
 		this.checkBlockCollision();
