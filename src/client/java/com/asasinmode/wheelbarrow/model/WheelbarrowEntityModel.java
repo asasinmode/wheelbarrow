@@ -76,8 +76,7 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 	@Override
 	public void setAngles(WheelbarrowEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks,
 			float netHeadYaw, float headPitch) {
-		// todo adjust speed
-		this.wheel.pitch = limbSwing * 0.75f;
+		this.wheel.pitch = limbSwing;
 	}
 
 	@Override
