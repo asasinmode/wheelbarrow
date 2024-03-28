@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -26,16 +27,12 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 		super(ctx);
 	}
 
-	// todo if wheelbarrow values don't work then use that to modify check and then
-	// multiply the values
-	// @ModifyExpressionValue(method =
-	// "Lnet/minecraft/client/render/entity/LivingEntityRenderer;render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
-	// at = @At(value = "INVOKE", target =
-	// "net/minecraft/entity/LivingEntity.hasVehicle()Z", ordinal = 2))
+	@ModifyExpressionValue(method = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "net/minecraft/entity/LivingEntity.hasVehicle()Z", ordinal = 2))
 	private boolean modifyRenderLimbAnimationCheck(boolean original, T livingEntity, float yaw, float tickDelta,
 			MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light) {
-		// I want to animate player walking when they are the controlling passenger of
-		// the wheelbarrow. Output is negated, hence false
+		// make the default implementation calculate the player walking values when they
+		// are the controlling passenger of the wheelbarrow. Output is negated, hence
+		// false
 		if (livingEntity instanceof PlayerEntity && livingEntity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == livingEntity) {
 			return false;
@@ -49,14 +46,15 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 			MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light) {
 		if (livingEntity instanceof PlayerEntity && livingEntity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == livingEntity) {
+			// todo adjust values
 			float limbSwing = wheelbarrow.limbAnimator.getPos(tickDelta);
-			float limbSwingAmount = wheelbarrow.limbAnimator.getSpeed(tickDelta);
 
-			if (limbSwingAmount > 1.0f) {
-				limbSwingAmount = 1.0f;
+			float limbSwingAmount = args.<Float>get(2) * 5.0f;
+			if (limbSwingAmount > 0.5f) {
+				limbSwingAmount = 0.5f;
 			}
 
-			args.set(1, limbSwing);
+			args.set(1, args.<Float>get(1) + limbSwing);
 			args.set(2, limbSwingAmount);
 		}
 	}
