@@ -699,7 +699,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 		}
 	}
 
-	// todo zoffset adjusted by entity width eg. spider
 	@Override
 	protected Vector3f getPassengerAttachmentPos(Entity passenger, EntityDimensions dimensions, float scaleFactor) {
 		float zOffset = -0.8f;
@@ -715,6 +714,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 		if (!isControllingPassenger || !(passenger instanceof PlayerEntity)) {
 			zOffset = 0.2f;
 			yOffset = 0.4f;
+
+			zOffset += Math.max((passenger.getWidth() - 1.0f) / 2.0f, 0.0f);
 		}
 
 		return new Vector3f(0.0f, yOffset, zOffset);

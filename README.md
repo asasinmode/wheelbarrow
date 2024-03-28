@@ -10,6 +10,7 @@ github action on release publish
 ## maybe later
 
 maybe fill with water and make water creatures not die when inside
+some statistics
 
 ### publishing
 
