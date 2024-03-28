@@ -56,18 +56,10 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 		return original;
 	}
 
-	// @ModifyVariable(method =
-	// "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V",
-	// at = @At("HEAD"), ordinal = 0)
-	// private float modifyLimbSwing(float limbSwing, T entity) {
-	// return limbSwing;
-	// }
-
 	// todo here disable the arms swinging when controlling wheelbarrow
 	@Inject(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At("HEAD"))
 	private void updateSetAnglesLimbs(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks,
-			float netHeadYaw, float headPitch, CallbackInfo ci, @Local(ordinal = 0) LocalFloatRef limbSwingRef,
-			@Local(ordinal = 1) LocalFloatRef limbSwingAmountRef) {
+			float netHeadYaw, float headPitch, CallbackInfo ci) {
 		// if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow) {
 		// if (wheelbarrow.getControllingPassenger() == entity) {
 		// // System.out.println("wheelbarrow velocity" +
@@ -77,9 +69,5 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 		// limbSwingAmountRef.set(0.5f);
 		// }
 		// }
-
-		if (limbSwingRef.get() > 0.0f || limbSwingAmountRef.get() > 0.0f) {
-			System.out.println("inject: " + limbSwing + " | " + limbSwingAmount);
-		}
 	}
 }

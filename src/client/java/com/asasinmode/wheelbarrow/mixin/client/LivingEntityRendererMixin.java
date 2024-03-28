@@ -56,8 +56,8 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 				limbSwingAmount = 1.0f;
 			}
 
-			args.set(2, limbSwing);
-			args.set(3, limbSwingAmount);
+			args.set(1, limbSwing);
+			args.set(2, limbSwingAmount);
 		}
 	}
 }
