@@ -76,7 +76,6 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 	private void updateRightArmRoll(ModelPart arm, float value, LivingEntity entity) {
 		if (entity instanceof PlayerEntity && entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == entity) {
-			// BipedEntityModel thisObject = (BipedEntityModel) (Object) this;
 			value = 0.15f;
 		}
 		arm.roll = value;
