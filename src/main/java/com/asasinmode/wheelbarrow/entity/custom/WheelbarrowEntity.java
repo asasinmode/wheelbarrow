@@ -725,14 +725,15 @@ public class WheelbarrowEntity extends VehicleEntity {
 		float zOffset = -0.8f;
 		float yOffset = 0.6f;
 		boolean isControllingPassenger = passenger == this.getControllingPassenger();
+		boolean isPlayer = passenger instanceof PlayerEntity;
 
-		if (isControllingPassenger) {
+		if (isControllingPassenger && isPlayer) {
 			passenger.setPose(EntityPose.STANDING);
 		} else {
 			passenger.setPose(EntityPose.SITTING);
 		}
 
-		if (!isControllingPassenger || !(passenger instanceof PlayerEntity)) {
+		if (!isControllingPassenger || !isPlayer) {
 			zOffset = 0.2f;
 			yOffset = 0.4f;
 
@@ -747,7 +748,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 		super.updatePassengerPosition(passenger, positionUpdater);
 
 		boolean isControllingPassenger = passenger == this.getControllingPassenger();
-		if (isControllingPassenger) {
+		boolean isPlayer = passenger instanceof PlayerEntity;
+
+		if (isControllingPassenger && isPlayer) {
 			passenger.setPose(EntityPose.STANDING);
 		} else {
 			passenger.setPose(EntityPose.SITTING);
@@ -764,7 +767,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	}
 
 	protected void clampPassengerYaw(Entity passenger) {
-		if (passenger != this.getControllingPassenger()) {
+		if (passenger != this.getControllingPassenger() || !(passenger instanceof PlayerEntity)) {
 			return;
 		}
 		passenger.setBodyYaw(this.getYaw());

@@ -19,6 +19,7 @@ import net.minecraft.client.render.entity.model.ModelWithHead;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Arm;
 
 @Mixin(BipedEntityModel.class)
@@ -45,7 +46,7 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 			float ageInTicks, float netHeadYaw, float headPitch) {
 		Entity vehicle = entity.getVehicle();
 
-		if (vehicle instanceof WheelbarrowEntity wheelbarrow) {
+		if (entity instanceof PlayerEntity && vehicle instanceof WheelbarrowEntity wheelbarrow) {
 			Entity controllingPassenger = wheelbarrow.getControllingPassenger();
 			return original && entity != controllingPassenger;
 		}
@@ -55,7 +56,7 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 
 	@Redirect(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/model/ModelPart;pitch:F", opcode = Opcodes.PUTFIELD, ordinal = 4))
 	private void updateRightArmPitch(ModelPart arm, float value, LivingEntity entity) {
-		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+		if (entity instanceof PlayerEntity && entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == entity) {
 			value = 0.0f;
 		}
@@ -64,7 +65,7 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 
 	@Redirect(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/model/ModelPart;pitch:F", opcode = Opcodes.PUTFIELD, ordinal = 5))
 	private void updateLeftArmPitch(ModelPart arm, float value, LivingEntity entity) {
-		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+		if (entity instanceof PlayerEntity && entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == entity) {
 			value = 0.0f;
 		}
@@ -73,8 +74,9 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 
 	@Redirect(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/model/ModelPart;roll:F", opcode = Opcodes.PUTFIELD, ordinal = 0))
 	private void updateRightArmRoll(ModelPart arm, float value, LivingEntity entity) {
-		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+		if (entity instanceof PlayerEntity && entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == entity) {
+			// BipedEntityModel thisObject = (BipedEntityModel) (Object) this;
 			value = 0.15f;
 		}
 		arm.roll = value;
@@ -82,7 +84,7 @@ public abstract class BipedEntityModelMixin<T extends LivingEntity, M extends En
 
 	@Redirect(method = "Lnet/minecraft/client/render/entity/model/BipedEntityModel;setAngles(Lnet/minecraft/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/model/ModelPart;roll:F", opcode = Opcodes.PUTFIELD, ordinal = 1))
 	private void updateLeftArmRoll(ModelPart arm, float value, LivingEntity entity) {
-		if (entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+		if (entity instanceof PlayerEntity && entity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == entity) {
 			value = -0.15f;
 		}
