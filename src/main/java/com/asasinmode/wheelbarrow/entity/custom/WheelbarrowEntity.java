@@ -70,6 +70,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private float nearbySlipperiness;
 	private Location location;
 	private LivingEntity prevControllingPassenger;
+	private float prevYawVelocity;
 	private float yawVelocity;
 	private boolean pressingLeft;
 	private boolean pressingRight;
@@ -558,6 +559,14 @@ public class WheelbarrowEntity extends VehicleEntity {
 		return this.lerpTicks > 0 ? (float) this.wheelbarrowYaw : this.getYaw();
 	}
 
+	public float getPrevYawVelocity() {
+		return this.prevYawVelocity;
+	}
+
+	public float getYawVelocity() {
+		return this.yawVelocity;
+	}
+
 	private void updateVelocity() {
 		double yMulitplier = 1.0;
 		double yMod = this.hasNoGravity() ? 0.0 : -0.04;
@@ -586,6 +595,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 			y = -1.0;
 		}
 
+		this.prevYawVelocity = this.yawVelocity;
 		this.yawVelocity *= 0.6;
 		this.setVelocity(velocity.x * (double) this.velocityDecay, y, velocity.z * (double) this.velocityDecay);
 

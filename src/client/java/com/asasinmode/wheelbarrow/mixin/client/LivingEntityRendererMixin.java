@@ -45,6 +45,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 			MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light) {
 		if (livingEntity instanceof PlayerEntity && livingEntity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 				&& wheelbarrow.getControllingPassenger() == livingEntity) {
+			// the default values from the above are too small
 			float limbSwing = args.<Float>get(1) * 8.0f;
 			float limbSwingAmount = args.<Float>get(2) * 8.0f;
 
@@ -54,6 +55,20 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
 
 			args.set(1, limbSwing);
 			args.set(2, limbSwingAmount);
+		}
+	}
+
+	@ModifyArgs(method = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;lerpAngleDegrees(FFF)F", ordinal = 0))
+	private void modifyRenderLerpBodyYaw(Args args, T livingEntity, float yaw, float tickDelta,
+			MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light) {
+		if (livingEntity instanceof PlayerEntity && livingEntity.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+				&& wheelbarrow.getControllingPassenger() == livingEntity) {
+			// make body yaw slightly preceed the wheelbarrow yaw when turning
+			float prevVelocityModifier = wheelbarrow.getPrevYawVelocity() * 2.5f;
+			float velocityModifier = wheelbarrow.getYawVelocity() * 2.5f;
+
+			args.set(1, args.<Float>get(1) - prevVelocityModifier);
+			args.set(2, args.<Float>get(2) - velocityModifier);
 		}
 	}
 }
