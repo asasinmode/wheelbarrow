@@ -412,13 +412,17 @@ public class WheelbarrowEntity extends VehicleEntity {
 			velocity = -0.07f;
 		}
 
-		// get player walking speed above base, for example from sprinting/swiftness
-		float playerVelocityMultiplier = (float) playerEntity.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-				- playerEntity.getAbilities().getWalkSpeed() + 1.0f;
-		velocity *= playerVelocityMultiplier;
+		// get player base walk speed diff, for example from
+		// sprinting/swiftness/slowness
+		float playerVelocityMultiplier = ((float) playerEntity.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+				- playerEntity.getAbilities().getWalkSpeed()) * 3 + 1.0f;
 
-		System.out.println("velocity: " + velocity + " player multiplier: "
-				+ playerVelocityMultiplier + " sprinting: " + this.isSprinting());
+		if (playerVelocityMultiplier > 1.0f) {
+			// when sprinting this is around 0.09f velocity
+			playerVelocityMultiplier += 0.195f;
+		}
+
+		velocity *= playerVelocityMultiplier;
 
 		this.updateVelocity(1.0f, new Vec3d(0.0f, 0.0f, velocity));
 	}
