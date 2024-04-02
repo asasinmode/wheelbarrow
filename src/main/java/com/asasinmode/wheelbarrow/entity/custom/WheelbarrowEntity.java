@@ -18,6 +18,7 @@ import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.LimbAnimator;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
@@ -384,7 +385,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	}
 
 	private void steer() {
-		if (!this.hasPassengers()) {
+		if (!(this.getControllingPassenger() instanceof PlayerEntity playerEntity)) {
 			return;
 		}
 
@@ -406,15 +407,38 @@ public class WheelbarrowEntity extends VehicleEntity {
 		float velocity = 0.0f;
 		if (this.pressingForward) {
 			velocity = 0.07f;
-			if (this.isSprinting()) {
-				velocity += 0.02f;
-			}
 		}
 		if (this.pressingBack) {
 			velocity = -0.07f;
 		}
 
+		// get player walking speed above base, for example from sprinting/swiftness
+		float playerVelocityMultiplier = (float) playerEntity.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+				- playerEntity.getAbilities().getWalkSpeed() + 1.0f;
+		velocity *= playerVelocityMultiplier;
+
+		System.out.println("velocity: " + velocity + " player multiplier: "
+				+ playerVelocityMultiplier + " sprinting: " + this.isSprinting());
+
 		this.updateVelocity(1.0f, new Vec3d(0.0f, 0.0f, velocity));
+	}
+
+	@Override
+	public boolean isSprinting() {
+		if (this.getControllingPassenger() instanceof PlayerEntity playerEntity) {
+			return playerEntity.isSprinting();
+		}
+		return super.isSprinting();
+	}
+
+	@Override
+	public void setSprinting(boolean sprinting) {
+		for (Entity entity : this.getPassengerList()) {
+			if (entity instanceof PlayerEntity playerEntity) {
+				playerEntity.setSprinting(sprinting);
+			}
+		}
+		super.setSprinting(sprinting);
 	}
 
 	protected void updateLimbs(float posDelta) {
