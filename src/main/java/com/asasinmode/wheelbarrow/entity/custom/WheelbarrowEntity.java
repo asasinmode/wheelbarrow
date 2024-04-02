@@ -5,6 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import com.asasinmode.wheelbarrow.config.ModConfig;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.item.ModItems;
 
@@ -360,7 +361,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	}
 
 	protected int getMaxPassengers() {
-		return 2;
+		return ModConfig.getMaxPassengers() + 1;
 	}
 
 	@Override
@@ -762,8 +763,16 @@ public class WheelbarrowEntity extends VehicleEntity {
 		if (!isControllingPassenger || !isPlayer) {
 			zOffset = 0.2f;
 			yOffset = 0.4f;
-
 			zOffset += Math.max((passenger.getWidth() - 1.0f) / 2.0f, 0.0f);
+		}
+
+		List<Entity> passengers = this.getPassengerList();
+		int index = passengers.indexOf(passenger);
+		if (index != 0) {
+			int offset = this.getControllingPassenger() instanceof PlayerEntity ? 1 : 0;
+			for (Entity entity : passengers.subList(offset, index)) {
+				yOffset += entity.getHeight();
+			}
 		}
 
 		return new Vector3f(0.0f, yOffset, zOffset);

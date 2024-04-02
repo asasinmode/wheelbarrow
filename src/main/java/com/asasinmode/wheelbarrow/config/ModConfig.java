@@ -14,16 +14,17 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class ModConfig {
 	private static File optionsFile;
-	public static final String DEFAULT_VALUE = "maxPassengers:1";
 	private static int MAX_PASSENGERS = 1;
 
 	public static void registerModConfig() {
 		Path configPath = FabricLoader.getInstance().getConfigDir();
+		// TODO figure out how to let other clients access the file
 		optionsFile = new File(configPath.resolve(Wheelbarrow.MOD_ID + ".txt").toString());
 
 		if (!optionsFile.exists()) {
 			try (final PrintWriter printWriter = new PrintWriter(optionsFile, StandardCharsets.UTF_8);) {
-				printWriter.write(DEFAULT_VALUE);
+				printWriter.write("maxPassengers:1");
+				printWriter.close();
 				Wheelbarrow.LOGGER.info("Created the default config file");
 
 				return;
@@ -62,6 +63,8 @@ public class ModConfig {
 					}
 				}
 			}
+
+			scanner.close();
 		} catch (FileNotFoundException e) {
 			Wheelbarrow.LOGGER.error("Failed to read the config file at '" + optionsFile.getPath() + "'!");
 			e.printStackTrace();
