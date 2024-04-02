@@ -1,5 +1,6 @@
 package com.asasinmode.wheelbarrow;
 
+import com.asasinmode.wheelbarrow.config.ModConfig;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.item.ModItems;
 
@@ -15,5 +16,6 @@ public class Wheelbarrow implements ModInitializer {
 	public void onInitialize() {
 		ModItems.registerModItems();
 		ModEntities.registerModEntities();
+		ModConfig.registerModConfig();
 	}
 }
