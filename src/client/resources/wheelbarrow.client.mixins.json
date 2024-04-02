@@ -5,7 +5,8 @@
 	"client": [
 		"BipedEntityModelMixin",
 		"ClientPlayerEntityMixin",
-		"LivingEntityRendererMixin"
+		"LivingEntityRendererMixin",
+		"AbstractClientPlayerEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
