@@ -77,7 +77,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private boolean pressingForward;
 	private boolean pressingBack;
 	private boolean sprintingPressed;
-	private boolean sprinting;
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
@@ -378,9 +377,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.pressingBack = pressingBack;
 		this.sprintingPressed = sprinting;
 		if (!pressingForward) {
-			this.sprinting = false;
+			this.setSprinting(false);
 		} else if (sprinting) {
-			this.sprinting = true;
+			this.setSprinting(true);
 		}
 	}
 
@@ -407,8 +406,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		float velocity = 0.0f;
 		if (this.pressingForward) {
 			velocity = 0.07f;
-			// TODO change fov
-			if (this.sprinting) {
+			if (this.isSprinting()) {
 				velocity += 0.02f;
 			}
 		}
@@ -603,8 +601,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 		// bumped into something or stopped not sure if thats how you do it
 		if (velocityLength <= 0.07) {
-			if (this.sprinting && !this.sprintingPressed) {
-				this.sprinting = false;
+			if (this.isSprinting() && !this.sprintingPressed) {
+				this.setSprinting(false);
 			}
 		}
 	}
