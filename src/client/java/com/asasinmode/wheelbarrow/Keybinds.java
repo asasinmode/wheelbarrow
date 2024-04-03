@@ -2,6 +2,7 @@ package com.asasinmode.wheelbarrow;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
 import com.asasinmode.wheelbarrow.networking.ModMessages;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -21,7 +22,10 @@ public class Keybinds {
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (yeet.wasPressed()) {
-				ClientPlayNetworking.send(ModMessages.YEET_ID, PacketByteBufs.create());
+				if (client.player.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+						&& wheelbarrow.getControllingPassenger() == client.player) {
+					ClientPlayNetworking.send(ModMessages.YEET_ID, PacketByteBufs.create());
+				}
 			}
 		});
 	}
