@@ -56,7 +56,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
 
 public class WheelbarrowEntity extends VehicleEntity {
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
@@ -712,7 +711,17 @@ public class WheelbarrowEntity extends VehicleEntity {
 	@Override
 	protected void addPassenger(Entity passenger) {
 		super.addPassenger(passenger);
-		this.setStepHeight(this.getControllingPassenger() instanceof PlayerEntity ? 1.0f : 0.5f);
+
+		Entity controllingPassenger = this.getControllingPassenger();
+		boolean isControlledByPlayer = controllingPassenger instanceof PlayerEntity;
+
+		this.setStepHeight(isControlledByPlayer ? 1.0f : 0.5f);
+
+		if (isControlledByPlayer && passenger != controllingPassenger) {
+			// TODO get keybind from client
+			((PlayerEntity) controllingPassenger)
+					.sendMessage(Text.translatable("key." + Wheelbarrow.MOD_ID + ".yeetTooltip", "Z"), true);
+		}
 	}
 
 	@Override

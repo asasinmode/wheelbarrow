@@ -7,5 +7,6 @@
 	"modmenu.descriptionTranslation.wheelbarrow": "A copper wheelbarrow!",
 	"config.wheelbarrow.maxPassengers": "Maximum number of passengers",
 	"key.categories.wheelbarrow": "Wheelbarrow",
-	"key.wheelbarrow.yeet": "Eject"
+	"key.wheelbarrow.yeet": "Eject",
+	"key.wheelbarrow.yeetTooltip": "Press %s to eject passengers"
 }

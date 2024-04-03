@@ -7,5 +7,6 @@
 	"modmenu.descriptionTranslation.wheelbarrow": "Miedziana Taczka!",
 	"config.wheelbarrow.maxPassengers": "Maksymalna ilość pasażerów",
 	"key.categories.wheelbarrow": "Wheelbarrow",
-	"key.wheelbarrow.yeet": "Wyrzuć"
+	"key.wheelbarrow.yeet": "Wyrzuć",
+	"key.wheelbarrow.yeetTooltip": "Wciśnij %s żeby wyrzucić pasażerów"
 }

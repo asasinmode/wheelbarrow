@@ -1,7 +1,5 @@
 # wheelbarrow
 
-keybind for yeeting stuff out in front
-
 ## offstream
 
 github action on release publish
