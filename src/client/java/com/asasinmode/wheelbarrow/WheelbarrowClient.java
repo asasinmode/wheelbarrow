@@ -12,5 +12,6 @@ public class WheelbarrowClient implements ClientModInitializer {
 		EntityRendererRegistry.register(ModEntities.WHEELBARROW, (context) -> {
 			return new WheelbarrowEntityRenderer(context);
 		});
+		Keybinds.registerKeybinds();
 	}
 }

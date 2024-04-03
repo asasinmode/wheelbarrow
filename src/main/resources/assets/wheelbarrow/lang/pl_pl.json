@@ -5,5 +5,7 @@
 	"item.wheelbarrow.oxidized_copper_wheelbarrow": "Utleniona miedziana taczka",
 	"modmenu.nameTranslation.wheelbarrow": "Wheelbarrow",
 	"modmenu.descriptionTranslation.wheelbarrow": "Miedziana Taczka!",
-	"config.wheelbarrow.maxPassengers": "Maksymalna ilość pasażerów"
+	"config.wheelbarrow.maxPassengers": "Maksymalna ilość pasażerów",
+	"key.categories.wheelbarrow": "Wheelbarrow",
+	"key.wheelbarrow.yeet": "Wyrzuć"
 }
