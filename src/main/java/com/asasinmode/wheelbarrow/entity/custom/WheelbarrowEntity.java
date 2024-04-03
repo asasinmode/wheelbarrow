@@ -914,6 +914,17 @@ public class WheelbarrowEntity extends VehicleEntity {
 				random.nextDouble() * 0.5);
 	}
 
+	public void yeetLastPassenger() {
+		List<Entity> passengers = this.getPassengerList();
+		if (passengers.size() <= 1) {
+			return;
+		}
+
+		Entity lastPassenger = passengers.get(passengers.size() - 1);
+
+		System.out.println("yeeting passenger: " + lastPassenger);
+	}
+
 	static {
 		OXIDATION_LEVEL = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
 		IS_WAXED = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.BOOLEAN);

@@ -11,11 +11,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public class YeetC2SPacket {
 	public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler,
 			PacketByteBuf buf, PacketSender responseSender) {
-		if (!(player.getVehicle() instanceof WheelbarrowEntity wheelbarrow)
-				|| wheelbarrow.getControllingPassenger() != player) {
-			return;
+		if (player.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+				&& wheelbarrow.getControllingPassenger() == player) {
+			wheelbarrow.yeetLastPassenger();
 		}
-
-		System.out.println("yeeting stuff by " + player);
 	}
 }
