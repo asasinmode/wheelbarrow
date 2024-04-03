@@ -39,6 +39,7 @@ public class Config {
 	}
 
 	public static void save(Config config) {
+		System.out.println("saving " + config.getMaxPassengers());
 		try {
 			Writer writer = Files.newBufferedWriter(CONFIG_FILE.toPath());
 			(new GsonBuilder().setPrettyPrinting().create()).toJson(config, writer);
@@ -52,7 +53,7 @@ public class Config {
 		return this.maxPassengers;
 	}
 
-	public void setPassengers(int value) {
+	public void setMaxPassengers(int value) {
 		this.maxPassengers = Math.min(Integer.MAX_VALUE, Math.max(0, value));
 	}
 }
