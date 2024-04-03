@@ -26,27 +26,26 @@ public class WheelbarrowModMenu implements ModMenuApi {
 		ConfigBuilder builder = ConfigBuilder.create()
 				.setParentScreen(parent)
 				.setSavingRunnable(() -> Config.save(Wheelbarrow.CONFIG))
-				.setTitle(Text.literal("TEST"));
+				.setTitle(Text.literal("Wheelbarrow Config"));
 
 		ConfigCategory category = builder.getOrCreateCategory(Text.literal("CATEGORY"));
 		ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
 		category.addEntry(createEntry(
 				entryBuilder,
-				"wheelbarrow entry",
+				"maxPassengers",
 				() -> Wheelbarrow.CONFIG.getMaxPassengers(),
 				newValue -> Wheelbarrow.CONFIG.setMaxPassengers(newValue),
-				1,
-				"wheelbarrow tooltip"));
+				1));
 
 		return builder.build();
 	}
 
-	private TooltipListEntry<Integer> createEntry(ConfigEntryBuilder builder, String translationKey,
-			Supplier<Integer> current, Consumer<Integer> saver, Integer defaultValue, String tooltipTranslationKey) {
-		return builder.startIntField(Text.literal(translationKey), current.get())
+	private TooltipListEntry<Integer> createEntry(ConfigEntryBuilder builder, String titleTranslationKey,
+			Supplier<Integer> current, Consumer<Integer> saver, Integer defaultValue) {
+		return builder
+				.startIntField(Text.translatable("config." + Wheelbarrow.MOD_ID + "." + titleTranslationKey), current.get())
 				.setSaveConsumer(saver)
-				.setTooltip(Text.literal(tooltipTranslationKey))
 				.setDefaultValue(defaultValue)
 				.build();
 	}
