@@ -5,6 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.item.ModItems;
 
@@ -360,7 +361,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	}
 
 	protected int getMaxPassengers() {
-		return 10 + 1;
+		return Wheelbarrow.CONFIG.getMaxPassengers() + 1;
 	}
 
 	@Override

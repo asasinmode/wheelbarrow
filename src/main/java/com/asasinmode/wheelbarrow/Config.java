@@ -15,7 +15,7 @@ public class Config {
 	private static File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(),
 			Wheelbarrow.MOD_ID + ".json");
 
-	private static int maxPassengers = 1;
+	private int maxPassengers = 1;
 
 	public Config() {
 	}
@@ -48,11 +48,11 @@ public class Config {
 		}
 	}
 
-	public static int getMaxPassengers() {
-		return maxPassengers;
+	public int getMaxPassengers() {
+		return this.maxPassengers;
 	}
 
-	public static void setPassengers(int value) {
-		maxPassengers = Math.min(Integer.MAX_VALUE, Math.max(0, value));
+	public void setPassengers(int value) {
+		this.maxPassengers = Math.min(Integer.MAX_VALUE, Math.max(0, value));
 	}
 }
