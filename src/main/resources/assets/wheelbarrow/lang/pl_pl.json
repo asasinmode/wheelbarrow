@@ -1,0 +1,9 @@
+{
+	"item.wheelbarrow.copper_wheelbarrow": "Miedziana taczka",
+	"item.wheelbarrow.exposed_copper_wheelbarrow": "Zwietrzała miedziana taczka",
+	"item.wheelbarrow.weathered_copper_wheelbarrow": "Zaśniedziała miedzana taczka",
+	"item.wheelbarrow.oxidized_copper_wheelbarrow": "Utleniona miedziana taczka",
+	"modmenu.nameTranslation.wheelbarrow": "Wheelbarrow",
+	"modmenu.descriptionTranslation.wheelbarrow": "Miedziana Taczka!",
+	"config.wheelbarrow.maxPassengers": "Maksymalna ilość pasażerów"
+}
