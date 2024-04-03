@@ -79,6 +79,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private boolean pressingForward;
 	private boolean pressingBack;
 	private boolean sprintingPressed;
+	private Entity passengerBeingYeeted = null;
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
@@ -820,8 +821,21 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 	@Override
 	public Vec3d updatePassengerForDismount(LivingEntity passenger) {
-		Vec3d offsetVec = WheelbarrowEntity.getPassengerDismountOffset(this.getWidth() * MathHelper.SQUARE_ROOT_OF_TWO,
-				passenger.getWidth(), passenger.getYaw());
+		if (this.passengerBeingYeeted == passenger) {
+			this.passengerBeingYeeted = null;
+
+			float offset = 0.15f + (float) passenger.getWidth() * 0.1f;
+			double yawRad = Math.toRadians(this.getYaw());
+			double yawSin = -Math.sin(yawRad);
+			double yawCos = Math.cos(yawRad);
+			double largerSinCos = Math.max(Math.abs(yawSin), Math.abs(yawCos));
+			double x = yawSin * offset / largerSinCos;
+			double z = yawCos * offset / largerSinCos;
+
+			passenger.setVelocity(this.getVelocity().add(new Vec3d(x, 0.3, z)));
+
+			return passenger.getPos();
+		}
 
 		double x, z, dismountYOffset;
 		BlockPos blockPos;
@@ -838,6 +852,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 			blockPos = BlockPos.ofFloored(x, this.getY(), z);
 			dismountYOffset = Math.max(0, this.getWorld().getDismountHeight(blockPos));
 		} else {
+			Vec3d offsetVec = WheelbarrowEntity.getPassengerDismountOffset(this.getWidth() * MathHelper.SQUARE_ROOT_OF_TWO,
+					passenger.getWidth(), passenger.getYaw());
+
 			x = this.getX() + offsetVec.x;
 			z = this.getZ() + offsetVec.z;
 			blockPos = BlockPos.ofFloored(x, this.getBoundingBox().maxY, z);
@@ -920,9 +937,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 			return;
 		}
 
-		Entity lastPassenger = passengers.get(passengers.size() - 1);
-
-		System.out.println("yeeting passenger: " + lastPassenger);
+		Entity passenger = passengers.get(passengers.size() - 1);
+		this.passengerBeingYeeted = passenger;
+		passenger.stopRiding();
 	}
 
 	static {
