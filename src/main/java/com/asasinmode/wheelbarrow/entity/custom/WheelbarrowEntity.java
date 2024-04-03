@@ -188,40 +188,13 @@ public class WheelbarrowEntity extends VehicleEntity {
 		return (WheelbarrowEntity) wheelbarrowEntity;
 	}
 
-	// TODO maybe keep default vehicle entity implementation if no more custom logic
 	@Override
 	public boolean damage(DamageSource source, float amount) {
-		if (this.getWorld().isClient || this.isRemoved()) {
-			return true;
-		}
-
-		if (this.isInvulnerableTo(source)
-				|| source.isOf(DamageTypes.IN_FIRE)
-				|| source.isOf(DamageTypes.ON_FIRE)) {
+		if (source.isOf(DamageTypes.IN_FIRE) || source.isOf(DamageTypes.ON_FIRE)) {
 			return false;
 		}
 
-		this.scheduleVelocityUpdate();
-		this.emitGameEvent(GameEvent.ENTITY_DAMAGE, source.getAttacker());
-
-		this.setDamageWobbleSide(-this.getDamageWobbleSide());
-		this.setDamageWobbleTicks(10);
-		this.scheduleVelocityUpdate();
-		this.setDamageWobbleStrength(this.getDamageWobbleStrength() + amount * 10.0f);
-		this.emitGameEvent(GameEvent.ENTITY_DAMAGE, source.getAttacker());
-
-		boolean isInCreative = source.getAttacker() instanceof PlayerEntity
-				&& ((PlayerEntity) source.getAttacker()).getAbilities().creativeMode;
-
-		if ((isInCreative || !(this.getDamageWobbleStrength() > 40.0f)) && !this.shouldAlwaysKill(source)) {
-			if (isInCreative) {
-				this.discard();
-			}
-		} else {
-			this.killAndDropSelf(source);
-		}
-
-		return true;
+		return super.damage(source, amount);
 	}
 
 	public Item asItem() {
@@ -831,6 +804,11 @@ public class WheelbarrowEntity extends VehicleEntity {
 			double largerSinCos = Math.max(Math.abs(yawSin), Math.abs(yawCos));
 			double x = yawSin * offset / largerSinCos;
 			double z = yawCos * offset / largerSinCos;
+
+			// TODO add wheelbarrow's velocity
+			// System.out
+			// .println("yeeting passenger: " + this.getVelocity().length() + " other: " + "
+			// thing: " + this.getVelocity());
 
 			passenger.setVelocity(this.getVelocity().add(new Vec3d(x, 0.3, z)));
 
