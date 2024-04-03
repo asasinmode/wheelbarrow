@@ -2,6 +2,7 @@ package com.asasinmode.wheelbarrow;
 
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.item.ModItems;
+import com.asasinmode.wheelbarrow.networking.ModMessages;
 
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
@@ -18,5 +19,6 @@ public class Wheelbarrow implements ModInitializer {
 		CONFIG = Config.load();
 		ModItems.registerModItems();
 		ModEntities.registerModEntities();
+		ModMessages.registerC2SPackets();
 	}
 }
