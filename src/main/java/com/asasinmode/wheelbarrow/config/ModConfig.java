@@ -29,9 +29,10 @@ public class ModConfig {
 
 				return;
 			} catch (IOException e) {
-				// TODO find out what the errors should look like
 				Wheelbarrow.LOGGER.error("Failed to create the default config file at '" + optionsFile.getPath() + "'!");
 				e.printStackTrace();
+
+				throw new Error("Failed to create the default config file at '" + optionsFile.getPath() + "'!");
 			}
 		}
 
@@ -68,6 +69,8 @@ public class ModConfig {
 		} catch (FileNotFoundException e) {
 			Wheelbarrow.LOGGER.error("Failed to read the config file at '" + optionsFile.getPath() + "'!");
 			e.printStackTrace();
+
+			throw new Error("Failed to read the config file at '" + optionsFile.getPath() + "'!");
 		}
 
 		if (!foundMaxPassengers) {

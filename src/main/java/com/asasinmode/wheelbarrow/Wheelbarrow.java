@@ -14,8 +14,8 @@ public class Wheelbarrow implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		ModConfig.registerModConfig();
 		ModItems.registerModItems();
 		ModEntities.registerModEntities();
-		ModConfig.registerModConfig();
 	}
 }
