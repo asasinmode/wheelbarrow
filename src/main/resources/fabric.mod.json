@@ -22,9 +22,6 @@
     ],
     "client": [
       "com.asasinmode.wheelbarrow.WheelbarrowClient"
-    ],
-    "modmenu": [
-      "com.asasinmode.wheelbarrow.integrations.WheelbarrowModMenuApi"
     ]
   },
   "mixins": [
