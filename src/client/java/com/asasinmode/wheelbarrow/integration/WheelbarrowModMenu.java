@@ -28,7 +28,7 @@ public class WheelbarrowModMenu implements ModMenuApi {
 				.setSavingRunnable(() -> Config.save(Wheelbarrow.CONFIG))
 				.setTitle(Text.literal("Wheelbarrow Config"));
 
-		ConfigCategory category = builder.getOrCreateCategory(Text.literal("CATEGORY"));
+		ConfigCategory category = builder.getOrCreateCategory(Text.literal("Default"));
 		ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
 		category.addEntry(createEntry(

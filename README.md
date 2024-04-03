@@ -1,16 +1,10 @@
 # wheelbarrow
 
-configurable number of cargo passengers (min 1, offset height, yeet from the top)
 keybind for yeeting stuff out in front
 
 ## offstream
 
 github action on release publish
-
-## maybe later
-
-maybe fill with water and make water creatures not die when inside
-some statistics
 
 ### publishing
 

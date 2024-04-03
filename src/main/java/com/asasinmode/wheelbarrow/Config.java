@@ -39,7 +39,6 @@ public class Config {
 	}
 
 	public static void save(Config config) {
-		System.out.println("saving " + config.getMaxPassengers());
 		try {
 			Writer writer = Files.newBufferedWriter(CONFIG_FILE.toPath());
 			(new GsonBuilder().setPrettyPrinting().create()).toJson(config, writer);
