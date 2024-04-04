@@ -8,7 +8,7 @@ import org.joml.Vector3f;
 import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.item.ModItems;
-import com.asasinmode.wheelbarrow.networking.ModMessages;
+import com.asasinmode.wheelbarrow.networking.server.InformYeetKeybindS2CPacket;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -271,8 +271,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 			}
 
 			if (this.getPassengerList().size() > 1 && this.getControllingPassenger() == player) {
-				ServerPlayNetworking.send((ServerPlayerEntity) player, ModMessages.INFORM_YEET_KEYBIND_ID,
-						PacketByteBufs.empty());
+				// System.out.println("sending from start riding: " + player);
+				ServerPlayNetworking.send((ServerPlayerEntity) player, new InformYeetKeybindS2CPacket(PacketByteBufs.empty()));
 			}
 
 			return ActionResult.CONSUME;
@@ -508,8 +508,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 			if (canYoink) {
 				if (entity.startRiding(this)) {
-					ServerPlayNetworking.send((ServerPlayerEntity) controllingPassenger, ModMessages.INFORM_YEET_KEYBIND_ID,
-							PacketByteBufs.empty());
+					// System.out.println("sending from yoink: " + controllingPassenger);
+					ServerPlayNetworking.send((ServerPlayerEntity) controllingPassenger,
+							new InformYeetKeybindS2CPacket(PacketByteBufs.empty()));
 				}
 				;
 			} else {
@@ -617,6 +618,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.setVelocity(velocity.x * (double) this.velocityDecay, y, velocity.z * (double) this.velocityDecay);
 
 		double velocityLength = this.getVelocity().horizontalLength();
+
+		System.out.println("UPDATEVELOCITY length: " + velocityLength + " vector: " + this.getVelocity());
 
 		// bumped into something or stopped not sure if thats how you do it
 		if (velocityLength <= 0.07) {
@@ -819,6 +822,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 	public Vec3d updatePassengerForDismount(LivingEntity passenger) {
 		// TODO yeeting player is wrong
 		if (this.passengerBeingYeeted == passenger) {
+			System.out.println("METHOD length: " + this.getVelocity().length() + " vector: " + this.getVelocity());
+
 			this.passengerBeingYeeted = null;
 
 			float offset = 0.15f + (float) passenger.getWidth() * 0.1f;
@@ -828,11 +833,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 			double largerSinCos = Math.max(Math.abs(yawSin), Math.abs(yawCos));
 			double x = yawSin * offset / largerSinCos;
 			double z = yawCos * offset / largerSinCos;
-
-			// TODO add wheelbarrow's velocity
-			// System.out
-			// .println("yeeting passenger: " + this.getVelocity().length() + " other: " + "
-			// thing: " + this.getVelocity());
 
 			passenger.setVelocity(this.getVelocity().add(new Vec3d(x, 0.3, z)));
 

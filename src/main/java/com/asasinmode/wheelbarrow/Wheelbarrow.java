@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.asasinmode.wheelbarrow.entity.ModEntities;
+import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
 import com.asasinmode.wheelbarrow.item.ModItems;
-import com.asasinmode.wheelbarrow.networking.ModMessages;
-import com.asasinmode.wheelbarrow.networking.server.YeetC2SPacket;
+import com.asasinmode.wheelbarrow.networking.client.YeetC2SPacket;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -26,6 +26,11 @@ public class Wheelbarrow implements ModInitializer {
 	}
 
 	private static void registerPacketsC2SPackets() {
-		ServerPlayNetworking.registerGlobalReceiver(ModMessages.YEET_ID, YeetC2SPacket::receive);
+		ServerPlayNetworking.registerGlobalReceiver(YeetC2SPacket.PACKET_TYPE, (packet, player, responseSender) -> {
+			if (player.getVehicle() instanceof WheelbarrowEntity wheelbarrow
+					&& wheelbarrow.getControllingPassenger() == player) {
+				wheelbarrow.yeetLastPassenger();
+			}
+		});
 	}
 }

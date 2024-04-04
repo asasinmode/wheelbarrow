@@ -3,7 +3,7 @@ package com.asasinmode.wheelbarrow;
 import org.lwjgl.glfw.GLFW;
 
 import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
-import com.asasinmode.wheelbarrow.networking.ModMessages;
+import com.asasinmode.wheelbarrow.networking.client.YeetC2SPacket;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -24,7 +24,10 @@ public class Keybinds {
 			while (yeet.wasPressed()) {
 				if (client.player.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 						&& wheelbarrow.getControllingPassenger() == client.player) {
-					ClientPlayNetworking.send(ModMessages.YEET_ID, PacketByteBufs.empty());
+					ClientPlayNetworking.send(new YeetC2SPacket(PacketByteBufs.empty()));
+					// ClientPlayNetworking.getSender().sendPacket(ModChannels.YEET_ID,
+					// PacketByteBufs.empty());
+					// ClientPlayNetworking.send(ModMessages.YEET_ID, PacketByteBufs.empty());
 				}
 			}
 		});
