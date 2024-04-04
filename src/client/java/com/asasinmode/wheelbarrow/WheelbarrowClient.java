@@ -1,6 +1,7 @@
 package com.asasinmode.wheelbarrow;
 
 import com.asasinmode.wheelbarrow.entity.ModEntities;
+import com.asasinmode.wheelbarrow.networking.ModMessages;
 import com.asasinmode.wheelbarrow.render.WheelbarrowEntityRenderer;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -13,5 +14,6 @@ public class WheelbarrowClient implements ClientModInitializer {
 			return new WheelbarrowEntityRenderer(context);
 		});
 		Keybinds.registerKeybinds();
+		ModMessages.registerPacketsS2CPackets();
 	}
 }

@@ -1,4 +1,4 @@
-package com.asasinmode.wheelbarrow.networking.packets;
+package com.asasinmode.wheelbarrow.networking;
 
 import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
 

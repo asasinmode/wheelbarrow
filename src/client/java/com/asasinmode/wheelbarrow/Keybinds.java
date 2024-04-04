@@ -24,7 +24,7 @@ public class Keybinds {
 			while (yeet.wasPressed()) {
 				if (client.player.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 						&& wheelbarrow.getControllingPassenger() == client.player) {
-					ClientPlayNetworking.send(ModMessages.YEET_ID, PacketByteBufs.create());
+					ClientPlayNetworking.send(ModMessages.YEET_ID, PacketByteBufs.empty());
 				}
 			}
 		});

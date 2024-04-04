@@ -19,6 +19,6 @@ public class Wheelbarrow implements ModInitializer {
 		CONFIG = Config.load();
 		ModItems.registerModItems();
 		ModEntities.registerModEntities();
-		ModMessages.registerC2SPackets();
+		ModMessages.registerPacketsC2SPackets();
 	}
 }

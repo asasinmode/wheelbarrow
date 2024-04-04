@@ -8,7 +8,10 @@ import org.joml.Vector3f;
 import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.item.ModItems;
+import com.asasinmode.wheelbarrow.networking.ModMessages;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
@@ -39,6 +42,7 @@ import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -717,10 +721,10 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 		this.setStepHeight(isControlledByPlayer ? 1.0f : 0.5f);
 
-		if (isControlledByPlayer && passenger != controllingPassenger) {
-			// TODO get keybind from client
-			((PlayerEntity) controllingPassenger)
-					.sendMessage(Text.translatable("key." + Wheelbarrow.MOD_ID + ".yeetTooltip", "Z"), true);
+		if (!controllingPassenger.getWorld().isClient && isControlledByPlayer && passenger != controllingPassenger
+				&& this.getPassengerList().size() == 2) {
+			ServerPlayNetworking.send((ServerPlayerEntity) controllingPassenger, ModMessages.INFORM_YEET_KEYBIND_ID,
+					PacketByteBufs.empty());
 		}
 	}
 
@@ -737,7 +741,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		boolean isControllingPassenger = passenger == this.getControllingPassenger();
 		boolean isPlayer = passenger instanceof PlayerEntity;
 
-		if (isControllingPassenger && isPlayer) {
+		if ((isControllingPassenger && isPlayer) || (!isPlayer && this.getPassengerList().indexOf(passenger) > 1)) {
 			passenger.setPose(EntityPose.STANDING);
 		} else {
 			passenger.setPose(EntityPose.SITTING);
@@ -755,6 +759,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 			int offset = this.getControllingPassenger() instanceof PlayerEntity ? 1 : 0;
 			for (Entity entity : passengers.subList(offset, index)) {
 				yOffset += entity.getHeight();
+				System.out.println(
+						"yOffset: " + yOffset + " ridingOffset: " + entity.getRidingOffset(this) + " entity: " + entity.getName());
 			}
 		}
 
@@ -803,6 +809,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 	@Override
 	public Vec3d updatePassengerForDismount(LivingEntity passenger) {
+		// TODO yeeting player is wrong
 		if (this.passengerBeingYeeted == passenger) {
 			this.passengerBeingYeeted = null;
 
