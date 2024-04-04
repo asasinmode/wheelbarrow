@@ -271,7 +271,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 			}
 
 			if (this.getPassengerList().size() > 1 && this.getControllingPassenger() == player) {
-				// System.out.println("sending from start riding: " + player);
 				ServerPlayNetworking.send((ServerPlayerEntity) player, new InformYeetKeybindS2CPacket(PacketByteBufs.empty()));
 			}
 
@@ -508,7 +507,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 			if (canYoink) {
 				if (entity.startRiding(this)) {
-					// System.out.println("sending from yoink: " + controllingPassenger);
 					ServerPlayNetworking.send((ServerPlayerEntity) controllingPassenger,
 							new InformYeetKeybindS2CPacket(PacketByteBufs.empty()));
 				}
@@ -619,7 +617,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 		double velocityLength = this.getVelocity().horizontalLength();
 
-		System.out.println("UPDATEVELOCITY length: " + velocityLength + " vector: " + this.getVelocity());
+		// System.out.println("UPDATEVELOCITY length: " + velocityLength + " vector: " +
+		// this.getVelocity());
 
 		// bumped into something or stopped not sure if thats how you do it
 		if (velocityLength <= 0.07) {
@@ -768,10 +767,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		if (index != 0) {
 			int offset = this.getControllingPassenger() instanceof PlayerEntity ? 1 : 0;
 			for (Entity entity : passengers.subList(offset, index)) {
-				yOffset += entity.getHeight();
-				// System.out.println(
-				// "yOffset: " + yOffset + " ridingOffset: " + entity.getRidingOffset(this) + "
-				// entity: " + entity.getName());
+				yOffset += entity.getHeight() + entity.getRidingOffset(this);
 			}
 		}
 
@@ -822,7 +818,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 	public Vec3d updatePassengerForDismount(LivingEntity passenger) {
 		// TODO yeeting player is wrong
 		if (this.passengerBeingYeeted == passenger) {
-			System.out.println("METHOD length: " + this.getVelocity().length() + " vector: " + this.getVelocity());
+			// System.out.println("METHOD length: " + this.getVelocity().length() + "
+			// vector: " + this.getVelocity());
 
 			this.passengerBeingYeeted = null;
 
@@ -834,6 +831,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 			double x = yawSin * offset / largerSinCos;
 			double z = yawCos * offset / largerSinCos;
 
+			// TODO this is 0
 			passenger.setVelocity(this.getVelocity().add(new Vec3d(x, 0.3, z)));
 
 			return passenger.getPos();
