@@ -498,7 +498,11 @@ public class WheelbarrowEntity extends VehicleEntity {
 					&& this.canBeYoinked(entity);
 
 			if (canYoink) {
-				entity.startRiding(this);
+				if (entity.startRiding(this)) {
+					ServerPlayNetworking.send((ServerPlayerEntity) controllingPassenger, ModMessages.INFORM_YEET_KEYBIND_ID,
+							PacketByteBufs.empty());
+				}
+				;
 			} else {
 				this.pushAwayFrom(entity);
 			}
@@ -720,12 +724,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 		boolean isControlledByPlayer = controllingPassenger instanceof PlayerEntity;
 
 		this.setStepHeight(isControlledByPlayer ? 1.0f : 0.5f);
-
-		if (!controllingPassenger.getWorld().isClient && isControlledByPlayer && passenger != controllingPassenger
-				&& this.getPassengerList().size() == 2) {
-			ServerPlayNetworking.send((ServerPlayerEntity) controllingPassenger, ModMessages.INFORM_YEET_KEYBIND_ID,
-					PacketByteBufs.empty());
-		}
 	}
 
 	@Override
