@@ -1,4 +1,4 @@
-package com.asasinmode.wheelbarrow.networking;
+package com.asasinmode.wheelbarrow.networking.client;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;

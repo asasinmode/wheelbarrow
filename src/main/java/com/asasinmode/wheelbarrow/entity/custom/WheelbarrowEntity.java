@@ -759,8 +759,9 @@ public class WheelbarrowEntity extends VehicleEntity {
 			int offset = this.getControllingPassenger() instanceof PlayerEntity ? 1 : 0;
 			for (Entity entity : passengers.subList(offset, index)) {
 				yOffset += entity.getHeight();
-				System.out.println(
-						"yOffset: " + yOffset + " ridingOffset: " + entity.getRidingOffset(this) + " entity: " + entity.getName());
+				// System.out.println(
+				// "yOffset: " + yOffset + " ridingOffset: " + entity.getRidingOffset(this) + "
+				// entity: " + entity.getName());
 			}
 		}
 
