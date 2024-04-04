@@ -8,7 +8,7 @@ import org.joml.Vector3f;
 import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.item.ModItems;
-import com.asasinmode.wheelbarrow.networking.server.InformYeetKeybindS2CPacket;
+import com.asasinmode.wheelbarrow.networking.InformYeetKeybindS2CPacket;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;

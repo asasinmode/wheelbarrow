@@ -1,7 +1,7 @@
 package com.asasinmode.wheelbarrow;
 
 import com.asasinmode.wheelbarrow.entity.ModEntities;
-import com.asasinmode.wheelbarrow.networking.server.InformYeetKeybindS2CPacket;
+import com.asasinmode.wheelbarrow.networking.InformYeetKeybindS2CPacket;
 import com.asasinmode.wheelbarrow.render.WheelbarrowEntityRenderer;
 
 import net.fabricmc.api.ClientModInitializer;
