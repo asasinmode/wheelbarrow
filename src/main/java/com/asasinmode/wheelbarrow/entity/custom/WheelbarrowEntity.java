@@ -28,6 +28,7 @@ import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
@@ -612,6 +613,18 @@ public class WheelbarrowEntity extends Entity {
 		}
 	}
 
+	// 1.20.4 net.minecraft.entity.Entity.lerpPosAndRotation implementation
+	protected void lerpPosAndRotation(int step, double x, double y, double z, double yaw, double pitch) {
+		double var12 = 1.0 / (double) step;
+		double var14 = MathHelper.lerp(var12, this.getX(), x);
+		double var16 = MathHelper.lerp(var12, this.getY(), y);
+		double var18 = MathHelper.lerp(var12, this.getZ(), z);
+		float var20 = (float) MathHelper.lerpAngleDegrees((float) var12, this.getYaw(), (float) yaw);
+		float var21 = (float) MathHelper.lerp(var12, (double) this.getPitch(), pitch);
+		this.setPosition(var14, var16, var18);
+		this.setRotation(var20, var21);
+	}
+
 	public void updateTrackedPositionAndAngles(double x, double y, double z, float yaw, float pitch,
 			int interpolationSteps) {
 		this.x = x;
@@ -622,30 +635,27 @@ public class WheelbarrowEntity extends Entity {
 		this.lerpTicks = 10;
 	}
 
-	@Override
+	// these are @Overriden in 1.20.2+
 	public double getLerpTargetX() {
 		return this.lerpTicks > 0 ? this.x : this.getX();
 	}
 
-	@Override
 	public double getLerpTargetY() {
 		return this.lerpTicks > 0 ? this.y : this.getY();
 	}
 
-	@Override
 	public double getLerpTargetZ() {
 		return this.lerpTicks > 0 ? this.z : this.getZ();
 	}
 
-	@Override
 	public float getLerpTargetPitch() {
 		return this.lerpTicks > 0 ? (float) this.wheelbarrowPitch : this.getPitch();
 	}
 
-	@Override
 	public float getLerpTargetYaw() {
 		return this.lerpTicks > 0 ? (float) this.wheelbarrowYaw : this.getYaw();
 	}
+	// end of overrides
 
 	public float getPrevYawVelocity() {
 		return this.prevYawVelocity;
@@ -815,8 +825,9 @@ public class WheelbarrowEntity extends Entity {
 		this.setStepHeight(this.getControllingPassenger() instanceof PlayerEntity ? 1.0f : 0.5f);
 	}
 
-	@Override
-	protected Vector3f getPassengerAttachmentPos(Entity passenger, EntityDimensions dimensions, float scaleFactor) {
+	// this is overriden and called automatically in 1.20.2+
+	// TODO fix controlling player & first zombie?
+	protected void getPassengerAttachmentPos(Entity passenger, Entity.PositionUpdater positionUpdater) {
 		float zOffset = -0.8f;
 		float yOffset = 0.6f;
 		boolean isControllingPassenger = passenger == this.getControllingPassenger();
@@ -839,16 +850,27 @@ public class WheelbarrowEntity extends Entity {
 		if (index != 0) {
 			int offset = this.getControllingPassenger() instanceof PlayerEntity ? 1 : 0;
 			for (Entity entity : passengers.subList(offset, index)) {
-				yOffset += entity.getHeight() + entity.getRidingOffset(this);
+				// this is a replacement for 1.20.2+ net.minecraft.entity.Entity.getRidingOffset
+				yOffset += entity.getHeight() + this.getRidingOffset(entity);
 			}
 		}
 
-		return new Vector3f(0.0f, yOffset, zOffset);
+		positionUpdater.accept(passenger, this.getX(), this.getY() + yOffset, this.getZ() + zOffset);
+	}
+
+	// this is a replacement for 1.20.2+ net.minecraft.entity.Entity.getRidingOffset
+	protected float getRidingOffset(Entity entity) {
+		// TODO do for those https://minecraft.fandom.com/wiki/Riding#Posture
+		if (entity instanceof ZombieEntity) {
+			return -0.7f;
+		}
+
+		return 0.0f;
 	}
 
 	@Override
 	protected void updatePassengerPosition(Entity passenger, Entity.PositionUpdater positionUpdater) {
-		super.updatePassengerPosition(passenger, positionUpdater);
+		this.getPassengerAttachmentPos(passenger, positionUpdater);
 
 		boolean isControllingPassenger = passenger == this.getControllingPassenger();
 		boolean isPlayer = passenger instanceof PlayerEntity;
