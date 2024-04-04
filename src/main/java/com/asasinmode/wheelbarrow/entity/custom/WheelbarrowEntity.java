@@ -266,7 +266,16 @@ public class WheelbarrowEntity extends VehicleEntity {
 				return ActionResult.SUCCESS;
 			}
 
-			return player.startRiding(this) ? ActionResult.CONSUME : ActionResult.PASS;
+			if (!player.startRiding(this)) {
+				return ActionResult.PASS;
+			}
+
+			if (this.getPassengerList().size() > 1 && this.getControllingPassenger() == player) {
+				ServerPlayNetworking.send((ServerPlayerEntity) player, ModMessages.INFORM_YEET_KEYBIND_ID,
+						PacketByteBufs.empty());
+			}
+
+			return ActionResult.CONSUME;
 		}
 		return ActionResult.SUCCESS;
 	}

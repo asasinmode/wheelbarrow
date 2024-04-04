@@ -12,6 +12,7 @@ import net.minecraft.text.Text;
 public class InformYeetKeybindS2CPacket {
 	public static void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf,
 			PacketSender responseSender) {
+		// TODO this gets overriden by dismount message
 		client.player.sendMessage(Text.translatable("key." +
 				Wheelbarrow.MOD_ID + ".yeetTooltip", Keybinds.yeet.getBoundKeyLocalizedText()), true);
 	}
