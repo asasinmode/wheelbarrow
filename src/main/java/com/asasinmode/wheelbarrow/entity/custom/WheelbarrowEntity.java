@@ -29,7 +29,6 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.vehicle.VehicleEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,7 +38,6 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -60,10 +58,14 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 
-public class WheelbarrowEntity extends VehicleEntity {
+public class WheelbarrowEntity extends Entity {
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
 	private static final TrackedData<Boolean> IS_WAXED;
+	private static final TrackedData<Integer> DAMAGE_WOBBLE_TICKS;
+	private static final TrackedData<Integer> DAMAGE_WOBBLE_SIDE;
+	private static final TrackedData<Float> DAMAGE_WOBBLE_STRENGTH;
 	public final LimbAnimator limbAnimator = new LimbAnimator();
 	private int lerpTicks;
 	private float velocityDecay;
@@ -99,9 +101,11 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 	@Override
 	protected void initDataTracker() {
-		super.initDataTracker();
 		this.dataTracker.startTracking(OXIDATION_LEVEL, Type.COPPER.ordinal());
 		this.dataTracker.startTracking(IS_WAXED, false);
+		this.dataTracker.startTracking(DAMAGE_WOBBLE_TICKS, 0);
+		this.dataTracker.startTracking(DAMAGE_WOBBLE_SIDE, 1);
+		this.dataTracker.startTracking(DAMAGE_WOBBLE_STRENGTH, 0.0F);
 	}
 
 	public static enum Type {
@@ -191,13 +195,57 @@ public class WheelbarrowEntity extends VehicleEntity {
 		return (WheelbarrowEntity) wheelbarrowEntity;
 	}
 
+	// 1.20.[3,4] VehicleEntity damage method
+	// refactored and modified to not take damage from fire
 	@Override
 	public boolean damage(DamageSource source, float amount) {
-		if (source.isOf(DamageTypes.IN_FIRE) || source.isOf(DamageTypes.ON_FIRE)) {
+		if (this.getWorld().isClient || this.isRemoved()) {
+			return true;
+		}
+
+		if (this.isInvulnerableTo(source)
+				|| source.isOf(DamageTypes.IN_FIRE)
+				|| source.isOf(DamageTypes.ON_FIRE)) {
 			return false;
 		}
 
-		return super.damage(source, amount);
+		this.scheduleVelocityUpdate();
+		this.emitGameEvent(GameEvent.ENTITY_DAMAGE, source.getAttacker());
+
+		this.setDamageWobbleSide(-this.getDamageWobbleSide());
+		this.setDamageWobbleTicks(10);
+		this.scheduleVelocityUpdate();
+		this.setDamageWobbleStrength(this.getDamageWobbleStrength() + amount * 10.0F);
+		this.emitGameEvent(GameEvent.ENTITY_DAMAGE, source.getAttacker());
+
+		boolean isInCreative = source.getAttacker() instanceof PlayerEntity
+				&& ((PlayerEntity) source.getAttacker()).getAbilities().creativeMode;
+
+		if ((isInCreative || !(this.getDamageWobbleStrength() > 40.0F)) && !this.shouldAlwaysKill(source)) {
+			if (isInCreative) {
+				this.discard();
+			}
+		} else {
+			this.killAndDropSelf();
+		}
+
+		return true;
+	}
+
+	boolean shouldAlwaysKill(DamageSource source) {
+		return false;
+	}
+
+	public void killAndDropSelf() {
+		this.kill();
+		if (this.getWorld().getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
+			ItemStack itemStack = new ItemStack(this.asItem());
+			if (this.hasCustomName()) {
+				itemStack.setCustomName(this.getCustomName());
+			}
+
+			this.dropStack(itemStack);
+		}
 	}
 
 	public Item asItem() {
@@ -442,6 +490,30 @@ public class WheelbarrowEntity extends VehicleEntity {
 	// up to horse/iron golem/spider
 	public boolean canBeYoinked(Entity entity) {
 		return entity.getWidth() <= 1.4;
+	}
+
+	public void setDamageWobbleTicks(int damageWobbleTicks) {
+		this.dataTracker.set(DAMAGE_WOBBLE_TICKS, damageWobbleTicks);
+	}
+
+	public void setDamageWobbleSide(int damageWobbleSide) {
+		this.dataTracker.set(DAMAGE_WOBBLE_SIDE, damageWobbleSide);
+	}
+
+	public void setDamageWobbleStrength(float damageWobbleStrength) {
+		this.dataTracker.set(DAMAGE_WOBBLE_STRENGTH, damageWobbleStrength);
+	}
+
+	public float getDamageWobbleStrength() {
+		return (Float) this.dataTracker.get(DAMAGE_WOBBLE_STRENGTH);
+	}
+
+	public int getDamageWobbleTicks() {
+		return (Integer) this.dataTracker.get(DAMAGE_WOBBLE_TICKS);
+	}
+
+	public int getDamageWobbleSide() {
+		return (Integer) this.dataTracker.get(DAMAGE_WOBBLE_SIDE);
 	}
 
 	@Override
@@ -787,9 +859,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 			passenger.setPose(EntityPose.SITTING);
 		}
 
-		if (passenger.getType().isIn(EntityTypeTags.CAN_TURN_IN_BOATS)) {
-			return;
-		}
+		// 1.20.4 has EntityTypeTags.CAN_TURN_IN_BOATS check here
 
 		passenger.setYaw(passenger.getYaw() + this.yawVelocity);
 		passenger.setHeadYaw(passenger.getHeadYaw() + this.yawVelocity);
@@ -945,5 +1015,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 	static {
 		OXIDATION_LEVEL = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
 		IS_WAXED = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+		DAMAGE_WOBBLE_TICKS = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
+		DAMAGE_WOBBLE_SIDE = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
+		DAMAGE_WOBBLE_STRENGTH = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.FLOAT);
 	}
 }
