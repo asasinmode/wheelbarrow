@@ -3,7 +3,6 @@ package com.asasinmode.wheelbarrow.entity.custom;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
@@ -15,7 +14,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
@@ -826,10 +824,10 @@ public class WheelbarrowEntity extends Entity {
 	}
 
 	// this is overriden and called automatically in 1.20.2+
-	// TODO fix controlling player & first zombie?
+	// 1.20.1 needs xOffset
 	protected void getPassengerAttachmentPos(Entity passenger, Entity.PositionUpdater positionUpdater) {
 		float zOffset = -0.8f;
-		float yOffset = 0.6f;
+		float yOffset = 0.0f;
 		boolean isControllingPassenger = passenger == this.getControllingPassenger();
 		boolean isPlayer = passenger instanceof PlayerEntity;
 
@@ -840,6 +838,7 @@ public class WheelbarrowEntity extends Entity {
 		}
 
 		if (!isControllingPassenger || !isPlayer) {
+			// this is X offset on 1.20.2+
 			zOffset = 0.2f;
 			yOffset = 0.4f;
 			zOffset += Math.max((passenger.getWidth() - 1.0f) / 2.0f, 0.0f);
@@ -855,7 +854,10 @@ public class WheelbarrowEntity extends Entity {
 			}
 		}
 
-		positionUpdater.accept(passenger, this.getX(), this.getY() + yOffset, this.getZ() + zOffset);
+		// 1.20.1 also needs to be rotated manually
+		Vec3d offset = new Vec3d(0.0f, yOffset, zOffset).rotateY(-this.getYaw() * ((float) Math.PI / 180.0f));
+
+		positionUpdater.accept(passenger, this.getX() + offset.x, this.getY() + offset.y, this.getZ() + offset.z);
 	}
 
 	// this is a replacement for 1.20.2+ net.minecraft.entity.Entity.getRidingOffset
