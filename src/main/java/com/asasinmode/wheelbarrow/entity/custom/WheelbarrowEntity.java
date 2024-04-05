@@ -26,7 +26,15 @@ import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.EndermanEntity;
+import net.minecraft.entity.mob.IllagerEntity;
+import net.minecraft.entity.mob.PiglinBruteEntity;
+import net.minecraft.entity.mob.PiglinEntity;
+import net.minecraft.entity.mob.SkeletonEntity;
+import net.minecraft.entity.mob.StrayEntity;
+import net.minecraft.entity.mob.WitherSkeletonEntity;
 import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.entity.mob.ZombieVillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
@@ -840,7 +848,7 @@ public class WheelbarrowEntity extends Entity {
 		if (!isControllingPassenger || !isPlayer) {
 			// this is X offset on 1.20.2+
 			zOffset = 0.2f;
-			yOffset = 0.4f;
+			yOffset = 0.4f + this.getRidingOffset(passenger);
 			zOffset += Math.max((passenger.getWidth() - 1.0f) / 2.0f, 0.0f);
 		}
 
@@ -861,10 +869,24 @@ public class WheelbarrowEntity extends Entity {
 	}
 
 	// this is a replacement for 1.20.2+ net.minecraft.entity.Entity.getRidingOffset
+	// some of the values I made up
 	protected float getRidingOffset(Entity entity) {
-		// TODO do for those https://minecraft.fandom.com/wiki/Riding#Posture
-		if (entity instanceof ZombieEntity) {
-			return -0.7f;
+		if (entity instanceof PlayerEntity) {
+			return -0.6F;
+		} else if (entity instanceof ZombieVillagerEntity zombieVillagerEntity) {
+			return zombieVillagerEntity.isBaby() ? 0.0f : -0.4f;
+		} else if (entity instanceof ZombieEntity zombieEntity) {
+			return zombieEntity.isBaby() ? -0.1f : -0.5f;
+		} else if (entity instanceof SkeletonEntity || entity instanceof StrayEntity) {
+			return -0.65f;
+		} else if (entity instanceof WitherSkeletonEntity) {
+			return -0.75f;
+		} else if (entity instanceof PiglinEntity piglinEntity) {
+			return piglinEntity.isBaby() ? -0.2f : -0.5f;
+		} else if (entity instanceof PiglinBruteEntity) {
+			return -0.6f;
+		} else if (entity instanceof IllagerEntity) {
+			return -0.6f;
 		}
 
 		return 0.0f;
