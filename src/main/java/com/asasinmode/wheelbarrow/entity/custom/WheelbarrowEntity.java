@@ -83,6 +83,8 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private boolean pressingBack;
 	private boolean sprintingPressed;
 	private Entity passengerBeingYeeted = null;
+	// for yeeting velocity
+	private Vec3d prevServerPos = Vec3d.ZERO;
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
@@ -447,6 +449,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	@Override
 	public void tick() {
 		boolean isServer = !this.getWorld().isClient;
+
 		this.location = this.checkLocation();
 
 		if (this.getDamageWobbleTicks() > 0) {
@@ -463,12 +466,11 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 		if (this.isLogicalSideForUpdatingMovement()) {
 			this.updateVelocity();
-			if (!isServer) {
-				this.steer();
-			}
+			this.steer();
 			this.move(MovementType.SELF, this.getVelocity());
 		} else {
 			this.setVelocity(Vec3d.ZERO);
+			this.prevServerPos = this.getPos();
 		}
 
 		double yawRad = Math.toRadians(this.getYaw());
@@ -616,9 +618,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.setVelocity(velocity.x * (double) this.velocityDecay, y, velocity.z * (double) this.velocityDecay);
 
 		double velocityLength = this.getVelocity().horizontalLength();
-
-		// System.out.println("UPDATEVELOCITY length: " + velocityLength + " vector: " +
-		// this.getVelocity());
 
 		// bumped into something or stopped not sure if thats how you do it
 		if (velocityLength <= 0.07) {
@@ -818,9 +817,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 	public Vec3d updatePassengerForDismount(LivingEntity passenger) {
 		// TODO yeeting player is wrong
 		if (this.passengerBeingYeeted == passenger) {
-			// System.out.println("METHOD length: " + this.getVelocity().length() + "
-			// vector: " + this.getVelocity());
-
 			this.passengerBeingYeeted = null;
 
 			float offset = 0.15f + (float) passenger.getWidth() * 0.1f;
@@ -830,9 +826,11 @@ public class WheelbarrowEntity extends VehicleEntity {
 			double largerSinCos = Math.max(Math.abs(yawSin), Math.abs(yawCos));
 			double x = yawSin * offset / largerSinCos;
 			double z = yawCos * offset / largerSinCos;
+			// TODO adjust multiply
+			// TODO increase y based on velocity length?
+			Vec3d velocity = this.getPos().subtract(this.prevServerPos).multiply(2);
 
-			// TODO this is 0
-			passenger.setVelocity(this.getVelocity().add(new Vec3d(x, 0.3, z)));
+			passenger.setVelocity(this.getVelocity().add(velocity).add(x, 0.3, z));
 
 			return passenger.getPos();
 		}
