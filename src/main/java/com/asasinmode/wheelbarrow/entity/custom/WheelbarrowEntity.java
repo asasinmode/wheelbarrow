@@ -1,6 +1,9 @@
 package com.asasinmode.wheelbarrow.entity.custom;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -85,6 +88,10 @@ public class WheelbarrowEntity extends VehicleEntity {
 	private Entity passengerBeingYeeted = null;
 	// for yeeting velocity
 	private Vec3d prevServerPos = Vec3d.ZERO;
+	// after yeeting player entities they need to be immune to pushing for a moment
+	// because otherwise they might collide with wheelbarrow and instantly lose
+	// velocity
+	private Map<UUID, Integer> yeetedPlayersToPushImmuneTimestamps = new HashMap<>();
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
@@ -450,6 +457,16 @@ public class WheelbarrowEntity extends VehicleEntity {
 	public void tick() {
 		boolean isServer = !this.getWorld().isClient;
 
+		// every half a second cleanup push immune entities timestamps
+		if (this.age % 10 == 0) {
+			this.yeetedPlayersToPushImmuneTimestamps.entrySet().removeIf((entry) -> {
+				if (entry.getValue() <= this.age) {
+					return true;
+				}
+				return false;
+			});
+		}
+
 		this.location = this.checkLocation();
 
 		if (this.getDamageWobbleTicks() > 0) {
@@ -514,7 +531,10 @@ public class WheelbarrowEntity extends VehicleEntity {
 				}
 				;
 			} else {
-				this.pushAwayFrom(entity);
+				if (!(entity instanceof PlayerEntity)
+						|| this.yeetedPlayersToPushImmuneTimestamps.getOrDefault(entity.getUuid(), Integer.MIN_VALUE) < this.age) {
+					this.pushAwayFrom(entity);
+				}
 			}
 		}
 
@@ -835,6 +855,12 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 			passenger.setVelocity(currentVelocity.multiply(1.5).add(x, y, z));
 			passenger.velocityModified = true;
+
+			if (passenger instanceof PlayerEntity) {
+				// disable pushing for 2 seconds for yeeted players
+				this.yeetedPlayersToPushImmuneTimestamps.put(passenger.getUuid(), this.age +
+						40);
+			}
 
 			return passenger.getPos().add(currentVelocity);
 		}
