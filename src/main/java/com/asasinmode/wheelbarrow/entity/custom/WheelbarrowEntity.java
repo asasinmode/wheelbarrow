@@ -1,6 +1,9 @@
 package com.asasinmode.wheelbarrow.entity.custom;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -92,6 +95,12 @@ public class WheelbarrowEntity extends Entity {
 	private boolean pressingBack;
 	private boolean sprintingPressed;
 	private Entity passengerBeingYeeted = null;
+	// for yeeting velocity
+	private Vec3d prevServerPos = Vec3d.ZERO;
+	// after yeeting player entities they need to be immune to pushing for a moment
+	// because otherwise they might collide with wheelbarrow and instantly lose
+	// velocity
+	private Map<UUID, Integer> yeetedPlayersToPushImmuneTimestamps = new HashMap<>();
 
 	public WheelbarrowEntity(EntityType<? extends WheelbarrowEntity> entityType, World world) {
 		super(entityType, world);
@@ -526,6 +535,17 @@ public class WheelbarrowEntity extends Entity {
 	@Override
 	public void tick() {
 		boolean isServer = !this.getWorld().isClient;
+
+		// every half a second cleanup push immune entities timestamps
+		if (this.age % 10 == 0) {
+			this.yeetedPlayersToPushImmuneTimestamps.entrySet().removeIf((entry) -> {
+				if (entry.getValue() <= this.age) {
+					return true;
+				}
+				return false;
+			});
+		}
+
 		this.location = this.checkLocation();
 
 		if (this.getDamageWobbleTicks() > 0) {
@@ -542,12 +562,11 @@ public class WheelbarrowEntity extends Entity {
 
 		if (this.isLogicalSideForUpdatingMovement()) {
 			this.updateVelocity();
-			if (!isServer) {
-				this.steer();
-			}
+			this.steer();
 			this.move(MovementType.SELF, this.getVelocity());
 		} else {
 			this.setVelocity(Vec3d.ZERO);
+			this.prevServerPos = this.getPos();
 		}
 
 		double yawRad = Math.toRadians(this.getYaw());
@@ -591,7 +610,10 @@ public class WheelbarrowEntity extends Entity {
 				}
 				;
 			} else {
-				this.pushAwayFrom(entity);
+				if (!(entity instanceof PlayerEntity)
+						|| this.yeetedPlayersToPushImmuneTimestamps.getOrDefault(entity.getUuid(), Integer.MIN_VALUE) < this.age) {
+					this.pushAwayFrom(entity);
+				}
 			}
 		}
 
@@ -704,9 +726,6 @@ public class WheelbarrowEntity extends Entity {
 		this.setVelocity(velocity.x * (double) this.velocityDecay, y, velocity.z * (double) this.velocityDecay);
 
 		double velocityLength = this.getVelocity().horizontalLength();
-
-		// System.out.println("UPDATEVELOCITY length: " + velocityLength + " vector: " +
-		// this.getVelocity());
 
 		// bumped into something or stopped not sure if thats how you do it
 		if (velocityLength <= 0.07) {
@@ -932,11 +951,7 @@ public class WheelbarrowEntity extends Entity {
 
 	@Override
 	public Vec3d updatePassengerForDismount(LivingEntity passenger) {
-		// TODO yeeting player is wrong
 		if (this.passengerBeingYeeted == passenger) {
-			// System.out.println("METHOD length: " + this.getVelocity().length() + "
-			// vector: " + this.getVelocity());
-
 			this.passengerBeingYeeted = null;
 
 			float offset = 0.15f + (float) passenger.getWidth() * 0.1f;
@@ -945,12 +960,25 @@ public class WheelbarrowEntity extends Entity {
 			double yawCos = Math.cos(yawRad);
 			double largerSinCos = Math.max(Math.abs(yawSin), Math.abs(yawCos));
 			double x = yawSin * offset / largerSinCos;
+			double y = 0.3;
 			double z = yawCos * offset / largerSinCos;
+			Vec3d currentVelocity = this.getPos().subtract(this.prevServerPos);
+			double length = currentVelocity.length();
 
-			// TODO this is 0
-			passenger.setVelocity(this.getVelocity().add(new Vec3d(x, 0.3, z)));
+			if (length >= 0.3) {
+				y += length * 0.2;
+			}
 
-			return passenger.getPos();
+			passenger.setVelocity(currentVelocity.multiply(1.5).add(x, y, z));
+			passenger.velocityModified = true;
+
+			if (passenger instanceof PlayerEntity) {
+				// disable pushing for 2 seconds for yeeted players
+				this.yeetedPlayersToPushImmuneTimestamps.put(passenger.getUuid(), this.age +
+						40);
+			}
+
+			return passenger.getPos().add(currentVelocity);
 		}
 
 		double x, z, dismountYOffset;
