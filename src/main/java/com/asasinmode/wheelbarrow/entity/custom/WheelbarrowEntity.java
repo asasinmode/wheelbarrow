@@ -825,14 +825,18 @@ public class WheelbarrowEntity extends VehicleEntity {
 			double yawCos = Math.cos(yawRad);
 			double largerSinCos = Math.max(Math.abs(yawSin), Math.abs(yawCos));
 			double x = yawSin * offset / largerSinCos;
+			double y = 0.3;
 			double z = yawCos * offset / largerSinCos;
-			// TODO adjust multiply
-			// TODO increase y based on velocity length?
-			Vec3d velocity = this.getPos().subtract(this.prevServerPos).multiply(2);
+			Vec3d currentVelocity = this.getPos().subtract(this.prevServerPos);
+			double length = currentVelocity.length();
 
-			passenger.setVelocity(this.getVelocity().add(velocity).add(x, 0.3, z));
+			if (length >= 0.3) {
+				y += length * 0.2;
+			}
 
-			return passenger.getPos();
+			passenger.setVelocity(currentVelocity.multiply(1.5).add(x, y, z));
+
+			return passenger.getPos().add(currentVelocity);
 		}
 
 		double x, z, dismountYOffset;
