@@ -815,7 +815,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 	@Override
 	public Vec3d updatePassengerForDismount(LivingEntity passenger) {
-		// TODO yeeting player is wrong
 		if (this.passengerBeingYeeted == passenger) {
 			this.passengerBeingYeeted = null;
 
@@ -835,6 +834,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 			}
 
 			passenger.setVelocity(currentVelocity.multiply(1.5).add(x, y, z));
+			passenger.velocityModified = true;
 
 			return passenger.getPos().add(currentVelocity);
 		}
