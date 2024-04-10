@@ -17,7 +17,7 @@ if (currentBranch !== 'main') {
 
 const status = await $`git status -s`.text();
 if (status.length) {
-	console.log('uncommited changes found, commit before releasing');
+	console.warn('uncommited changes found, commit before releasing');
 	process.exit(1);
 }
 
@@ -32,7 +32,7 @@ for (const line of configFile.split('\n')) {
 	if (line.startsWith('deploy_branches')) {
 		deployBranches = line.split('=')[1].split('.');
 		branchesFound = true;
-	} else if (line.startsWith('version')) {
+	} else if (line.startsWith('mod_version')) {
 		mainVersion = line.split('=')[1].split('.').map(v => Number.parseInt(v));
 		versionFound = true;
 	}
@@ -81,7 +81,7 @@ await executeOnBranches(async (branch) => {
 	const configFile = await Bun.file('../gradle.properties').text();
 	let branchVersion: number[] | undefined;
 	for (const line of configFile.split('\n')) {
-		if (line.startsWith('version')) {
+		if (line.startsWith('mod_version')) {
 			branchVersion = line.split('=')[1].split('.').map(v => Number.parseInt(v));
 		}
 	}
@@ -158,7 +158,7 @@ const versionLineIndex = contents.findIndex(line => line.startsWith('version'));
 
 const newContents = contents
 	.slice(0, versionLineIndex)
-	.concat(`version=${newVersion}`)
+	.concat(`mod_version=${newVersion}`)
 	.concat(contents.slice(versionLineIndex + 1));
 
 await Bun.write('../gradle.properties', newContents.join('\n'));
