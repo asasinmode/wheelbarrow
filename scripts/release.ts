@@ -139,7 +139,7 @@ const patchValue = [mainVersion[0], mainVersion[1], mainVersion[2] + 1].join('.'
 let { newVersion } = await prompts({
 	type: 'select',
 	name: 'newVersion',
-	message: `current version: \x1b[32m${mainVersion}\x1b[0m`,
+	message: `current version: \x1b[32m${mainVersion.join('.')}\x1b[0m`,
 	choices: [
 		{
 			title: `patch \x1b[1m${patchValue}\x1b[0m`,
