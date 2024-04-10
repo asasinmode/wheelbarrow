@@ -206,5 +206,4 @@ async function executeOnBranches(callback: (branchName: string) => Promise<void>
 		await callback(branch);
 	}
 	await $`git checkout main`.quiet();
-	console.log('back to main')
 }
