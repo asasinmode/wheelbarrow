@@ -161,7 +161,7 @@ if (!newVersion) {
 }
 
 const contents = configFile.split('\n');
-const versionLineIndex = contents.findIndex(line => line.startsWith('version'));
+const versionLineIndex = contents.findIndex(line => line.startsWith('mod_version'));
 
 const newContents = contents
 	.slice(0, versionLineIndex)
