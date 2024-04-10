@@ -156,6 +156,7 @@ let { newVersion } = await prompts({
 	]
 })
 
+console.log('getting here?')
 if (!newVersion) {
 	process.exit(1);
 }
