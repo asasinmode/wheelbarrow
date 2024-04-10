@@ -30,11 +30,17 @@ for (const line of configFile.split('\n')) {
 	let versionFound = false;
 
 	if (line.startsWith('deploy_branches')) {
-		deployBranches = line.split('=')[1].trim().split('.');
-		branchesFound = true;
+		const value = line.split('=')[1].trim();
+		if (value) {
+			deployBranches = value.split(',');
+			branchesFound = true;
+		}
 	} else if (line.startsWith('mod_version')) {
-		mainVersion = line.split('=')[1].trim().split('.').map(v => Number.parseInt(v));
-		versionFound = true;
+		const value = line.split('=')[1].trim();
+		if (value) {
+			mainVersion = value.split('.').map(v => Number.parseInt(v));
+			versionFound = true;
+		}
 	}
 
 	if (branchesFound && versionFound) {
@@ -82,7 +88,10 @@ await executeOnBranches(async (branch) => {
 	let branchVersion: number[] | undefined;
 	for (const line of configFile.split('\n')) {
 		if (line.startsWith('mod_version')) {
-			branchVersion = line.split('=')[1].trim().split('.').map(v => Number.parseInt(v));
+			const value = line.split('=')[1].trim();
+			if (value) {
+				mainVersion = value.split('.').map(v => Number.parseInt(v));
+			}
 		}
 	}
 
