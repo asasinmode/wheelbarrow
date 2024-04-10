@@ -31,7 +31,6 @@ for (const line of configFile.split('\n')) {
 
 	if (line.startsWith('deploy_branches')) {
 		deployBranches = line.split('=')[1].trim().split('.');
-		console.log('after')
 		branchesFound = true;
 	} else if (line.startsWith('mod_version')) {
 		mainVersion = line.split('=')[1].trim().split('.').map(v => Number.parseInt(v));
@@ -194,6 +193,7 @@ try {
 console.log(`\x1b[32mrelease finished\x1b[0m]`);
 
 async function executeOnBranches(callback: (branchName: string) => Promise<void>) {
+	console.log('any branches', deployBranches, deployBranches?.length);
 	for (const branch of deployBranches!) {
 		await $`git checkout ${branch}`.quiet();
 		await callback(branch);
