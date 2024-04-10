@@ -191,7 +191,8 @@ await executeOnBranches(async (branch) => {
 console.log(`\x1b[37mmerge succesful, pushing changes...\x1b[0m`);
 
 try {
-	await $`git push --tags --all origin`.quiet();
+	await $`git push --all`.quiet();
+	await $`git push --tags`.quiet();
 } catch (e) {
 	console.error('push failed');
 	console.log((e as ShellError).stderr.toString());
