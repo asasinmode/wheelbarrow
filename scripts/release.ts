@@ -88,7 +88,7 @@ await executeOnBranches(async (branch) => {
 		if (line.startsWith('mod_version')) {
 			const value = line.split('=')[1].trim();
 			if (value) {
-				mainVersion = value.split('.').map(v => Number.parseInt(v));
+				branchVersion = value.split('.').map(v => Number.parseInt(v));
 			}
 		}
 	}
@@ -187,7 +187,7 @@ await executeOnBranches(async (branch) => {
 	await $`git commit --no-edit`.quiet();
 })
 
-console.log(`\x1b[37mmerge succesful, pushing changes...\x1b[0m]`);
+console.log(`\x1b[37mmerge succesful, pushing changes...\x1b[0m`);
 
 try {
 	await $`git push --all origin`.quiet();
@@ -197,10 +197,10 @@ try {
 	process.exit(1);
 }
 
-console.log(`\x1b[32mrelease finished\x1b[0m]`);
+console.log(`\x1b[32mrelease finished\x1b[0m`);
+process.exit(0);
 
 async function executeOnBranches(callback: (branchName: string) => Promise<void>) {
-	console.log('any branches', deployBranches, deployBranches?.length);
 	for (const branch of deployBranches!) {
 		await $`git checkout ${branch}`.quiet();
 		await callback(branch);
