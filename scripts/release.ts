@@ -31,16 +31,14 @@ for (const line of configFile.split('\n')) {
 
 	if (line.startsWith('deploy_branches')) {
 		const value = line.split('=')[1].trim();
-		if (value) {
-			deployBranches = value.split(',');
-			branchesFound = true;
-		}
+		deployBranches = value ? value.split(',') : [];
+		branchesFound = true;
 	} else if (line.startsWith('mod_version')) {
 		const value = line.split('=')[1].trim();
 		if (value) {
 			mainVersion = value.split('.').map(v => Number.parseInt(v));
-			versionFound = true;
 		}
+		versionFound = true;
 	}
 
 	if (branchesFound && versionFound) {
