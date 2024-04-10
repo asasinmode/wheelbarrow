@@ -30,7 +30,9 @@ for (const line of configFile.split('\n')) {
 	let versionFound = false;
 
 	if (line.startsWith('deploy_branches')) {
+		console.log('branches', line.split('='))
 		deployBranches = line.split('=')[1].split('.');
+		console.log('after')
 		branchesFound = true;
 	} else if (line.startsWith('mod_version')) {
 		mainVersion = line.split('=')[1].split('.').map(v => Number.parseInt(v));
