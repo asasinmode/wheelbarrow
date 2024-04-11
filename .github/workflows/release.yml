@@ -29,4 +29,4 @@ jobs:
 
       - run: |
           echo "hello"
-          echo ${{steps.temp.*}}
+          echo ${{join(steps.temp.*, '\n')}}
