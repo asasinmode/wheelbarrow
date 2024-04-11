@@ -15,14 +15,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v3
+      - name: setup node
+        uses: actions/setup-node@v3
         with:
           node-version: 16.x
 
-      - run: npx changelogithub
-        name: generate changelog and create release
+      - name: setup java
+        uses: actions/setup-java@v2
+        with:
+          distribution: "temurin"
+          java-version: 17
+
+      - name: generate changelog and create release
+        run: npx changelogithub
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: ls
-        name: temp
+      - name: build
+        run: ./gradlew clean build
+
+      - name: temp
+        working-directory: build
+        run: ls
