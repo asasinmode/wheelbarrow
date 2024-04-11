@@ -60,3 +60,18 @@ jobs:
         working-directory: build/libs
         run: |
           ls
+
+  check_build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: check build?
+        working-directory: build/libs
+        run: |
+          ls
