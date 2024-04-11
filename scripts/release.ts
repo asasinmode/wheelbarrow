@@ -132,9 +132,9 @@ if (mergeConflictBranches.length || mismatchedVersionBranches.length) {
 	process.exit(1);
 }
 
-const patchValue = [mainVersion[0], mainVersion[1], mainVersion[2] + 1].join('.');
-const newVersion = patchValue;
 
+// TMP until https://github.com/oven-sh/bun/issues/10087
+const newVersion = [mainVersion[0], mainVersion[1], mainVersion[2] + 1].join('.');;
 const { proceed } = await prompts({
 	type: 'confirm',
 	name: 'proceed',
@@ -142,15 +142,13 @@ const { proceed } = await prompts({
 });
 
 if (!proceed) {
-	console.log('cancelled');
 	process.exit(0);
 }
 
-process.exit(1);
+// const patchValue = [mainVersion[0], mainVersion[1], mainVersion[2] + 1].join('.');
 // const minorValue = [mainVersion[0], mainVersion[1] + 1, 0].join('.');
 // const majorValue = [mainVersion[0] + 1, 0, 0].join('.');
 
-// TMP until https://github.com/oven-sh/bun/issues/10087
 // const { newVersion } = await prompts({
 // 	type: 'select',
 // 	name: 'newVersion',
