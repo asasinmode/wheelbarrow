@@ -42,14 +42,7 @@ jobs:
 
       - name: rename jars
         working-directory: build/libs
-        run: |
-          for file in *; do
-          if [ -f "$file" ]; then
-            filename="${file%.*}"
-            extension="${file##*.}"
-            mv "$file" "${filename}+${{MOD_LOADER}}_1.20.1${extension}"
-          fi
-          done
+        run: for file in *; do if [ -f "$file" ]; then filename="${file%.*}"; extension="${file##*.}"; mv "$file" "${filename}+${{MOD_LOADER}}_1.20.1.${extension}"; fi; done
 
       - name: another temp
         working-directory: build/libs
