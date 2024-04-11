@@ -5,6 +5,10 @@ on:
     tags:
       - "v*"
 
+env:
+  # TODO matrix when forge & fabric
+  MOD_LOADER: fabric
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -33,5 +37,20 @@ jobs:
           ./gradlew clean build
 
       - name: temp
+        working-directory: build/libs
+        run: ls
+
+      - name: rename jars
+        working-directory: build/libs
+        run: |
+          for file in *; do
+          if [ -f "$file" ]; then
+            filename="${file%.*}"
+            extension="${file##*.}"
+            mv "$file" "${filename}+${{MOD_LOADER}}_1.20.1${extension}"
+          fi
+          done
+
+      - name: another temp
         working-directory: build/libs
         run: ls
