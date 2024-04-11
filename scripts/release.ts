@@ -132,33 +132,48 @@ if (mergeConflictBranches.length || mismatchedVersionBranches.length) {
 	process.exit(1);
 }
 
-const majorValue = [mainVersion[0] + 1, 0, 0].join('.');
-const minorValue = [mainVersion[0], mainVersion[1] + 1, 0].join('.');
 const patchValue = [mainVersion[0], mainVersion[1], mainVersion[2] + 1].join('.');
+const newVersion = patchValue;
 
-let { newVersion } = await prompts({
-	type: 'select',
-	name: 'newVersion',
-	message: `current version: \x1b[32m${mainVersion.join('.')}\x1b[0m`,
-	choices: [
-		{
-			title: `patch \x1b[1m${patchValue}\x1b[0m`,
-			value: patchValue,
-		},
-		{
-			title: `minor \x1b[1m${minorValue}\x1b[0m`,
-			value: minorValue,
-		},
-		{
-			title: `major \x1b[1m${majorValue}\x1b[0m`,
-			value: majorValue,
-		},
-	]
-})
+const { proceed } = await prompts({
+	type: 'confirm',
+	name: 'proceed',
+	message: `will bump to: \x1b[32m${newVersion}\x1b[0m`
+});
 
-if (!newVersion) {
-	process.exit(1);
+if (!proceed) {
+	console.log('cancelled');
+	process.exit(0);
 }
+
+process.exit(1);
+// const minorValue = [mainVersion[0], mainVersion[1] + 1, 0].join('.');
+// const majorValue = [mainVersion[0] + 1, 0, 0].join('.');
+
+// TMP until https://github.com/oven-sh/bun/issues/10087
+// const { newVersion } = await prompts({
+// 	type: 'select',
+// 	name: 'newVersion',
+// 	message: `current version: \x1b[32m${mainVersion.join('.')}\x1b[0m`,
+// 	choices: [
+// 		{
+// 			title: `patch \x1b[1m${patchValue}\x1b[0m`,
+// 			value: patchValue,
+// 		},
+// 		{
+// 			title: `minor \x1b[1m${minorValue}\x1b[0m`,
+// 			value: minorValue,
+// 		},
+// 		{
+// 			title: `major \x1b[1m${majorValue}\x1b[0m`,
+// 			value: majorValue,
+// 		},
+// 	]
+// })
+
+// if (!newVersion) {
+// 	process.exit(1);
+// }
 
 const contents = configFile.split('\n');
 const versionLineIndex = contents.findIndex(line => line.startsWith('mod_version'));
