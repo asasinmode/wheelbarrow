@@ -52,27 +52,35 @@ jobs:
         working-directory: build/libs
         run: for file in *; do if [ -f "$file" ]; then filename="${file%.*}"; extension="${file##*.}"; mv "$file" "${filename}+fabric_${{matrix.branch == 'main' && '1.20.4' || matrix.branch}}.${extension}"; fi; done
 
-      - uses: actions/upload-artifact@v4
+      - name: publish
+        uses: Kir-Antipov/mc-publish@v3
         with:
-          name: artifact-${{matrix.branch == 'main' && '1.20.4' || matrix.branch}}
-          path: build/libs/*
+          curseforge-id: 998859
+          curseforge-token: "${{secrets.CURSEFORGE_TOKEN}}"
 
-  upload:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    needs: build
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+          modrinth-id: F0jGC2As
+          modrinth-token: "${{secrets.MODRINTH_TOKEN}}"
 
-      - uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-          pattern: artifact-*
-          merge-multiple: true
+      # - name: upload jars
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: artifact-${{matrix.branch == 'main' && '1.20.4' || matrix.branch}}
+      #     retention-days: 1
+      #     path: build/libs/*
 
-      - name: check build?
-        run: |
-          ls artifacts
+  # upload:
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
+  #   needs: build
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+
+  #     - name: download jars
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         path: artifacts
+  #         pattern: artifact-*
+  #         merge-multiple: true
