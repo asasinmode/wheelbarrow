@@ -1,0 +1,58 @@
+name: publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: temp
+        run: echo "The tag that triggered this workflow is ${{ github.ref_name }}"
+
+      - name: Print release body
+        run: echo "The release body is ${{ github.event.release.body }}"
+
+  # build:
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
+  #   needs: generate_changelog
+  #   strategy:
+  #     matrix:
+  #       branch: ["1.20.1", "1.20.2", "main"]
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #         ref: ${{matrix.branch}}
+
+  #     - uses: actions/setup-java@v4
+  #       with:
+  #         distribution: "temurin"
+  #         java-version: 17
+
+  #     - name: build
+  #       run: |
+  #         chmod +x ./gradlew
+  #         ./gradlew clean build
+
+  #     # idk how to do it in gradle
+  #     # '1.20.4' is the newest version the main branch is on, update accordingly
+  #     - name: rename jars
+  #       working-directory: build/libs
+  #       run: for file in *; do if [ -f "$file" ]; then filename="${file%.*}"; extension="${file##*.}"; mv "$file" "${filename}+fabric_${{matrix.branch == 'main' && '1.20.4' || matrix.branch}}.${extension}"; fi; done
+
+  #     - name: publish
+  #       uses: Kir-Antipov/mc-publish@v3
+  #       with:
+  #         curseforge-id: 998859
+  #         curseforge-token: "${{secrets.CURSEFORGE_TOKEN}}"
+
+  #         modrinth-id: F0jGC2As
+  #         modrinth-token: "${{secrets.MODRINTH_TOKEN}}"
