@@ -40,29 +40,22 @@ jobs:
           fetch-depth: 0
           ref: ${{matrix.branch}}
 
-      - name: hi from branch
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "temurin"
+          java-version: 17
+
+      - name: build
         run: |
-          echo "hello from ${{matrix.branch}}"
-          git branch
-          cat ./gradle.properties
+          chmod +x ./gradlew
+          ./gradlew clean build
 
-      # - uses: actions/setup-java@v2
-      #   with:
-      #     distribution: "temurin"
-      #     java-version: 17
+      # idk how to do it in gradle
+      - name: rename jars
+        working-directory: build/libs
+        run: for file in *; do if [ -f "$file" ]; then filename="${file%.*}"; extension="${file##*.}"; mv "$file" "${filename}+${{env.MOD_LOADER}}_1.20.1.${extension}"; fi; done
 
-      # - name: build
-      #   run: |
-      #     chmod +x ./gradlew
-      #     ./gradlew clean build
-
-      # # idk how to do it in gradle
-      # - name: rename jars
-      #   working-directory: build/libs
-      #   run: for file in *; do if [ -f "$file" ]; then filename="${file%.*}"; extension="${file##*.}"; mv "$file" "${filename}+${{env.MOD_LOADER}}_1.20.1.${extension}"; fi; done
-
-      # - name: another temp
-      #   working-directory: build/libs
-      #   run: |
-      #     ls
-      #     git branch
+      - name: hi from ${{matrix.branch}}
+        working-directory: build/libs
+        run: |
+          ls
