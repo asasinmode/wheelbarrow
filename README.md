@@ -1,6 +1,6 @@
 # wheelbarrow
 
-_This is the 1.20.2 branch of the repository and it contains code for the 1.20.2 Minecraft version. Code for the newest Minecraft version can be found on the main branch._
+_This is the 1.20.1 branch of the repository and it contains code for the 1.20.1 Minecraft version. Code for the newest Minecraft version can be found on the main branch._
 
 ## todo
 
