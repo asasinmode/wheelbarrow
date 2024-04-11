@@ -134,7 +134,7 @@ if (mergeConflictBranches.length || mismatchedVersionBranches.length) {
 
 
 // TMP until https://github.com/oven-sh/bun/issues/10087
-const newVersion = [mainVersion[0], mainVersion[1], mainVersion[2] + 1].join('.');;
+const newVersion = [mainVersion[0], mainVersion[1], mainVersion[2] + 1].join('.');
 const { proceed } = await prompts({
 	type: 'confirm',
 	name: 'proceed',
