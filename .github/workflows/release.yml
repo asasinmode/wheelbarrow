@@ -19,11 +19,14 @@ jobs:
         with:
           node-version: 16.x
 
-      - run: echo "changelog_output=$(npx changelogithub)\n" >> $GITHUB_OUTPUT
+      - run: npx changelogithub
         id: generate_changelog
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
+      - run: echo "test_output=$(echo "my command output")\n" >> $GITHUB_OUTPUT
+        id: temp
+
       - run: |
           echo "hello"
-          echo ${{steps.generate_changelog.*}}
+          echo ${{steps.temp.*}}
