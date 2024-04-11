@@ -185,7 +185,7 @@ await Bun.write('../gradle.properties', newContents.join('\n'));
 await $`git commit -a -n -m "chore: release v${newVersion}"`.quiet();
 await $`git tag -a v${newVersion} -m "chore: release v${newVersion}"`
 
-console.log(`\x1b[37mversion bumped, merging 'main' to branches...x1b[0m`);
+console.log(`\x1b[37mversion bumped, merging 'main' to branches...\x1b[0m`);
 
 await executeOnBranches(async (branch) => {
 	try {
