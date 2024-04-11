@@ -53,7 +53,7 @@ jobs:
       # idk how to do it in gradle
       - name: rename jars
         working-directory: build/libs
-        run: for file in *; do if [ -f "$file" ]; then filename="${file%.*}"; extension="${file##*.}"; mv "$file" "${filename}+${{env.MOD_LOADER}}_1.20.1.${extension}"; fi; done
+        run: for file in *; do if [ -f "$file" ]; then filename="${file%.*}"; extension="${file##*.}"; mv "$file" "${filename}+${{env.MOD_LOADER}}_${{matrix.branch === 'main' && '1.20.4' || matrix.branch}}.${extension}"; fi; done
 
       - name: hi from ${{matrix.branch}}
         working-directory: build/libs
