@@ -20,11 +20,12 @@ jobs:
           node-version: 16.x
 
       - run: npx changelogithub
+        name: generate changelog and create release
         id: generate_changelog
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: echo "test_output=$(echo "my command output")\n" >> $GITHUB_OUTPUT
+      - run: echo "test=hello" >> "$GITHUB_OUTPUT"
         id: temp
 
       - run: |
