@@ -16,7 +16,10 @@ jobs:
         run: echo "The tag that triggered this workflow is ${{ github.ref_name }}"
 
       - name: Print release body
-        run: echo "The release body is ${{ github.event.release.body }}"
+        run: |
+          echo "tag ${{github.event.release.tag_name}}"
+          echo "name ${{github.event.release.name}}"
+          echo "release body ${{github.event.release.body}}"
 
   # build:
   #   runs-on: ubuntu-latest
@@ -56,3 +59,5 @@ jobs:
 
   #         modrinth-id: F0jGC2As
   #         modrinth-token: "${{secrets.MODRINTH_TOKEN}}"
+
+  #         name:
