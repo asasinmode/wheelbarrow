@@ -1,0 +1,57 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  # TODO matrix when forge & fabric
+  MOD_LOADER: fabric
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v1
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "temurin"
+          java-version: 17
+
+      - name: generate changelog and create release
+        run: bunx changelogithub
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      # - name: build
+      #   run: |
+      #     chmod +x ./gradlew
+      #     ./gradlew clean build
+
+      # # idk how to do it in gradle
+      # - name: rename jars
+      #   working-directory: build/libs
+      #   run: for file in *; do if [ -f "$file" ]; then filename="${file%.*}"; extension="${file##*.}"; mv "$file" "${filename}+${{env.MOD_LOADER}}_1.20.1.${extension}"; fi; done
+
+      # - name: another temp
+      #   working-directory: build/libs
+      #   run: |
+      #     ls
+      #     git branch
+
+      - name: change branch?
+        run: |
+          git branch
+          cat ./gradle.properties
+          git checkout 1.20.2
+          git branch
+          cat ./gradle.properties
+          git checkout main
