@@ -20,4 +20,4 @@ jobs:
       - name: generate changelog and create release
         run: bunx changelogithub
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.RELEASE_PAT}}
