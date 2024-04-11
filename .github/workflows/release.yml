@@ -21,13 +21,8 @@ jobs:
 
       - run: npx changelogithub
         name: generate changelog and create release
-        id: generate_changelog
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: echo "test=hello" >> "$GITHUB_OUTPUT"
-        id: temp
-
-      - run: |
-          echo "hello"
-          echo ${{join(steps.temp.*, '\n')}}
+      - run: ls
+        name: temp
