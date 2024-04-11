@@ -54,6 +54,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
+          name: artifact-${{matrix.branch == 'main' && '1.20.4' || matrix.branch}}
           path: build/libs/*
 
   upload:
@@ -67,7 +68,11 @@ jobs:
           fetch-depth: 0
 
       - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: artifact-*
 
       - name: check build?
         run: |
           ls
+          ls artifacts
