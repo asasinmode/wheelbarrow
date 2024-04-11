@@ -8,8 +8,6 @@ on:
 env:
   # TODO matrix when forge & fabric
   MOD_LOADER: fabric
-  # used for main branch, update accordingly
-  NEWEST_VERSION: "1.20.4"
 
 jobs:
   generate_changelog:
@@ -55,7 +53,8 @@ jobs:
       # idk how to do it in gradle
       - name: rename jars
         working-directory: build/libs
-        run: for file in *; do if [ -f "$file" ]; then filename="${file%.*}"; extension="${file##*.}"; mv "$file" "${filename}+${{env.MOD_LOADER}}_${{matrix.branch === 'main' && env.NEWEST_VERSION || matrix.branch}}.${extension}"; fi; done
+        # '1.20.4' is the newest version the main branch is on, update accordingly
+        run: for file in *; do if [ -f "$file" ]; then filename="${file%.*}"; extension="${file##*.}"; mv "$file" "${filename}+${{env.MOD_LOADER}}_${{matrix.branch === 'main' && '1.20.4' || matrix.branch}}.${extension}"; fi; done
 
       - name: hi from ${{matrix.branch}}
         working-directory: build/libs
