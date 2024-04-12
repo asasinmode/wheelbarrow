@@ -45,3 +45,4 @@ jobs:
           modrinth-token: "${{secrets.MODRINTH_TOKEN}}"
 
           name: ${{github.event.release.tag_name}}+fabric_${{matrix.branch == 'main' && '1.20.4' || matrix.branch}}
+          modrinth-featured: ${{matrix.branch == 'main'}}
