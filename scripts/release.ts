@@ -134,18 +134,18 @@ if (mergeConflictBranches.length || mismatchedVersionBranches.length) {
 }
 
 // TMP until https://github.com/oven-sh/bun/issues/10087
-const newVersion = [mainVersion[0], mainVersion[1], mainVersion[2] + 1].join('.');
-const proceed = await confirm({ message: `will bump to: \x1b[32m${newVersion}\x1b[0m` });
+// const newVersion = [mainVersion[0], mainVersion[1], mainVersion[2] + 1].join('.');
+// const proceed = await confirm({ message: `will bump to: \x1b[32m${newVersion}\x1b[0m` });
 
-if (!proceed) {
-	process.exit(0);
-}
+// if (!proceed) {
+// 	process.exit(0);
+// }
 
 const patchValue = [mainVersion[0], mainVersion[1], mainVersion[2] + 1].join('.');
 const minorValue = [mainVersion[0], mainVersion[1] + 1, 0].join('.');
 const majorValue = [mainVersion[0] + 1, 0, 0].join('.');
 
-const answer = await select({
+const newVersion = await select({
 	message: `current version: \x1b[32m${mainVersion.join('.')}\x1b[0m`,
 	choices: [
 		{
@@ -163,7 +163,7 @@ const answer = await select({
 	],
 });
 
-console.log({ answer });
+console.log({ newVersion });
 
 process.exit(0);
 
