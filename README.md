@@ -2,11 +2,11 @@
 
 _This is the main branch of the repository and it contains code for newest Minecraft version (1.20.3-1.20.4). Code for other Minecraft versions can be found on their respective branches._
 
-## for information about how the mod works check out the graphic below
+## showcase
 
 You can download the mod through [modrinth](https://modrinth.com/mod/wheelbarrow) and [curseforge](https://www.curseforge.com/minecraft/mc-mods/wheelbarrow).
 
-TODO
+![the showcase image for the mod describing features: taking entities for a ride by bumping into them with a wheelbarrow, ejecting them with the default "Z" keybind and with the wheelbarrow being made of copper: showing the 4 oxidation variants](https://github.com/asasinmode/wheelbarrow/blob/main/docs/showcase.jpg?raw=true)
 
 ## how to dev
 
