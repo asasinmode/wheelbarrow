@@ -2,6 +2,10 @@
 
 _This is the main branch of the repository and it contains code for newest Minecraft version (1.20.3-1.20.4). Code for other Minecraft versions can be found on their respective branches._
 
+# ANNOUNCEMENT: I'm working on the forge version. I plan to have it done in 2 weeks (may 5th latest).
+
+If you want to make a port/were already making a port and still want to work on it - contact me in issues here/twitter/discord/wherever so we can sort it out.
+
 ## showcase
 
 You can download the mod through [modrinth](https://modrinth.com/mod/wheelbarrow) and [curseforge](https://www.curseforge.com/minecraft/mc-mods/wheelbarrow).
