@@ -37,9 +37,17 @@ public class WheelbarrowItem extends Item {
 		if (world instanceof ServerWorld) {
 			ServerWorld serverWorld = (ServerWorld) world;
 
-			WheelbarrowEntity wheelbarrowEntity = WheelbarrowEntity.create(this.type, serverWorld,
-					(double) hitPos.getX(), (double) hitPos.getY(), (double) hitPos.getZ(),
-					itemStack, context.getPlayer());
+			WheelbarrowEntity wheelbarrowEntity;
+
+			if (this.type == WheelbarrowEntity.Type.COPPER) {
+				wheelbarrowEntity = WheelbarrowEntity.create(this.type, serverWorld,
+						(double) hitPos.getX(), (double) hitPos.getY(), (double) hitPos.getZ(),
+						itemStack, context.getPlayer(), true);
+			} else {
+				wheelbarrowEntity = WheelbarrowEntity.create(this.type, serverWorld,
+						(double) hitPos.getX(), (double) hitPos.getY(), (double) hitPos.getZ(),
+						itemStack, context.getPlayer());
+			}
 
 			if (!world.isSpaceEmpty(wheelbarrowEntity, wheelbarrowEntity.getBoundingBox())
 					|| !world.getBlockState(blockPos.up()).isAir()) {

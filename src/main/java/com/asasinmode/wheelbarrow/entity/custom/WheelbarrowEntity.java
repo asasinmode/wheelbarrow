@@ -67,6 +67,7 @@ import net.minecraft.world.World;
 public class WheelbarrowEntity extends VehicleEntity {
 	private static final TrackedData<Integer> OXIDATION_LEVEL;
 	private static final TrackedData<Boolean> IS_WAXED;
+	private static final TrackedData<Boolean> IS_BABY;
 	public final LimbAnimator limbAnimator = new LimbAnimator();
 	private int lerpTicks;
 	private float velocityDecay;
@@ -106,11 +107,22 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.setStepHeight(0.5f);
 	}
 
+	protected WheelbarrowEntity(World world, double x, double y, double z, boolean isBaby) {
+		this(ModEntities.WHEELBARROW, world);
+		this.setPosition(x, y, z);
+		this.prevX = x;
+		this.prevY = y;
+		this.prevZ = z;
+		this.setStepHeight(0.5f);
+		this.setIsBaby(isBaby);
+	}
+
 	@Override
 	protected void initDataTracker() {
 		super.initDataTracker();
 		this.dataTracker.startTracking(OXIDATION_LEVEL, Type.COPPER.ordinal());
 		this.dataTracker.startTracking(IS_WAXED, false);
+		this.dataTracker.startTracking(IS_BABY, false);
 	}
 
 	public static enum Type {
@@ -189,10 +201,29 @@ public class WheelbarrowEntity extends VehicleEntity {
 		return this.dataTracker.get(IS_WAXED);
 	}
 
+	public void setIsBaby(boolean value) {
+		this.dataTracker.set(IS_BABY, value);
+	}
+
+	public boolean getIsBaby() {
+		return this.dataTracker.get(IS_BABY);
+	}
+
 	public static WheelbarrowEntity create(Type type, ServerWorld world, double x, double y, double z, ItemStack stack,
 			PlayerEntity player) {
 
 		WheelbarrowEntity wheelbarrowEntity = new WheelbarrowEntity(world, x, y, z);
+		wheelbarrowEntity.setOxidationLevel(type);
+
+		EntityType.copier(world, stack, player).accept(wheelbarrowEntity);
+
+		return (WheelbarrowEntity) wheelbarrowEntity;
+	}
+
+	public static WheelbarrowEntity create(Type type, ServerWorld world, double x, double y, double z, ItemStack stack,
+			PlayerEntity player, boolean isBaby) {
+
+		WheelbarrowEntity wheelbarrowEntity = new WheelbarrowEntity(world, x, y, z, isBaby);
 		wheelbarrowEntity.setOxidationLevel(type);
 
 		EntityType.copier(world, stack, player).accept(wheelbarrowEntity);
@@ -973,5 +1004,6 @@ public class WheelbarrowEntity extends VehicleEntity {
 	static {
 		OXIDATION_LEVEL = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
 		IS_WAXED = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+		IS_BABY = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 	}
 }
