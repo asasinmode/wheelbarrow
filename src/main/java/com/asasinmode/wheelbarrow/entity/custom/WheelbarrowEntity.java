@@ -551,7 +551,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 					&& isControlledByPlayer
 					&& this.getPassengerList().size() < this.getMaxPassengers()
 					&& !entity.hasVehicle()
-					&& entity instanceof LivingEntity
+					&& (entity instanceof LivingEntity || entity instanceof WheelbarrowEntity)
 					&& !(entity instanceof PlayerEntity)
 					&& this.canBeYoinked(entity);
 
