@@ -6,14 +6,12 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import com.asasinmode.wheelbarrow.Wheelbarrow;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.item.ModItems;
 import com.asasinmode.wheelbarrow.networking.InformYeetKeybindS2CPacket;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LilyPadBlock;
@@ -21,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.LimbAnimator;
 import net.minecraft.entity.LivingEntity;
@@ -39,8 +38,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.registry.tag.FluidTags;
@@ -65,8 +64,10 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
 public class WheelbarrowEntity extends VehicleEntity {
-	private static final TrackedData<Integer> OXIDATION_LEVEL;
-	private static final TrackedData<Boolean> IS_WAXED;
+	private static final TrackedData<Integer> OXIDATION_LEVEL = DataTracker.registerData(WheelbarrowEntity.class,
+			TrackedDataHandlerRegistry.INTEGER);
+	private static final TrackedData<Boolean> IS_WAXED = DataTracker.registerData(WheelbarrowEntity.class,
+			TrackedDataHandlerRegistry.BOOLEAN);
 	public final LimbAnimator limbAnimator = new LimbAnimator();
 	private int lerpTicks;
 	private float velocityDecay;
@@ -103,54 +104,13 @@ public class WheelbarrowEntity extends VehicleEntity {
 		this.prevX = x;
 		this.prevY = y;
 		this.prevZ = z;
-		this.setStepHeight(0.5f);
 	}
 
 	@Override
-	protected void initDataTracker() {
-		super.initDataTracker();
-		this.dataTracker.startTracking(OXIDATION_LEVEL, Type.COPPER.ordinal());
-		this.dataTracker.startTracking(IS_WAXED, false);
-	}
-
-	public static enum Type {
-		COPPER("copper"),
-		EXPOSED("exposed"),
-		WEATHERED("weathered"),
-		OXIDIZED("oxidized");
-
-		private final String type;
-
-		Type(String type) {
-			this.type = type;
-		}
-
-		public String asString() {
-			return type;
-		}
-
-		public static Type getType(String value) {
-			for (Type enumConstant : Type.values()) {
-				if (enumConstant.asString().equals(value)) {
-					return enumConstant;
-				}
-			}
-			throw new IllegalArgumentException("No enum constant with value: " + value);
-		}
-
-		public static Type getType(int ordinal) {
-			if (ordinal >= 0 && ordinal < values().length) {
-				return values()[ordinal];
-			}
-			throw new IllegalArgumentException("No enum constant with ordinal value: " + ordinal);
-		}
-	}
-
-	static enum Location {
-		ON_LAND,
-		IN_AIR,
-		UNDER_WATER,
-		UNDER_FLOWING_WATER;
+	protected void initDataTracker(DataTracker.Builder builder) {
+		super.initDataTracker(builder);
+		builder.add(OXIDATION_LEVEL, Type.COPPER.ordinal());
+		builder.add(IS_WAXED, false);
 	}
 
 	@Override
@@ -254,7 +214,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 				}
 
 				this.setOxidationLevel(oxidationLevel.ordinal() - 1);
-				itemStack.damage(1, player, playerx -> playerx.sendToolBreakStatus(hand));
+				itemStack.damage(1, player, hand.equals(Hand.MAIN_HAND) ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
 				this.getWorld().playSound(null, this.getBlockPos(),
 						SoundEvents.ITEM_AXE_SCRAPE, SoundCategory.BLOCKS, 1.0f,
 						1.0f);
@@ -280,7 +240,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 			}
 
 			if (this.getPassengerList().size() > 1 && this.getControllingPassenger() == player) {
-				ServerPlayNetworking.send((ServerPlayerEntity) player, new InformYeetKeybindS2CPacket(PacketByteBufs.empty()));
+				ServerPlayNetworking.send((ServerPlayerEntity) player, new InformYeetKeybindS2CPacket());
 			}
 
 			return ActionResult.CONSUME;
@@ -526,8 +486,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 			if (canYoink) {
 				if (entity.startRiding(this)) {
-					ServerPlayNetworking.send((ServerPlayerEntity) controllingPassenger,
-							new InformYeetKeybindS2CPacket(PacketByteBufs.empty()));
+					ServerPlayNetworking.send((ServerPlayerEntity) controllingPassenger, new InformYeetKeybindS2CPacket());
 				}
 				;
 			} else {
@@ -747,23 +706,16 @@ public class WheelbarrowEntity extends VehicleEntity {
 	}
 
 	@Override
-	protected void addPassenger(Entity passenger) {
-		super.addPassenger(passenger);
+	public float getStepHeight() {
+		if (this.getControllingPassenger() instanceof PlayerEntity) {
+			return 1.0f;
+		}
 
-		Entity controllingPassenger = this.getControllingPassenger();
-		boolean isControlledByPlayer = controllingPassenger instanceof PlayerEntity;
-
-		this.setStepHeight(isControlledByPlayer ? 1.0f : 0.5f);
+		return 0.5f;
 	}
 
 	@Override
-	protected void removePassenger(Entity passenger) {
-		super.removePassenger(passenger);
-		this.setStepHeight(this.getControllingPassenger() instanceof PlayerEntity ? 1.0f : 0.5f);
-	}
-
-	@Override
-	protected Vector3f getPassengerAttachmentPos(Entity passenger, EntityDimensions dimensions, float scaleFactor) {
+	protected Vec3d getPassengerAttachmentPos(Entity passenger, EntityDimensions dimensions, float scaleFactor) {
 		float zOffset = -0.8f;
 		float yOffset = 0.6f;
 		boolean isControllingPassenger = passenger == this.getControllingPassenger();
@@ -786,11 +738,11 @@ public class WheelbarrowEntity extends VehicleEntity {
 		if (index != 0) {
 			int offset = this.getControllingPassenger() instanceof PlayerEntity ? 1 : 0;
 			for (Entity entity : passengers.subList(offset, index)) {
-				yOffset += entity.getHeight() + entity.getRidingOffset(this);
+				yOffset += entity.getHeight();
 			}
 		}
 
-		return new Vector3f(0.0f, yOffset, zOffset);
+		return new Vec3d(0.0f, yOffset, zOffset);
 	}
 
 	@Override
@@ -898,7 +850,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 	public void onBubbleColumnSurfaceCollision(boolean drag) {
 	}
 
-	private void spawnParticles(DefaultParticleType particleType, ServerWorld world) {
+	private void spawnParticles(SimpleParticleType particleType, ServerWorld world) {
 		double yawRad = Math.toRadians(this.getYaw());
 		double yawSin = Math.sin(yawRad);
 		double yawCos = Math.cos(yawRad);
@@ -946,7 +898,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 		}
 	}
 
-	private void spawnParticle(ServerWorld world, DefaultParticleType particleType, double x, double y, double z,
+	private void spawnParticle(ServerWorld world, SimpleParticleType particleType, double x, double y, double z,
 			double yawSin, double yawCos) {
 		world.spawnParticles(particleType,
 				this.getX() + x * yawCos - z * yawSin,
@@ -970,8 +922,43 @@ public class WheelbarrowEntity extends VehicleEntity {
 		passenger.stopRiding();
 	}
 
-	static {
-		OXIDATION_LEVEL = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.INTEGER);
-		IS_WAXED = DataTracker.registerData(WheelbarrowEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+	public static enum Type {
+		COPPER("copper"),
+		EXPOSED("exposed"),
+		WEATHERED("weathered"),
+		OXIDIZED("oxidized");
+
+		private final String type;
+
+		Type(String type) {
+			this.type = type;
+		}
+
+		public String asString() {
+			return type;
+		}
+
+		public static Type getType(String value) {
+			for (Type enumConstant : Type.values()) {
+				if (enumConstant.asString().equals(value)) {
+					return enumConstant;
+				}
+			}
+			throw new IllegalArgumentException("No enum constant with value: " + value);
+		}
+
+		public static Type getType(int ordinal) {
+			if (ordinal >= 0 && ordinal < values().length) {
+				return values()[ordinal];
+			}
+			throw new IllegalArgumentException("No enum constant with ordinal value: " + ordinal);
+		}
+	}
+
+	static enum Location {
+		ON_LAND,
+		IN_AIR,
+		UNDER_WATER,
+		UNDER_FLOWING_WATER;
 	}
 }

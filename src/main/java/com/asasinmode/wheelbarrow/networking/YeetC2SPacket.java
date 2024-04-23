@@ -2,25 +2,22 @@ package com.asasinmode.wheelbarrow.networking;
 
 import com.asasinmode.wheelbarrow.Wheelbarrow;
 
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public class YeetC2SPacket implements FabricPacket {
-	public static final Identifier ID = new Identifier(Wheelbarrow.MOD_ID, "yeet");
-	public static final PacketType<YeetC2SPacket> PACKET_TYPE = PacketType.create(ID,
-			YeetC2SPacket::new);
+public class YeetC2SPacket implements CustomPayload {
+	public static final YeetC2SPacket INSTANCE = new YeetC2SPacket();
+	public static final CustomPayload.Id<YeetC2SPacket> PACKET_ID = new CustomPayload.Id<>(
+			new Identifier(Wheelbarrow.MOD_ID, "yeet"));
+	public static final PacketCodec<RegistryByteBuf, YeetC2SPacket> PACKET_CODEC = PacketCodec
+			.unit(INSTANCE);
 
-	public YeetC2SPacket(PacketByteBuf buf) {
+	public YeetC2SPacket() {
 	}
 
-	@Override
-	public void write(PacketByteBuf buf) {
-	}
-
-	@Override
-	public PacketType<?> getType() {
-		return PACKET_TYPE;
+	public CustomPayload.Id<YeetC2SPacket> getId() {
+		return PACKET_ID;
 	}
 }

@@ -6,9 +6,11 @@ import org.slf4j.LoggerFactory;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
 import com.asasinmode.wheelbarrow.item.ModItems;
+import com.asasinmode.wheelbarrow.networking.InformYeetKeybindS2CPacket;
 import com.asasinmode.wheelbarrow.networking.YeetC2SPacket;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public class Wheelbarrow implements ModInitializer {
@@ -22,13 +24,20 @@ public class Wheelbarrow implements ModInitializer {
 		CONFIG = Config.load();
 		ModItems.registerModItems();
 		ModEntities.registerModEntities();
+		registerCodecs();
 		registerPacketsC2SPackets();
 	}
 
+	private static void registerCodecs() {
+		PayloadTypeRegistry.playS2C().register(InformYeetKeybindS2CPacket.PACKET_ID,
+				InformYeetKeybindS2CPacket.PACKET_CODEC);
+		PayloadTypeRegistry.playC2S().register(YeetC2SPacket.PACKET_ID, YeetC2SPacket.PACKET_CODEC);
+	}
+
 	private static void registerPacketsC2SPackets() {
-		ServerPlayNetworking.registerGlobalReceiver(YeetC2SPacket.PACKET_TYPE, (packet, player, responseSender) -> {
-			if (player.getVehicle() instanceof WheelbarrowEntity wheelbarrow
-					&& wheelbarrow.getControllingPassenger() == player) {
+		ServerPlayNetworking.registerGlobalReceiver(YeetC2SPacket.PACKET_ID, (payload, context) -> {
+			if (context.player().getVehicle() instanceof WheelbarrowEntity wheelbarrow
+					&& wheelbarrow.getControllingPassenger() == context.player()) {
 				wheelbarrow.yeetLastPassenger();
 			}
 		});
