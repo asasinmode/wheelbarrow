@@ -11,7 +11,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        branch: ["1.20.1", "1.20.2", "main"]
+        branch: ["1.20.1", "1.20.2", "1.20.4", "main"]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,9 +40,8 @@ jobs:
           curseforge-id: 998859
           curseforge-token: "${{secrets.CURSEFORGE_TOKEN}}"
 
-          # TODO tmp until I can get my modrinth token https://github.com/modrinth/knossos/issues/1680
-          # modrinth-id: F0jGC2As
-          # modrinth-token: "${{secrets.MODRINTH_TOKEN}}"
+          modrinth-id: F0jGC2As
+          modrinth-token: "${{secrets.MODRINTH_TOKEN}}"
 
-          name: ${{github.event.release.tag_name}}+fabric_${{matrix.branch == 'main' && '1.20.4' || matrix.branch}}
-          # modrinth-featured: ${{matrix.branch == 'main'}}
+          name: ${{github.event.release.tag_name}}+fabric_${{matrix.branch == 'main' && '1.20.5' || matrix.branch}}
+          modrinth-featured: ${{matrix.branch == 'main'}}
