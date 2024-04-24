@@ -23,7 +23,7 @@ public class Keybinds {
 			while (yeet.wasPressed()) {
 				if (client.player.getVehicle() instanceof WheelbarrowEntity wheelbarrow
 						&& wheelbarrow.getControllingPassenger() == client.player) {
-					ClientPlayNetworking.send(new YeetC2SPacket());
+					ClientPlayNetworking.send(YeetC2SPacket.INSTANCE);
 				}
 			}
 		});

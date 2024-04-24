@@ -240,7 +240,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 			}
 
 			if (this.getPassengerList().size() > 1 && this.getControllingPassenger() == player) {
-				ServerPlayNetworking.send((ServerPlayerEntity) player, new InformYeetKeybindS2CPacket());
+				ServerPlayNetworking.send((ServerPlayerEntity) player, InformYeetKeybindS2CPacket.INSTANCE);
 			}
 
 			return ActionResult.CONSUME;
@@ -486,7 +486,7 @@ public class WheelbarrowEntity extends VehicleEntity {
 
 			if (canYoink) {
 				if (entity.startRiding(this)) {
-					ServerPlayNetworking.send((ServerPlayerEntity) controllingPassenger, new InformYeetKeybindS2CPacket());
+					ServerPlayNetworking.send((ServerPlayerEntity) controllingPassenger, InformYeetKeybindS2CPacket.INSTANCE);
 				}
 				;
 			} else {
