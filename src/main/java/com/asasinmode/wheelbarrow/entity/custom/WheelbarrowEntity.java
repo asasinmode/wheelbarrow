@@ -16,6 +16,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAttachmentType;
+import net.minecraft.entity.EntityAttachments;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -738,11 +740,13 @@ public class WheelbarrowEntity extends VehicleEntity {
 		if (index != 0) {
 			int offset = this.getControllingPassenger() instanceof PlayerEntity ? 1 : 0;
 			for (Entity entity : passengers.subList(offset, index)) {
-				yOffset += entity.getHeight();
+				double ridingOffset = entity.getAttachments().getPoint(EntityAttachmentType.VEHICLE, 0, passenger.getYaw())
+						.getY();
+				yOffset += entity.getHeight() - (float) ridingOffset;
 			}
 		}
 
-		return new Vec3d(0.0f, yOffset, zOffset);
+		return new Vec3d(0.0f, yOffset, zOffset).rotateY((float) -Math.toRadians(this.getYaw()));
 	}
 
 	@Override
