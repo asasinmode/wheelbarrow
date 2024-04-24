@@ -17,7 +17,7 @@
 		}
 	},
 	"result": {
-		"item": "wheelbarrow:copper_wheelbarrow",
+		"id": "wheelbarrow:copper_wheelbarrow",
 		"count": 1
 	}
 }

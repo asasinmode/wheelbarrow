@@ -2,7 +2,6 @@ package com.asasinmode.wheelbarrow;
 
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.networking.InformYeetKeybindS2CPacket;
-import com.asasinmode.wheelbarrow.networking.YeetC2SPacket;
 import com.asasinmode.wheelbarrow.render.WheelbarrowEntityRenderer;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -18,17 +17,13 @@ public class WheelbarrowClient implements ClientModInitializer {
 			return new WheelbarrowEntityRenderer(context);
 		});
 		Keybinds.registerKeybinds();
-		registerCodecs();
 		registerS2CPackets();
 	}
 
-	private static void registerCodecs() {
+	private static void registerS2CPackets() {
 		PayloadTypeRegistry.playS2C().register(InformYeetKeybindS2CPacket.PACKET_ID,
 				InformYeetKeybindS2CPacket.PACKET_CODEC);
-		PayloadTypeRegistry.playC2S().register(YeetC2SPacket.PACKET_ID, YeetC2SPacket.PACKET_CODEC);
-	}
 
-	private static void registerS2CPackets() {
 		ClientPlayNetworking.registerGlobalReceiver(InformYeetKeybindS2CPacket.PACKET_ID,
 				(payload, context) -> {
 					// TODO this gets overriden by dismount message
