@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.asasinmode.wheelbarrow.entity.ModEntities;
 import com.asasinmode.wheelbarrow.entity.custom.WheelbarrowEntity;
 import com.asasinmode.wheelbarrow.item.ModItems;
+import com.asasinmode.wheelbarrow.networking.InformYeetKeybindS2CPacket;
 import com.asasinmode.wheelbarrow.networking.YeetC2SPacket;
 
 import net.fabricmc.api.ModInitializer;
@@ -28,6 +29,8 @@ public class Wheelbarrow implements ModInitializer {
 
 	private static void registerC2SPackets() {
 		PayloadTypeRegistry.playC2S().register(YeetC2SPacket.PACKET_ID, YeetC2SPacket.PACKET_CODEC);
+		PayloadTypeRegistry.playS2C().register(InformYeetKeybindS2CPacket.PACKET_ID,
+				InformYeetKeybindS2CPacket.PACKET_CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(YeetC2SPacket.PACKET_ID, (payload, context) -> {
 			if (context.player().getVehicle() instanceof WheelbarrowEntity wheelbarrow

@@ -7,7 +7,6 @@ import com.asasinmode.wheelbarrow.render.WheelbarrowEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.text.Text;
 
 public class WheelbarrowClient implements ClientModInitializer {
@@ -21,9 +20,6 @@ public class WheelbarrowClient implements ClientModInitializer {
 	}
 
 	private static void registerS2CPackets() {
-		PayloadTypeRegistry.playS2C().register(InformYeetKeybindS2CPacket.PACKET_ID,
-				InformYeetKeybindS2CPacket.PACKET_CODEC);
-
 		ClientPlayNetworking.registerGlobalReceiver(InformYeetKeybindS2CPacket.PACKET_ID,
 				(payload, context) -> {
 					// TODO this gets overriden by dismount message
