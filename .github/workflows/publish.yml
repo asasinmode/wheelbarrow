@@ -11,7 +11,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        branch: ["1.20.1", "1.20.2", "1.20.4", "main"]
+        branch: ["main"]
     steps:
       - uses: actions/checkout@v4
         with:
