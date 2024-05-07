@@ -134,7 +134,7 @@ if (mergeConflictBranches.length || mismatchedVersionBranches.length) {
 }
 
 // TMP until https://github.com/oven-sh/bun/issues/10087
-const newVersion = [1, 0, 0].join('.');
+const newVersion = [1, 0, 1].join('.');
 const proceed = await confirm({ message: `will bump to: \x1b[32m${newVersion}\x1b[0m` });
 
 if (!proceed) {
