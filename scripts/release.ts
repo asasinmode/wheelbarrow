@@ -78,7 +78,7 @@ await executeOnBranches(async (branch) => {
 		return;
 	}
 
-	await $`git commit --no-edit`.quiet();
+	await $`git commit --no-edit --allow-empty`.quiet();
 	console.log(`\x1b[32m[${branch}] merge succesful\x1b[0m]`);
 
 	console.log(`\x1b[37m[${branch}] checking version...\x1b[0m`);
