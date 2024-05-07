@@ -11,6 +11,7 @@ jobs:
       contents: write
     strategy:
       matrix:
+        # should contain only the branches the newest release should be published on
         branch: ["main"]
     steps:
       - uses: actions/checkout@v4
