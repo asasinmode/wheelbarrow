@@ -11,6 +11,7 @@ jobs:
       contents: write
     strategy:
       matrix:
+        # should contain only the branches the newest release should be published on
         branch: ["main"]
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +22,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: 17
+          java-version: 21
 
       - name: build
         run: |
@@ -29,10 +30,10 @@ jobs:
           ./gradlew clean build
 
       # idk how to do it in gradle
-      # '1.20.6' is the newest version the main branch is on, update accordingly
+      # 1.21 is the newest version the main branch is on, update accordingly
       - name: rename jars
         working-directory: build/libs
-        run: for file in *; do if [ -f "$file" ]; then filename="${file%.*}"; extension="${file##*.}"; mv "$file" "${filename}+fabric_${{matrix.branch == 'main' && '1.20.6' || matrix.branch}}.${extension}"; fi; done
+        run: for file in *; do if [ -f "$file" ]; then filename="${file%.*}"; extension="${file##*.}"; mv "$file" "${filename}+fabric_${{matrix.branch == 'main' && '1.21' || matrix.branch}}.${extension}"; fi; done
 
       - name: publish
         uses: Kir-Antipov/mc-publish@v3
@@ -43,5 +44,5 @@ jobs:
           modrinth-id: F0jGC2As
           modrinth-token: "${{secrets.MODRINTH_TOKEN}}"
 
-          name: ${{github.event.release.tag_name}}+fabric_${{matrix.branch == 'main' && '1.20.6' || matrix.branch}}
+          name: ${{github.event.release.tag_name}}+fabric_${{matrix.branch == 'main' && '1.21' || matrix.branch}}
           modrinth-featured: ${{matrix.branch == 'main'}}
