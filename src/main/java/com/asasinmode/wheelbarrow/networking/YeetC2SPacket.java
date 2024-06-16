@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 public class YeetC2SPacket implements CustomPayload {
 	public static final YeetC2SPacket INSTANCE = new YeetC2SPacket();
 	public static final CustomPayload.Id<YeetC2SPacket> PACKET_ID = new CustomPayload.Id<>(
-			new Identifier(Wheelbarrow.MOD_ID, "yeet"));
+			Identifier.of(Wheelbarrow.MOD_ID, "yeet"));
 	public static final PacketCodec<PacketByteBuf, YeetC2SPacket> PACKET_CODEC = PacketCodec
 			.unit(INSTANCE);
 

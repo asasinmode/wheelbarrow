@@ -17,7 +17,7 @@ import net.minecraft.world.event.GameEvent.Emitter;
 public class WheelbarrowItem extends Item {
 	private final WheelbarrowEntity.Type type;
 
-	public WheelbarrowItem(WheelbarrowEntity.Type type, Settings settings) {
+	public WheelbarrowItem(WheelbarrowEntity.Type type, Item.Settings settings) {
 		super(settings);
 		this.type = type;
 	}

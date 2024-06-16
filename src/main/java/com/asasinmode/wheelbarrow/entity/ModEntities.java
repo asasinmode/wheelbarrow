@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 
 public class ModEntities {
 	public static final EntityType<WheelbarrowEntity> WHEELBARROW = Registry.register(Registries.ENTITY_TYPE,
-			new Identifier(Wheelbarrow.MOD_ID, "wheelbarrow"),
+			Identifier.of(Wheelbarrow.MOD_ID, "wheelbarrow"),
 			EntityType.Builder
 					.create(WheelbarrowEntity::new, SpawnGroup.MISC)
 					.dimensions(0.98f, 0.875f)

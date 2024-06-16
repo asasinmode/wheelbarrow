@@ -22,13 +22,13 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 	private static final Map<WheelbarrowEntity.Type, Identifier> OXIDATION_LEVEL_TO_TEXTURE = Util
 			.make(Maps.newEnumMap(WheelbarrowEntity.Type.class), (map) -> {
 				map.put(WheelbarrowEntity.Type.COPPER,
-						new Identifier(Wheelbarrow.MOD_ID, "textures/entity/copper_wheelbarrow.png"));
+						Identifier.of(Wheelbarrow.MOD_ID, "textures/entity/copper_wheelbarrow.png"));
 				map.put(WheelbarrowEntity.Type.EXPOSED,
-						new Identifier(Wheelbarrow.MOD_ID, "textures/entity/exposed_copper_wheelbarrow.png"));
+						Identifier.of(Wheelbarrow.MOD_ID, "textures/entity/exposed_copper_wheelbarrow.png"));
 				map.put(WheelbarrowEntity.Type.WEATHERED,
-						new Identifier(Wheelbarrow.MOD_ID, "textures/entity/weathered_copper_wheelbarrow.png"));
+						Identifier.of(Wheelbarrow.MOD_ID, "textures/entity/weathered_copper_wheelbarrow.png"));
 				map.put(WheelbarrowEntity.Type.OXIDIZED,
-						new Identifier(Wheelbarrow.MOD_ID, "textures/entity/oxidized_copper_wheelbarrow.png"));
+						Identifier.of(Wheelbarrow.MOD_ID, "textures/entity/oxidized_copper_wheelbarrow.png"));
 			});
 
 	private final WheelbarrowEntityModel model;
@@ -77,8 +77,8 @@ public class WheelbarrowEntityRenderer extends EntityRenderer<WheelbarrowEntity>
 
 		this.model.setAngles(entity, limbSwing, limbSwingAmount, ageInTicks, 0.0f, 0.0f);
 
-		model.render(matrixStack, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture(entity))), light,
-				OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+		this.model.render(matrixStack, vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(getTexture(entity))), light,
+				OverlayTexture.DEFAULT_UV);
 
 		matrixStack.pop();
 		super.render(entity, yaw, tickDelta, matrixStack, vertexConsumers, light);

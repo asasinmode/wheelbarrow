@@ -93,9 +93,8 @@ public class WheelbarrowEntityModel extends EntityModel<WheelbarrowEntity> {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red,
-			float green, float blue, float alpha) {
-		top.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
-		wheel.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
+	public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, int color) {
+		top.render(matrices, vertexConsumer, light, overlay, color);
+		wheel.render(matrices, vertexConsumer, light, overlay, color);
 	}
 }

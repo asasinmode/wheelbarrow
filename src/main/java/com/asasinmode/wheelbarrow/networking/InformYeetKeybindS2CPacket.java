@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 public class InformYeetKeybindS2CPacket implements CustomPayload {
 	public static final InformYeetKeybindS2CPacket INSTANCE = new InformYeetKeybindS2CPacket();
 	public static final CustomPayload.Id<InformYeetKeybindS2CPacket> PACKET_ID = new CustomPayload.Id<>(
-			new Identifier(Wheelbarrow.MOD_ID, "inform_yeet_keybind"));
+			Identifier.of(Wheelbarrow.MOD_ID, "inform_yeet_keybind"));
 	public static final PacketCodec<PacketByteBuf, InformYeetKeybindS2CPacket> PACKET_CODEC = PacketCodec
 			.unit(INSTANCE);
 
