@@ -67,7 +67,7 @@ const mismatchedVersionBranches: string[] = [];
 await executeOnBranches(async (branch) => {
 	console.log(`\x1b[37m[${branch}] merging main...\x1b[0m`);
 	try {
-		await $`git merge --no-commit --no-ff main`.quiet();
+		await $`git merge --no-commit --no-ff -s ours main`.quiet();
 	} catch (e) {
 		console.error(`[${branch}] merge failed`);
 		console.log((e as ShellError).stdout.toString());
