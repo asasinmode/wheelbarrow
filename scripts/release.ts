@@ -67,6 +67,9 @@ const mismatchedVersionBranches: string[] = [];
 await executeOnBranches(async (branch) => {
 	console.log(`\x1b[37m[${branch}] merging main...\x1b[0m`);
 	try {
+		// `-s ours` is used because there's been no updates to branches other than the newest and it makes merging during deploy easier
+		// should be removed when new features are added that need to be implemented on other release branches, not sure tbh haven't touched this in a while
+		// probably should be handled with a flag
 		await $`git merge --no-commit --no-ff -s ours main`.quiet();
 	} catch (e) {
 		console.error(`[${branch}] merge failed`);
