@@ -1,6 +1,6 @@
 # wheelbarrow
 
-_This is the main branch of the repository and it contains code for newest Minecraft version 1.21. Code for other Minecraft versions can be found on their respective branches._
+_This is the 1.20.6 branch of the repository and it contains code for the 1.21 Minecraft version. Code for the newest Minecraft version can be found on the main branch._
 
 ## showcase
 
