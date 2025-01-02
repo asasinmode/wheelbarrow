@@ -6,7 +6,7 @@ _This is the main branch of the repository and it contains code for newest Minec
 
 You can download the mod through [modrinth](https://modrinth.com/mod/wheelbarrow) and [curseforge](https://www.curseforge.com/minecraft/mc-mods/wheelbarrow).
 
-![the showcase image for the mod describing features: taking entities for a ride by bumping into them with a wheelbarrow, ejecting them with the default "Z" keybind and with the wheelbarrow being made of copper: showing the 4 oxidation variants](https://github.com/asasinmode/wheelbarrow/blob/main/docs/showcase.jpg?raw=true)
+![the showcase image for the mod describing features: taking entities for a ride by bumping into them with a wheelbarrow, ejecting them with the default "Z" keybind and with the wheelbarrow being made of copper: showing the 4 oxidation variants](https://github.com/asasinmode/wheelbarrow/blob/main/docs/showcase_cropped.jpg?raw=true)
 
 ## how to dev
 
