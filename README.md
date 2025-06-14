@@ -39,4 +39,4 @@ This script should be run for publishing new versions. It does the following
 8. Merge `main` branch to other specified branches
 9. Push changes to github which triggers the release workflow
 
-### why are scripts in the java( )script(-inting language)? skill issues.
+### why are scripts in the java( )script(-ing) language? it's right there in the name.
